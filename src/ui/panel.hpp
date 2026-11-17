@@ -83,6 +83,8 @@ private:
     std::vector<const char*> scale;
     bool labelBelow = false;
     bool compact = false;
+    int styleSlot = -1;
+    int styleType = -1;
   };
 
   void layout(const Shared& shared, const PanelState& state);

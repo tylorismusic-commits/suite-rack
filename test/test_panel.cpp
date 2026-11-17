@@ -24,7 +24,7 @@ int main() {
   check(std::fabs(s.get(P_SLOT0_TYPE) - 1.0) < 1e-9, "slot 1 starts as EQ");
   check(std::fabs(s.get(P_SLOT1_TYPE) - 2.0) < 1e-9, "slot 2 starts as Comp");
   // Click the second row's module name to open the module browser.
-  panel.pointerDown(s, state, 100, 224, false);
+  panel.pointerDown(s, state, 250, 134, false);
   panel.pointerUp();
   check(state.selectedSlot == 1 && state.browserSlot == 1,
         "clicking the second module name opens its browser");
@@ -33,7 +33,7 @@ int main() {
   panel.pointerUp();
   check(s.get(P_SLOT1_TYPE) == 0.0, "Off module button clears the slot");
   panel.draw(cr, s, state);
-  panel.pointerDown(s, state, 100, 224, false);
+  panel.pointerDown(s, state, 250, 134, false);
   panel.pointerUp();
   panel.draw(cr, s, state);
   panel.pointerDown(s, state, 600, 314, false);
@@ -41,7 +41,7 @@ int main() {
   check(s.get(P_SLOT1_TYPE) == 1.0, "EQ module button selects EQ");
   // Bypass pill for slot 2.
   panel.draw(cr, s, state);
-  panel.pointerDown(s, state, 318, 202, false);
+  panel.pointerDown(s, state, 280, 165, false);
   panel.pointerUp();
   check(s.get(P_SLOT1_BYPASS) == 1.0, "bypass pill toggles the selected slot");
   // Global power.

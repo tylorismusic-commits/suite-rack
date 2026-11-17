@@ -39,6 +39,22 @@ double clamp01(double x) { return std::clamp(x, 0.0, 1.0); }
 const char* moduleName(int type) {
   return type == 1 ? "EQ" : (type == 2 ? "COMP" : "EMPTY");
 }
+
+struct ModuleStyle {
+  Rgb body;
+  Rgb edge;
+  Rgb accent;
+  Rgb knob;
+};
+
+ModuleStyle styleFor(int type) {
+  if (type == 1) return {{0.10, 0.145, 0.215}, {0.18, 0.28, 0.40},
+                         {0.34, 0.74, 0.96}, {0.86, 0.88, 0.90}};
+  if (type == 2) return {{0.19, 0.125, 0.075}, {0.42, 0.25, 0.12},
+                         {0.96, 0.58, 0.20}, {0.90, 0.84, 0.74}};
+  return {{0.105, 0.10, 0.095}, {0.24, 0.22, 0.19},
+          {0.55, 0.50, 0.44}, {0.72, 0.70, 0.66}};
+}
 } // namespace
 
 Panel::Panel() = default;
@@ -96,42 +112,59 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
   widgets_.push_back(p);
 
   auto knob = [&](uint32_t param, double x, double y, double r,
-                  const char* label, bool below = false, int steps = 0,
-                  std::vector<const char*> scale = {}, bool compact = false) {
+                  const char* label, int styleSlot = -1, bool compact = true) {
     Widget k{};
     k.kind = Kind::Knob; k.param = param; k.x = x; k.y = y; k.r = r;
-    k.label = label; k.labelBelow = below; k.steps = steps;
-    k.scale = std::move(scale); k.compact = compact;
+    k.label = label; k.labelBelow = false; k.compact = compact;
+    k.styleSlot = styleSlot;
+    k.styleType = styleSlot >= 0
+                      ? static_cast<int>(shared.get(
+                            slotParam(styleSlot, kSlotOffsetType)) + 0.5)
+                      : -1;
     widgets_.push_back(k);
   };
 
-  knob(P_INPUT, 130, 665, 18, "INPUT");
-  knob(P_OUTPUT, 900, 665, 18, "OUTPUT");
+  knob(P_INPUT, 140, 675, 16, "", -1, true);
+  knob(P_OUTPUT, 860, 675, 16, "", -1, true);
 
+  const double colW = 143.0;
+  const double gap = 12.0;
   for (int i = 0; i < kSlotCount; ++i) {
-    const double y = 92.0 + i * 88.0;
+    const double x = 60.0 + i * (colW + gap);
+    const double y = 92.0;
     Widget name{};
     name.kind = Kind::ModuleName;
     name.param = static_cast<uint32_t>(i);
     name.value = i;
-    name.x = 76.0; name.y = y + 30.0; name.w = 190.0; name.h = 28.0;
+    name.x = x + 10; name.y = y + 28; name.w = colW - 20; name.h = 28;
+    name.styleSlot = i;
+    name.styleType = static_cast<int>(shared.get(slotParam(i, kSlotOffsetType)) + 0.5);
     widgets_.push_back(name);
 
     Widget byp{};
     byp.kind = Kind::Pill;
     byp.param = slotParam(i, kSlotOffsetBypass);
-    byp.x = 282.0; byp.y = y + 10.0; byp.w = 72.0; byp.h = 24.0;
+    byp.x = x + 10; byp.y = y + 64; byp.w = colW - 20; byp.h = 22;
     byp.label = "BYPASS";
+    byp.styleSlot = i;
+    byp.styleType = static_cast<int>(shared.get(slotParam(i, kSlotOffsetType)) + 0.5);
     widgets_.push_back(byp);
 
-    knob(slotParam(i, kSlotOffsetMix), 382.0, y + 52.0, 16.0, "MIX", false, 0, {}, true);
+    knob(slotParam(i, kSlotOffsetMix), x + colW * 0.5, y + 520, 16,
+         "SLOT MIX", i);
 
     const int type = static_cast<int>(shared.get(slotParam(i, kSlotOffsetType)) + 0.5);
+    for (auto& w : widgets_) {
+      if (w.styleSlot == i) w.styleType = type;
+    }
+    const double cx1 = x + 38, cx2 = x + 105;
     if (type == 1) {
-      static const char* labels[6] = {"LOW", "LOW MID", "HIGH MID", "HIGH", "HPF", "LPF"};
+      static const char* labels[6] = {"LOW", "LOW MID", "HIGH MID", "HIGH",
+                                      "HPF", "LPF"};
       for (int k = 0; k < 6; ++k) {
-        knob(slotParam(i, kSlotOffsetEqLow + k), 475.0 + k * 82.0,
-             y + 44.0, 15.0, labels[k], false, 0, {}, true);
+        const double kx = (k & 1) ? cx2 : cx1;
+        const double ky = y + 165.0 + (k / 2) * 112.0;
+        knob(slotParam(i, kSlotOffsetEqLow + k), kx, ky, 19, labels[k], i);
       }
     } else if (type == 2) {
       for (int m = 0; m < 3; ++m) {
@@ -139,16 +172,21 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
         b.kind = Kind::ModelButton;
         b.param = slotParam(i, kSlotOffsetCompModel);
         b.value = m;
-        b.x = 465.0 + m * 40.0;
-        b.y = y + 10.0;
-        b.w = 36.0; b.h = 22.0;
+        b.x = x + 8 + m * 43.0;
+        b.y = y + 118.0;
+        b.w = 39.0; b.h = 20.0;
         b.label = kCompModelLabels[m];
+        b.styleSlot = i;
+        b.styleType = type;
         widgets_.push_back(b);
       }
-      static const char* labels[7] = {"THR", "RAT", "ATK", "REL", "MAKE", "MIX", "SC"};
+      static const char* labels[7] = {"THR", "RAT", "ATK", "REL", "MAKE",
+                                      "MIX", "SC"};
       for (int k = 0; k < 7; ++k) {
-        knob(slotParam(i, kSlotOffsetCompThreshold + k), 600.0 + k * 58.0,
-             y + 44.0, 13.0, labels[k], false, 0, {}, true);
+        const double kx = (k & 1) ? cx2 : cx1;
+        const double ky = y + 188.0 + (k / 2) * 88.0;
+        knob(slotParam(i, kSlotOffsetCompThreshold + k), kx, ky, 18,
+             labels[k], i);
       }
     }
   }
@@ -218,29 +256,40 @@ void Panel::drawHeader(cairo_t* cr, const Shared& shared, const PanelState& stat
 
 void Panel::drawRack(cairo_t* cr, const Shared& shared,
                      const PanelState& state) const {
+  const double colW = 143.0, gap = 12.0, y = 92.0, h = 556.0;
   for (int i = 0; i < kSlotCount; ++i) {
-    const double y = 92.0 + i * 88.0;
+    const double x = 60.0 + i * (colW + gap);
     const int type = static_cast<int>(shared.get(slotParam(i, kSlotOffsetType)) + 0.5);
-    const bool bypass = shared.get(slotParam(i, kSlotOffsetBypass)) > 0.5;
-    roundRect(cr, 60, y, 920, 80, 5);
-    setRgb(cr, (i & 1) ? Rgb{0.115, 0.105, 0.095} : Rgb{0.135, 0.122, 0.108});
-    cairo_fill(cr);
-    cairo_set_line_width(cr, 1.0);
-    setRgb(cr, state.browserSlot == i ? kAccent : kEdge,
-           state.browserSlot == i ? 0.9 : 0.5);
-    roundRect(cr, 60.5, y + 0.5, 919, 79, 5); cairo_stroke(cr);
-
+    const ModuleStyle st = styleFor(type);
+    roundRect(cr, x, y, colW, h, 6);
+    setRgb(cr, st.body); cairo_fill(cr);
+    cairo_set_line_width(cr, state.browserSlot == i ? 2.0 : 1.0);
+    setRgb(cr, state.browserSlot == i ? st.accent : st.edge,
+           state.browserSlot == i ? 1.0 : 0.75);
+    roundRect(cr, x + 0.5, y + 0.5, colW - 1, h - 1, 6); cairo_stroke(cr);
+    // 500-series colour cap.
+    roundRect(cr, x + 1, y + 1, colW - 2, 7, 4);
+    setRgb(cr, st.accent, 0.95); cairo_fill(cr);
     char num[16];
-    std::snprintf(num, sizeof(num), "%d", i + 1);
-    text(cr, num, 76, y + 24, 12, 0, kDim.r, kDim.g, kDim.b);
+    std::snprintf(num, sizeof(num), "SLOT %d", i + 1);
+    text(cr, num, x + 10, y + 22, 8, 0, st.accent.r, st.accent.g, st.accent.b);
     if (type == 2) {
       char gr[32];
       std::snprintf(gr, sizeof(gr), "GR %.1f dB", state.slotGrDb[i]);
-      text(cr, gr, 250, y + 66, 8, 0, kDim.r, kDim.g, kDim.b);
+      text(cr, gr, x + colW - 10, y + 108, 7, 2, st.accent.r, st.accent.g,
+           st.accent.b);
     }
-    text(cr, "MODULE", 76, y + 70, 7, 0, kDim.r, kDim.g, kDim.b);
+    if (type == 0) {
+      text(cr, "EMPTY", x + colW * 0.5, y + 180, 15, 1, st.accent.r,
+           st.accent.g, st.accent.b);
+      text(cr, "CHOOSE A", x + colW * 0.5, y + 205, 7, 1, st.accent.r,
+           st.accent.g, st.accent.b);
+      text(cr, "MODULE", x + colW * 0.5, y + 218, 7, 1, st.accent.r,
+           st.accent.g, st.accent.b);
+    }
   }
-  text(cr, "VIRTUAL MIX RACK", 520, 84, 9, 1, kDim.r, kDim.g, kDim.b);
+  text(cr, "VIRTUAL MIX RACK · 500-SERIES", 520, 84, 9, 1, kDim.r, kDim.g,
+       kDim.b);
 }
 
 void Panel::drawBrowser(cairo_t* cr, const Shared& shared,
@@ -279,12 +328,18 @@ void Panel::draw(cairo_t* cr, Shared& shared, const PanelState& state) {
   drawLevelMeter(cr, 1006, 100, 14, 520, state.outLevelL, state.outLevelR);
   text(cr, "IN", 27, 640, 8, 1, kDim.r, kDim.g, kDim.b);
   text(cr, "OUT", 1013, 640, 8, 1, kDim.r, kDim.g, kDim.b);
-  text(cr, "SUITE RACK · VIRTUAL MIX RACK · SIX SLOTS", 520, 712, 11, 1,
+  text(cr, "INPUT", 96, 681, 7.5, 2, kDim.r, kDim.g, kDim.b);
+  text(cr, "OUTPUT", 904, 681, 7.5, 0, kDim.r, kDim.g, kDim.b);
+  text(cr, "SUITE RACK · VIRTUAL MIX RACK · SIX SLOTS", 520, 714, 10.5, 1,
        kText.r, kText.g, kText.b);
 }
 
 void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
                        const PanelState&) const {
+  const int type = w.styleSlot >= 0
+                       ? static_cast<int>(shared.get(slotParam(w.styleSlot, kSlotOffsetType)) + 0.5)
+                       : -1;
+  const ModuleStyle st = styleFor(type);
   switch (w.kind) {
     case Kind::Power: {
       const bool on = shared.get(P_POWER) > 0.5;
@@ -306,9 +361,11 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
       const int type = static_cast<int>(
           shared.get(slotParam(slot, kSlotOffsetType)) + 0.5);
       roundRect(cr, w.x, w.y, w.w, w.h, 4);
-      setRgb(cr, {0.22, 0.19, 0.16}); cairo_fill(cr);
+      setRgb(cr, st.body); cairo_fill(cr);
+      setRgb(cr, st.edge, 0.9); cairo_set_line_width(cr, 1.0);
+      roundRect(cr, w.x + 0.5, w.y + 0.5, w.w - 1, w.h - 1, 4); cairo_stroke(cr);
       text(cr, moduleName(type), w.x + 12, w.y + w.h * 0.5 + 5, 12, 0,
-           kText.r, kText.g, kText.b);
+           st.accent.r, st.accent.g, st.accent.b);
       text(cr, "CHOOSE", w.x + w.w - 10, w.y + w.h * 0.5 + 4, 7, 2,
            kDim.r, kDim.g, kDim.b);
       break;
@@ -317,30 +374,34 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
       const bool cancel = w.value < 0;
       const bool current = !cancel &&
           std::fabs(shared.get(w.param) - w.value) < 0.5;
+      const ModuleStyle bst = cancel ? styleFor(0) : styleFor(static_cast<int>(w.value));
       roundRect(cr, w.x, w.y, w.w, w.h, 4);
-      setRgb(cr, cancel ? Rgb{0.22, 0.19, 0.16}
-                        : (current ? kAccent : Rgb{0.28, 0.24, 0.20}));
+      setRgb(cr, current ? bst.accent : bst.body);
       cairo_fill(cr);
+      setRgb(cr, bst.edge, 0.9); cairo_set_line_width(cr, 1.0);
+      roundRect(cr, w.x + 0.5, w.y + 0.5, w.w - 1, w.h - 1, 4); cairo_stroke(cr);
       text(cr, w.label, w.x + w.w * 0.5, w.y + w.h * 0.5 + 5,
            cancel ? 9 : 14, 1,
-           current ? 0.10 : kText.r, current ? 0.08 : kText.g,
-           current ? 0.05 : kText.b);
+           current ? 0.08 : bst.accent.r, current ? 0.06 : bst.accent.g,
+           current ? 0.04 : bst.accent.b);
       break;
     }
     case Kind::ModuleButton: {
       const bool lit = std::fabs(shared.get(w.param) - w.value) < 0.5;
       roundRect(cr, w.x, w.y, w.w, w.h, 4);
-      setRgb(cr, lit ? kAccent : Rgb{0.22, 0.19, 0.16}); cairo_fill(cr);
+      setRgb(cr, lit ? st.accent : st.body); cairo_fill(cr);
       text(cr, w.label, w.x + w.w * 0.5, w.y + w.h * 0.5 + 4, 10, 1,
-           lit ? 0.10 : 0.78, lit ? 0.08 : 0.74, lit ? 0.05 : 0.68);
+           lit ? 0.08 : st.accent.r, lit ? 0.06 : st.accent.g,
+           lit ? 0.04 : st.accent.b);
       break;
     }
     case Kind::ModelButton: {
       const bool lit = std::fabs(shared.get(w.param) - w.value) < 0.5;
       roundRect(cr, w.x, w.y, w.w, w.h, 4);
-      setRgb(cr, lit ? kAccent : Rgb{0.22, 0.19, 0.16}); cairo_fill(cr);
+      setRgb(cr, lit ? st.accent : st.body); cairo_fill(cr);
       text(cr, w.label, w.x + w.w * 0.5, w.y + w.h * 0.5 + 4, 10, 1,
-           lit ? 0.10 : 0.78, lit ? 0.08 : 0.74, lit ? 0.05 : 0.68);
+           lit ? 0.08 : st.accent.r, lit ? 0.06 : st.accent.g,
+           lit ? 0.04 : st.accent.b);
       break;
     }
     case Kind::Pill: {
@@ -363,7 +424,9 @@ void Panel::drawKnob(cairo_t* cr, const Widget& w, double value) const {
   const double span = vmax - s.min;
   const double f = clamp01(span > 0.0 ? (value - s.min) / span : 0.0);
   const double a = knobAngle(f);
-  setRgb(cr, kDim, 0.55);
+  const int knobType = w.styleSlot >= 0 ? w.styleType : -1;
+  const ModuleStyle st = styleFor(knobType);
+  setRgb(cr, st.accent, 0.45);
   cairo_set_line_width(cr, 1.0);
   for (int i = 0; i <= 10; ++i) {
     const double aa = knobAngle(i / 10.0);
@@ -374,14 +437,14 @@ void Panel::drawKnob(cairo_t* cr, const Widget& w, double value) const {
     cairo_stroke(cr);
   }
   cairo_arc(cr, w.x, w.y, w.r, 0, 2 * kPi);
-  setRgb(cr, {0.20, 0.18, 0.16}); cairo_fill(cr);
+  setRgb(cr, st.body); cairo_fill(cr);
   cairo_arc(cr, w.x, w.y, w.r * 0.82, 0, 2 * kPi);
-  setRgb(cr, {0.86, 0.82, 0.74}); cairo_fill(cr);
+  setRgb(cr, st.knob); cairo_fill(cr);
   cairo_set_line_width(cr, 2.0);
-  setRgb(cr, kAccent);
+  setRgb(cr, st.accent);
   cairo_arc(cr, w.x, w.y, w.r + 2, knobAngle(0), a); cairo_stroke(cr);
   cairo_set_line_width(cr, 2.4);
-  setRgb(cr, kText);
+  setRgb(cr, st.body);
   cairo_move_to(cr, w.x + std::cos(a) * w.r * 0.2, w.y + std::sin(a) * w.r * 0.2);
   cairo_line_to(cr, w.x + std::cos(a) * w.r * 0.65, w.y + std::sin(a) * w.r * 0.65);
   cairo_stroke(cr);
@@ -391,7 +454,7 @@ void Panel::drawKnob(cairo_t* cr, const Widget& w, double value) const {
        kText.r, kText.g, kText.b);
   const std::string val = formatParamValue(Shared{}, w.param, value);
   text(cr, val.c_str(), w.x, w.y + w.r + (w.compact ? 8.0 : 14.0),
-       w.compact ? 6.5 : 8.5, 1, kAccent.r, kAccent.g, kAccent.b);
+       w.compact ? 6.5 : 8.5, 1, st.accent.r, st.accent.g, st.accent.b);
 }
 
 void Panel::drawPill(cairo_t* cr, const Widget& w, bool on, const char* label) const {

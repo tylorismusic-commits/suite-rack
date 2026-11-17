@@ -16,7 +16,7 @@ Modules are chosen from an in-panel browser.
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
-- Six stacked module rows, Mix Locker-style, instead of large cards.
+- Six vertical 500-series-style module columns, each with its own background and knob colour.
 - Per-row bypass and slot mix.
 - Module browser: **Off / EQ / Comp**.
 - EQ module: four bands + HPF/LPF.
