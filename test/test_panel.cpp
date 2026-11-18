@@ -185,6 +185,35 @@ int main() {
   check(std::fabs(s.get(lowParam) - 0.60) < 1e-6,
         "double-click resets the control to its module default");
 
+  // Right-click text entry on the same knob.
+  s.set(lowParam, 0.90);
+  panel.draw(cr, s, state);
+  bool entered = false;
+  for (const auto& r : panel.widgetRects()) {
+    if (r.param != lowParam || !r.knob) continue;
+    panel.beginTextEntry(s, state, r.x + r.w * 0.5, r.y + r.h * 0.5);
+    entered = true;
+    break;
+  }
+  check(entered && state.textParam == static_cast<int>(lowParam),
+        "right-click starts text entry on a knob");
+  for (const char* c = "7.5"; *c; ++c) {
+    panel.textKey(s, state, 0, *c);
+  }
+  panel.textKey(s, state, Panel::kTextEnter, 0);
+  check(std::fabs(s.get(lowParam) - (7.5 / 20.0 + 0.5)) < 1e-3,
+        "typed text sets the control value");
+  check(state.textParam < 0, "text entry closes after Enter");
+
+  panel.draw(cr, s, state);
+  for (const auto& r : panel.widgetRects()) {
+    if (r.param != lowParam || !r.knob) continue;
+    panel.beginTextEntry(s, state, r.x + r.w * 0.5, r.y + r.h * 0.5);
+    break;
+  }
+  panel.textKey(s, state, Panel::kTextEscape, 0);
+  check(state.textParam < 0, "Escape cancels text entry");
+
   check(!panel.widgetRects().empty(), "panel reports widget geometry");
   bool sourcesOk = true;
   for (int id = 0; id < kModuleCount; ++id) {

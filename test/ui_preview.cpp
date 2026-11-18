@@ -217,6 +217,17 @@ int main(int argc, char** argv) {
   s.set(slotParam(2, kSlotOffsetC0 + 3), 1.0);
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-o3.png").c_str());
+  applyModuleDefaults(s, 2, static_cast<int>(ModuleId::Eq4K));
+  applyModuleDefaults(s, 3, static_cast<int>(ModuleId::Off));
+  applyModuleDefaults(s, 4, static_cast<int>(ModuleId::Off));
+  applyModuleDefaults(s, 5, static_cast<int>(ModuleId::Off));
+  state.selectedSlot = 2;
+  state.textParam = static_cast<int>(slotParam(2, kSlotOffsetC0));
+  state.textBuffer = "7.5";
+  state.textFresh = false;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-text-entry.png").c_str());
+  state.textParam = -1;
   state.aboutOpen = true;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-about.png").c_str());

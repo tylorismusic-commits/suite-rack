@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.36.0-m2 — 2026-11-18
+
+- Right-click a knob to type an exact value, with Enter to apply and Escape to
+  cancel. The first keystroke replaces the current value.
+- Typed-value parsing now covers every module control format.
+
 ## 0.35.0-m2 — 2026-11-18
 
 - Added JClones O3 maximizer with input drive, margin, character and

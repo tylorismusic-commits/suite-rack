@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.35.0-m2 — CLAP + LV2, module registry, seventy modules and drag reorder.**
+**Status: 0.36.0-m2 — CLAP + LV2, module registry, seventy modules, drag reorder and typed values.**
 The rest of the catalog, drag/reorder, module presets, browser search and user
 presets are next.
 
@@ -81,6 +81,8 @@ standalone plugins remain the full versions.
 
 ![Suite Rack — JClones O3](docs/rack-o3.png)
 
+![Suite Rack — right-click typed value](docs/rack-text-entry.png)
+
 ![Suite Rack — About](docs/rack-about.png)
 
 ## What goes in the rack
@@ -120,7 +122,7 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.35.0-m2 slice
+## Current 0.36.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.

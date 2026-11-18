@@ -478,6 +478,34 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
           case ControlFormat::SpaceDecayS: v = (v - 0.3) / 11.7; break;
           case ControlFormat::SpacePreDelayMs: v = v / 200.0; break;
           case ControlFormat::SpaceDelayMs: v = (v - 1.0) / 1999.0; break;
+          case ControlFormat::BoostDb: v = v / 12.0; break;
+          case ControlFormat::ClassicThresholdDb: v = (v + 20.0) / 20.0; break;
+          case ControlFormat::TrimDb: v = (v + 21.0) / 21.0; break;
+          case ControlFormat::DaTubeOutputDb: v = (v + 24.0) / 24.0; break;
+          case ControlFormat::FattenerGainDb: v = (v + 24.0) / 48.0; break;
+          case ControlFormat::WideGainDb: v = (v + 24.0) / 48.0; break;
+          case ControlFormat::CompAmount: v = (v - 1.0) / 9.0; break;
+          case ControlFormat::AttackShortMs: v = (v - 0.1) / 9.9; break;
+          case ControlFormat::Threshold48Db: v = (v + 48.0) / 48.0; break;
+          case ControlFormat::Threshold18Db: v = (v + 18.0) / 18.0; break;
+          case ControlFormat::CurveBipolar: v = (v + 50.0) / 100.0; break;
+          case ControlFormat::BloomInputDb: v = (v + 6.0) / 18.0; break;
+          case ControlFormat::BloomOutputDb: v = (v + 12.0) / 12.0; break;
+          case ControlFormat::RsInputDb: v = (v + 24.0) / 48.0; break;
+          case ControlFormat::RsOutputDb: v = (v + 30.0) / 30.0; break;
+          case ControlFormat::Ratio2To10: v = (v - 2.0) / 8.0; break;
+          case ControlFormat::ThresholdM40P10Db: v = (v + 40.0) / 50.0; break;
+          case ControlFormat::Unit10: v = v / 10.0; break;
+          case ControlFormat::Output24Db: v = (v + 24.0) / 48.0; break;
+          case ControlFormat::TapeGainDb: v = (v + 12.0) / 18.0; break;
+          case ControlFormat::Comp48Db: v = v / 48.0; break;
+          case ControlFormat::Threshold30Db: v = (v + 30.0) / 30.0; break;
+          case ControlFormat::L2ReleaseMs: {
+            if (v > 0.0) v = (std::log10(v / 1000.0) + 5.0) / 5.0;
+            break;
+          }
+          case ControlFormat::Threshold20Db: v = (v + 20.0) / 20.0; break;
+          case ControlFormat::Margin6Db: v = (v + 6.0) / 6.0; break;
           default: break;
         }
       }

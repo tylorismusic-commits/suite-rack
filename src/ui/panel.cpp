@@ -725,7 +725,7 @@ void Panel::drawAbout(cairo_t* cr, const Shared& /*shared*/,
 
   text(cr, "Click a module name or empty card area to open its browser. Drag it to reorder slots.",
        120, 520, 7.5, 0, kText.r, kText.g, kText.b);
-  text(cr, "Double-click a knob to reset it. Right-click text entry is coming.",
+  text(cr, "Double-click a knob to reset it. Right-click a knob to type a value.",
        120, 534, 7.5, 0, kText.r, kText.g, kText.b);
   text(cr, "Suite Rack is GPL-3.0-or-later. Shared module DSP lives in hearth-dsp.",
        120, 554, 7.0, 0, kDim.r, kDim.g, kDim.b);
@@ -769,6 +769,7 @@ void Panel::draw(cairo_t* cr, Shared& shared, const PanelState& state) {
   text(cr, "SUITE RACK · VIRTUAL 500 SERIES MIX RACK · SIX SLOTS", 520, 714, 10.5, 1,
        kText.r, kText.g, kText.b);
   if (state.aboutOpen) drawAbout(cr, shared, state);
+  drawTextEntry(cr, state);
 }
 
 void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
@@ -1096,6 +1097,7 @@ void Panel::beginSlotDrag(PanelState& state, int slot, double x, double y) {
 bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
                         bool fine) {
   (void)fine;
+  if (state.textParam >= 0) textKey(shared, state, kTextEnter, 0);
   if (state.aboutOpen) {
     if (x >= 120 && x <= 178 && y >= 604 && y <= 630) {
       state.aboutScroll = std::max(0, state.aboutScroll - 1);
@@ -1336,8 +1338,87 @@ void Panel::applyPreset(Shared& shared, PanelState& state, int index) const {
 
 void Panel::drawPresetBar(cairo_t*, const Shared&, const PanelState&) const {}
 void Panel::drawPresetList(cairo_t*, const Shared&, const PanelState&) const {}
-void Panel::beginTextEntry(Shared&, PanelState&, double, double) {}
-bool Panel::textKey(Shared&, PanelState&, int, char) { return false; }
+void Panel::beginTextEntry(Shared& shared, PanelState& state, double x,
+                           double y) {
+  for (const Widget& w : widgets_) {
+    if (w.kind != Kind::Knob || !hitWidget(w, x, y)) continue;
+    state.textParam = static_cast<int>(w.param);
+    state.textBuffer = formatParamValue(shared, w.param, shared.get(w.param));
+    state.textFresh = true;
+    return;
+  }
+  state.textParam = -1;
+  state.textBuffer.clear();
+}
+
+bool Panel::textKey(Shared& shared, PanelState& state, int key, char ch) {
+  if (state.textParam < 0) return false;
+  if (key == kTextEscape) {
+    state.textParam = -1;
+    state.textBuffer.clear();
+    return true;
+  }
+  if (key == kTextEnter) {
+    double value = 0.0;
+    if (parseParamValue(shared, static_cast<uint32_t>(state.textParam),
+                        state.textBuffer, &value)) {
+      shared.set(static_cast<uint32_t>(state.textParam), value);
+      state.presetDirty = true;
+    }
+    state.textParam = -1;
+    state.textBuffer.clear();
+    return true;
+  }
+  if (key == kTextBackspace) {
+    if (state.textFresh) {
+      state.textBuffer.clear();
+      state.textFresh = false;
+    } else if (!state.textBuffer.empty()) {
+      state.textBuffer.pop_back();
+    }
+    return true;
+  }
+  if (ch >= 32 && ch < 127 && state.textBuffer.size() < 32) {
+    if (state.textFresh) {
+      state.textBuffer.clear();
+      state.textFresh = false;
+    }
+    state.textBuffer.push_back(ch);
+  }
+  return true;
+}
+
+void Panel::drawTextEntry(cairo_t* cr, const PanelState& state) const {
+  if (state.textParam < 0) return;
+  const Widget* target = nullptr;
+  for (const Widget& w : widgets_) {
+    if (w.kind == Kind::Knob && static_cast<int>(w.param) == state.textParam) {
+      target = &w;
+      break;
+    }
+  }
+  const double w = 480.0, h = 44.0;
+  const double x = (kPanelWidth - w) * 0.5;
+  const double y = 54.0;
+
+  setRgb(cr, {0.02, 0.02, 0.03}, 0.60);
+  roundRect(cr, x + 3, y + 4, w, h, 7);
+  cairo_fill(cr);
+  setRgb(cr, {0.10, 0.10, 0.11});
+  roundRect(cr, x, y, w, h, 7);
+  cairo_fill(cr);
+  setRgb(cr, {0.42, 0.86, 0.52});
+  cairo_set_line_width(cr, 1.4);
+  roundRect(cr, x + 0.7, y + 0.7, w - 1.4, h - 1.4, 7);
+  cairo_stroke(cr);
+
+  const char* name = target ? target->label : "Value";
+  text(cr, name, x + 14, y + 16, 8.5, 0, 0.72, 0.78, 0.74);
+  text(cr, "TYPE VALUE", x + 14, y + 33, 7.0, 0, 0.50, 0.56, 0.52);
+  const std::string shown = state.textBuffer + "_";
+  text(cr, shown.c_str(), x + w - 96, y + 29, 16, 2, 0.94, 0.96, 0.94);
+  text(cr, "ENTER", x + w - 14, y + 16, 7.0, 2, 0.50, 0.56, 0.52);
+}
 
 std::vector<Panel::WidgetRect> Panel::widgetRects() const {
   std::vector<WidgetRect> out;

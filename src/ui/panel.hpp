@@ -27,6 +27,9 @@ struct PanelState {
   int browserScroll = 0;
   bool aboutOpen = false;
   int aboutScroll = 0;
+  int textParam = -1;
+  std::string textBuffer;
+  bool textFresh = true;
   float inLevelL = -120.0f;
   float inLevelR = -120.0f;
   float outLevelL = -120.0f;
@@ -110,6 +113,7 @@ private:
   void drawDragGhost(cairo_t* cr, const Shared& shared) const;
   void drawAbout(cairo_t* cr, const Shared& shared,
                  const PanelState& state) const;
+  void drawTextEntry(cairo_t* cr, const PanelState& state) const;
   double browserHeight(int category) const;
   double browserY(int category) const;
   int aboutMaxScroll() const;
