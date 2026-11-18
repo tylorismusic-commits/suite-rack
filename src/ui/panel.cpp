@@ -300,7 +300,7 @@ int browserEntryCount(int category, const std::string& query) {
 
 } // namespace
 
-Panel::Panel() = default;
+Panel::Panel() { userPresets_ = loadUserPresets(userPresetDir()); }
 Panel::~Panel() {
   if (font_) cairo_font_face_destroy(font_);
   if (ftFace_) FT_Done_Face(static_cast<FT_Face>(ftFace_));
@@ -571,18 +571,19 @@ void Panel::drawHeader(cairo_t* cr, const Shared& shared, const PanelState& stat
   roundRect(cr, 72.5, 14.5, 329, 35, 4); cairo_stroke(cr);
   text(cr, "<", 90, 39, 16, 1, kText.r, kText.g, kText.b);
   text(cr, ">", 384, 39, 16, 1, kText.r, kText.g, kText.b);
-  const char* preset = state.presetIndex >= 0 &&
-                               state.presetIndex < kPresetCount
-                           ? kPresets[state.presetIndex].name
-                           : "Init";
-  text(cr, preset, 237, 39, 13, 1, kText.r, kText.g, kText.b);
+  text(cr, presetName(state.presetIndex), 237, 39, 13, 1, kText.r, kText.g,
+       kText.b);
 
   text(cr, "SUITE RACK", 520, 44, 24, 1, kText.r, kText.g, kText.b);
 
   struct Pill { const char* label; double x; };
-  const Pill pills[] = {{"6 SLOTS", 650}, {"SERIAL", 760}, {"ABOUT", 880}};
+  const Pill pills[] = {{"SAVE", 600},
+                        {"6 SLOTS", 706},
+                        {"SERIAL", 812},
+                        {"ABOUT", 918}};
   for (const Pill& pill : pills) {
-    const bool active = std::string(pill.label) == "ABOUT" && state.aboutOpen;
+    const bool active = (std::string(pill.label) == "ABOUT" && state.aboutOpen) ||
+                        (std::string(pill.label) == "SAVE" && state.savePreset);
     roundRect(cr, pill.x, 20, 96, 28, 4);
     setRgb(cr, active ? kAccent : Rgb{0.20, 0.17, 0.14});
     cairo_fill(cr);
@@ -1143,7 +1144,12 @@ void Panel::beginSlotDrag(PanelState& state, int slot, double x, double y) {
 bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
                         bool fine) {
   (void)fine;
-  if (state.textParam >= 0) textKey(shared, state, kTextEnter, 0);
+  if (state.savePreset) {
+    state.savePreset = false;
+    state.textBuffer.clear();
+  } else if (state.textParam >= 0) {
+    textKey(shared, state, kTextEnter, 0);
+  }
   if (state.aboutOpen) {
     if (x >= 120 && x <= 178 && y >= 604 && y <= 630) {
       state.aboutScroll = std::max(0, state.aboutScroll - 1);
@@ -1159,9 +1165,20 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
     }
     return true;
   }
-  if (x >= 880 && x <= 976 && y >= 20 && y <= 48) {
+  if (x >= 918 && x <= 1014 && y >= 20 && y <= 48) {
     state.aboutOpen = true;
     state.aboutScroll = 0;
+    return true;
+  }
+  if (x >= 600 && x <= 696 && y >= 20 && y <= 48) {
+    state.savePreset = true;
+    state.textFresh = true;
+    state.textParam = -1;
+    if (state.presetIndex >= kPresetCount) {
+      state.textBuffer = presetName(state.presetIndex);
+    } else {
+      state.textBuffer = "My Rack";
+    }
     return true;
   }
   if (handlePresetClick(shared, state, x, y)) return true;
@@ -1377,20 +1394,43 @@ bool Panel::handlePresetClick(Shared& shared, PanelState& state, double x,
     return true;
   }
   if (x >= 366 && x <= 402) {
-    const int next = std::min(kPresetCount - 1, state.presetIndex + 1);
+    const int next = std::min(presetCount() - 1, state.presetIndex + 1);
     applyPreset(shared, state, next);
     return true;
   }
   return x >= 72 && x <= 402;
 }
 
+int Panel::presetCount() const {
+  return kPresetCount + static_cast<int>(userPresets_.size());
+}
+
+const char* Panel::presetName(int index) const {
+  if (index >= 0 && index < kPresetCount) return kPresets[index].name;
+  const int user = index - kPresetCount;
+  if (user >= 0 && user < static_cast<int>(userPresets_.size())) {
+    return userPresets_[static_cast<size_t>(user)].name.c_str();
+  }
+  return "Init";
+}
+
 void Panel::applyPreset(Shared& shared, PanelState& state, int index) const {
-  if (index < 0 || index >= kPresetCount) return;
-  const Preset& p = kPresets[index];
-  for (int i = 0; i < p.count; ++i) {
-    const PresetValue& v = p.values[i];
-    if (v.param >= 0 && v.param < static_cast<int>(P_COUNT))
-      shared.set(static_cast<uint32_t>(v.param), v.value);
+  if (index < 0 || index >= presetCount()) return;
+  if (index < kPresetCount) {
+    const Preset& p = kPresets[index];
+    for (int i = 0; i < p.count; ++i) {
+      const PresetValue& v = p.values[i];
+      if (v.param >= 0 && v.param < static_cast<int>(P_COUNT))
+        shared.set(static_cast<uint32_t>(v.param), v.value);
+    }
+  } else {
+    const UserPreset& p =
+        userPresets_[static_cast<size_t>(index - kPresetCount)];
+    const int n = std::min(static_cast<int>(p.values.size()),
+                           static_cast<int>(P_COUNT));
+    for (int i = 0; i < n; ++i) {
+      shared.set(static_cast<uint32_t>(i), p.values[static_cast<size_t>(i)]);
+    }
   }
   state.presetIndex = index;
   state.presetDirty = false;
@@ -1412,6 +1452,47 @@ void Panel::beginTextEntry(Shared& shared, PanelState& state, double x,
 }
 
 bool Panel::textKey(Shared& shared, PanelState& state, int key, char ch) {
+  if (state.savePreset) {
+    if (key == kTextEscape) {
+      state.savePreset = false;
+      state.textBuffer.clear();
+      return true;
+    }
+    if (key == kTextEnter) {
+      const std::string name = sanitizePresetName(state.textBuffer);
+      if (!name.empty() &&
+          saveUserPreset(userPresetDir(), name, shared)) {
+        userPresets_ = loadUserPresets(userPresetDir());
+        for (int i = 0; i < static_cast<int>(userPresets_.size()); ++i) {
+          if (userPresets_[static_cast<size_t>(i)].name == name) {
+            state.presetIndex = kPresetCount + i;
+            state.presetDirty = false;
+            break;
+          }
+        }
+      }
+      state.savePreset = false;
+      state.textBuffer.clear();
+      return true;
+    }
+    if (key == kTextBackspace) {
+      if (state.textFresh) {
+        state.textBuffer.clear();
+        state.textFresh = false;
+      } else if (!state.textBuffer.empty()) {
+        state.textBuffer.pop_back();
+      }
+      return true;
+    }
+    if (ch >= 32 && ch < 127 && state.textBuffer.size() < 60) {
+      if (state.textFresh) {
+        state.textBuffer.clear();
+        state.textFresh = false;
+      }
+      state.textBuffer.push_back(ch);
+    }
+    return true;
+  }
   if (state.browserSearch) {
     if (key == kTextEscape) {
       state.browserSearch = false;
@@ -1480,12 +1561,15 @@ bool Panel::textKey(Shared& shared, PanelState& state, int key, char ch) {
 }
 
 void Panel::drawTextEntry(cairo_t* cr, const PanelState& state) const {
-  if (state.textParam < 0) return;
+  if (state.textParam < 0 && !state.savePreset) return;
   const Widget* target = nullptr;
-  for (const Widget& w : widgets_) {
-    if (w.kind == Kind::Knob && static_cast<int>(w.param) == state.textParam) {
-      target = &w;
-      break;
+  if (!state.savePreset) {
+    for (const Widget& w : widgets_) {
+      if (w.kind == Kind::Knob &&
+          static_cast<int>(w.param) == state.textParam) {
+        target = &w;
+        break;
+      }
     }
   }
   const double w = 480.0, h = 44.0;
@@ -1503,9 +1587,12 @@ void Panel::drawTextEntry(cairo_t* cr, const PanelState& state) const {
   roundRect(cr, x + 0.7, y + 0.7, w - 1.4, h - 1.4, 7);
   cairo_stroke(cr);
 
-  const char* name = target ? target->label : "Value";
+  const char* name = state.savePreset
+                         ? "SAVE PRESET"
+                         : (target ? target->label : "Value");
   text(cr, name, x + 14, y + 16, 8.5, 0, 0.72, 0.78, 0.74);
-  text(cr, "TYPE VALUE", x + 14, y + 33, 7.0, 0, 0.50, 0.56, 0.52);
+  text(cr, state.savePreset ? "TYPE NAME" : "TYPE VALUE", x + 14, y + 33, 7.0,
+       0, 0.50, 0.56, 0.52);
   const std::string shown = state.textBuffer + "_";
   text(cr, shown.c_str(), x + w - 96, y + 29, 16, 2, 0.94, 0.96, 0.94);
   text(cr, "ENTER", x + w - 14, y + 16, 7.0, 2, 0.50, 0.56, 0.52);

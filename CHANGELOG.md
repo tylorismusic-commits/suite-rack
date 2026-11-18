@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.38.0-m2 — 2026-11-18
+
+- Added user rack presets. SAVE in the header opens a name field, writes a
+  `.suite-rack` file, and adds the preset to the preset bar after the factory
+  presets.
+- User presets are stored in `$XDG_CONFIG_HOME/SuiteRack/presets` or
+  `~/.config/SuiteRack/presets` and are shared by the CLAP and LV2 builds.
+
 ## 0.37.0-m2 — 2026-11-18
 
 - Added a live search field to the module browser. It matches module names and

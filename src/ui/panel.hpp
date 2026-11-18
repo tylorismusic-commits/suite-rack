@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "params.hpp"
+#include "user_presets.hpp"
 
 namespace rack {
 
@@ -33,6 +34,7 @@ struct PanelState {
   int textParam = -1;
   std::string textBuffer;
   bool textFresh = true;
+  bool savePreset = false;
   float inLevelL = -120.0f;
   float inLevelR = -120.0f;
   float outLevelL = -120.0f;
@@ -58,6 +60,8 @@ public:
   void pointerUp(Shared& shared, PanelState& state);
   bool handlePresetClick(Shared& shared, PanelState& state, double x, double y);
   void applyPreset(Shared& shared, PanelState& state, int index) const;
+  int presetCount() const;
+  const char* presetName(int index) const;
   void drawPresetBar(cairo_t* cr, const Shared& shared,
                      const PanelState& state) const;
   void drawPresetList(cairo_t* cr, const Shared& shared,
@@ -117,6 +121,7 @@ private:
   void drawAbout(cairo_t* cr, const Shared& shared,
                  const PanelState& state) const;
   void drawTextEntry(cairo_t* cr, const PanelState& state) const;
+  std::vector<UserPreset> userPresets_;
   double browserHeight(int category, const std::string& query) const;
   double browserY(int category, const std::string& query) const;
   int aboutMaxScroll() const;

@@ -3,12 +3,15 @@
 #include <cairo.h>
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
+#include <filesystem>
 #include <string>
 
 #include "module_ids.hpp"
 #include "modules.hpp"
 #include "params.hpp"
 #include "ui/panel.hpp"
+#include "user_presets.hpp"
 
 using namespace rack;
 
@@ -44,6 +47,11 @@ bool clickLabel(Panel& panel, Shared& s, PanelState& state,
 } // namespace
 
 int main() {
+  const std::filesystem::path configRoot =
+      "/tmp/opencode/suite-rack-test-config";
+  std::filesystem::remove_all(configRoot);
+  setenv("XDG_CONFIG_HOME", configRoot.string().c_str(), 1);
+
   cairo_surface_t* surf =
       cairo_image_surface_create(CAIRO_FORMAT_RGB24, kPanelWidth, kPanelHeight);
   cairo_t* cr = cairo_create(surf);
@@ -239,6 +247,25 @@ int main() {
         "search result can be chosen");
   check(state.browserSlot < 0 && state.browserQuery.empty(),
         "choosing a result closes the browser and clears the query");
+
+  // User preset saving through the header SAVE button.
+  const uint32_t savedControl = slotParam(0, kSlotOffsetC0 + kCtlLow);
+  s.set(savedControl, 0.33);
+  panel.draw(cr, s, state);
+  panel.pointerDown(s, state, 648, 34, false);
+  panel.pointerUp(s, state);
+  check(state.savePreset, "SAVE opens the preset name field");
+  for (const char* c = "Test Rack"; *c; ++c) panel.textKey(s, state, 0, *c);
+  panel.textKey(s, state, Panel::kTextEnter, 0);
+  check(panel.presetCount() == 4, "saving adds a user preset to the list");
+  check(std::string(panel.presetName(3)) == "Test Rack",
+        "saved preset keeps its name");
+  check(std::filesystem::exists(userPresetDir() / "Test Rack.suite-rack"),
+        "saved preset file exists");
+  s.set(savedControl, 0.77);
+  panel.applyPreset(s, state, 3);
+  check(std::fabs(s.get(savedControl) - 0.33) < 1e-6,
+        "user preset recalls the saved rack");
 
   check(!panel.widgetRects().empty(), "panel reports widget geometry");
   bool sourcesOk = true;

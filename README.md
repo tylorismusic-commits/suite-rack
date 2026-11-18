@@ -1,7 +1,7 @@
 # Suite Rack
 
-**Status: 0.37.0-m2 — CLAP + LV2, seventy modules, drag reorder, browser search and typed values.**
-Module presets and user presets are next.
+**Status: 0.38.0-m2 — CLAP + LV2, seventy modules, drag reorder, browser search, typed values and user presets.**
+Per-module factory presets are next.
 
 A virtual 500 series mix rack in the Suite visual language: six serial slots, each
 hosting one compact module. Slot 1 starts as EQ, slot 2 as Comp, slots 3–6 are
@@ -84,6 +84,8 @@ standalone plugins remain the full versions.
 
 ![Suite Rack — browser search](docs/rack-browser-search.png)
 
+![Suite Rack — save user preset](docs/rack-save-preset.png)
+
 ![Suite Rack — About](docs/rack-about.png)
 
 ## What goes in the rack
@@ -123,7 +125,7 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.37.0-m2 slice
+## Current 0.38.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
@@ -158,7 +160,10 @@ the 500-series format; Cleanup is the lightweight repair representative.
   rack settings in both formats.
 - **State and automation mapping tests** cover round-trip recall, dirty-flag
   reporting and slot/global parameter mapping.
-- Module presets and user presets are next.
+- User rack presets save to `$XDG_CONFIG_HOME/SuiteRack/presets` (or
+  `~/.config/SuiteRack/presets`) and appear in the preset bar after the factory
+  presets. The header **SAVE** button opens a name field; Enter writes the
+  preset and Escape cancels.
 
 ## Architecture
 
@@ -206,8 +211,8 @@ cp -r build/lv2/suite-rack.lv2 ~/.lv2/
 
 ## Next
 
-1. Module presets in the browser.
-2. User preset saving and recall across the Suite.
+1. Per-module factory presets in the browser.
+2. Roll the same user-preset format into Comp Suite and Patina.
 3. A final Trowel Smoothing decision; Tame is the current Trowel-derived module.
 
 GPL-3.0-or-later.

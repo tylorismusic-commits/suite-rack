@@ -235,6 +235,12 @@ int main(int argc, char** argv) {
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-text-entry.png").c_str());
   state.textParam = -1;
+  state.savePreset = true;
+  state.textBuffer = "Drum Bus";
+  state.textFresh = false;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-save-preset.png").c_str());
+  state.savePreset = false;
   state.aboutOpen = true;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-about.png").c_str());
