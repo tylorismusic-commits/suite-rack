@@ -119,8 +119,7 @@ int main() {
           "per-slot gain trims the module output");
   }
 
-  {
-    const int ids[] = {
+  const int ids[] = {
         static_cast<int>(ModuleId::EqHearth),
         static_cast<int>(ModuleId::EqTilt),
         static_cast<int>(ModuleId::EqAir),
@@ -187,10 +186,17 @@ int main() {
         static_cast<int>(ModuleId::JcVBL),
         static_cast<int>(ModuleId::JcL2),
         static_cast<int>(ModuleId::JcO3),
-    };
+  };
+  for (float rate : {48000.0f, 96000.0f}) {
+    const int sweepN = rate > 48000.0f ? 24000 : n;
+    std::vector<float> sweep(sweepN);
+    for (int i = 0; i < sweepN; ++i) {
+      sweep[i] =
+          0.25f * std::sin(2.0f * 3.14159265f * 1000.0f * i / rate);
+    }
     for (int id : ids) {
       Engine e;
-      e.prepare(sr);
+      e.prepare(rate);
       Controls c;
       c.slot[0].type = id;
       for (int k = 0; k < kRackControlCount; ++k) {
@@ -204,10 +210,13 @@ int main() {
       }
       c.slot[1].type = static_cast<int>(ModuleId::Off);
       e.setControls(c);
-      auto l = tone;
+      auto l = sweep;
       Meters m;
-      e.process(l.data(), l.data(), n, m);
-      check(finite(l), kModuleLabels[id]);
+      e.process(l.data(), l.data(), sweepN, m);
+      char label[96];
+      std::snprintf(label, sizeof(label), "%s @ %.0f Hz", kModuleLabels[id],
+                    static_cast<double>(rate));
+      check(finite(l), label);
     }
   }
   {

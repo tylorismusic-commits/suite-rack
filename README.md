@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.38.0-m2 — CLAP + LV2, seventy modules, drag reorder, browser search, typed values and user presets.**
+**Status: 0.39.0-m2 — CLAP + LV2, seventy modules, drag reorder, browser search, typed values and user presets.**
 Per-module factory presets are next.
 
 A virtual 500 series mix rack in the Suite visual language: six serial slots, each
@@ -125,7 +125,7 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.38.0-m2 slice
+## Current 0.39.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
@@ -153,7 +153,8 @@ the 500-series format; Cleanup is the lightweight repair representative.
   Reel, Ember, Tame, 510 EQ, Pultec, Classic Limiter, Tape Head, Tube Driver,
   DaTube, Fattener, AC-1, LMC-1, Modern Limiter, Hyrax, RS-124, CL-1B, DuTape,
   VBL, L2, O3 and Bloom.
-- Serial engine and per-slot meters in place; DSP and panel tests pass.
+- Serial engine and per-slot meters in place; every module is swept at 48 kHz
+  and 96 kHz in the DSP tests.
 - **CLAP and LV2 builds** load in REAPER with the six-column editor and process
   audio.
 - **Shared state format** for CLAP and LV2; project save/reload recalls the

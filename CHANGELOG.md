@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.39.0-m2 — 2026-11-18
+
+- Added a 96 kHz run to the full module sweep so every module is checked at
+  both 48 kHz and 96 kHz.
+
 ## 0.38.0-m2 — 2026-11-18
 
 - Added user rack presets. SAVE in the header opens a name field, writes a
