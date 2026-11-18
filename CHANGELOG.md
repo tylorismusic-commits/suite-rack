@@ -8,6 +8,7 @@
 - Larger, more readable knob labels and values.
 - Centered the rack subtitle in the header-to-modules gap.
 - Matched the Comp Suite power button exactly.
+- Moved the module DSP into hearth-dsp 0.4.0 and consume it as a git submodule.
 
 ## 0.4.0-m2 — 2026-11-17
 
