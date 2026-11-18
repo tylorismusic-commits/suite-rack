@@ -1,7 +1,7 @@
 # Suite Rack
 
-**Status: 0.2.0-m1 — CLAP + LV2, shared state recall and automation mapping.**
-The full module catalog, browser categories/search, drag/reorder and user
+**Status: 0.3.0-m2 — CLAP + LV2, module registry and nine modules.**
+The rest of the catalog, drag/reorder, module presets, browser search and user
 presets are next.
 
 A virtual 500-series rack in the Suite visual language: six serial slots, each
@@ -58,26 +58,27 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current M0 slice
+## Current 0.3.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
 - Six vertical 500-series-style module columns, each with its own background and
   knob colour.
-- Per-slot bypass and slot mix.
-- Module browser: **Off / EQ / Comp**.
-- EQ module: four bands + HPF/LPF.
-- Comp module: 76 / 2A / VCA with threshold, ratio, attack, release, makeup,
-  mix and sidechain HPF.
+- Per-slot bypass, mix and gain.
+- Module browser with **ALL / EQ / COMP** categories.
+- Generic per-slot controls: twelve control slots plus type, bypass, mix and
+  gain. Host automation follows the slot, not the module.
+- **Available modules:** 4K EQ, Hearth EQ, Tilt, Air, 76 Blue, 76 Black, 2A,
+  3A and VCA.
 - Serial engine and per-slot meters in place; DSP and panel tests pass.
-- **CLAP build loads in REAPER**, opens the six-column editor and processes
+- **CLAP and LV2 builds** load in REAPER with the six-column editor and process
   audio.
-- **LV2 plugin + X11 UI** load in REAPER with the same six-column editor.
 - **Shared state format** for CLAP and LV2; project save/reload recalls the
   rack settings in both formats.
 - **State and automation mapping tests** cover round-trip recall, dirty-flag
   reporting and slot/global parameter mapping.
-- The remaining modules and browser categories/search are next.
+- The rest of the catalog, browser search, drag/reorder and module presets are
+  next.
 
 ## Architecture
 
@@ -87,8 +88,10 @@ Input → Slot 1 → Slot 2 → Slot 3 → Slot 4 → Slot 5 → Slot 6 → Outp
 
 Each slot owns a module instance and a 16-control parameter block. Module type
 and module state are stored separately, so the host parameter count stays small
-even with the full catalog. Automation follows the slot, not the module: if a
-slot changes module, its control lanes are repurposed.
+even with the full catalog. All module controls are normalised 0–1; the module
+registry maps them to faceplate labels, display formats and DSP behaviour.
+Automation follows the slot, not the module: if a slot changes module, its
+control lanes are repurposed.
 
 ## Build and preview
 
@@ -116,14 +119,14 @@ cp -r build/lv2/suite-rack.lv2 ~/.lv2/
 
 ## Next
 
-1. Module registry with generic per-slot controls, browser categories and
-   search.
-2. Drag/reorder, per-slot gain, module presets.
-3. Suite core modules: EQ, colour, compression.
-4. Space, dynamics and utility modules.
-5. New extras: Image, Dynamic EQ, Multiband, Sub, Double, Filter, Crush, Motion,
+1. Browser search and module descriptions.
+2. Drag/reorder and module presets.
+3. Suite core modules: Patina colours, Hearth Comp, Glue, Space, Bleed Out,
+   Trowel Smoothing/Tame, Gate, Peak Limiter, Ember, Reel, Transient, Clip,
+   De-Ess, Cleanup, Density.
+4. New extras: Image, Dynamic EQ, Multiband, Sub, Double, Filter, Crush, Motion,
    Rider.
-6. JClones ports, 510 and Pultec.
-7. User preset saving across the Suite.
+5. JClones ports, 510 and Pultec.
+6. User preset saving across the Suite.
 
 GPL-3.0-or-later.

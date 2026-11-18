@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <vector>
 
+#include "module_ids.hpp"
 #include "params.hpp"
 #include "state.hpp"
 
@@ -29,10 +30,11 @@ int main() {
   {
     Shared source;
     source.setFromHost(P_INPUT, 3.5);
-    source.setFromHost(P_SLOT0_TYPE, 2.0);
-    source.setFromHost(P_SLOT0_COMP_THRESHOLD, -27.0);
-    source.setFromHost(P_SLOT1_TYPE, 1.0);
-    source.setFromHost(P_SLOT1_EQ_HPF, 0.64);
+    source.setFromHost(P_SLOT0_TYPE,
+                       static_cast<double>(ModuleId::Comp76Black));
+    source.setFromHost(slotParam(0, kSlotOffsetC0 + kCtlThreshold), 0.70);
+    source.setFromHost(P_SLOT1_TYPE, static_cast<double>(ModuleId::EqHearth));
+    source.setFromHost(slotParam(1, kSlotOffsetC0 + kCtlHpf), 0.64);
     source.setFromHost(P_SLOT5_MIX, 42.0);
 
     const std::vector<uint8_t> blob = serializeState(source, 1.25);
@@ -47,7 +49,8 @@ int main() {
   }
   {
     Shared source;
-    source.setFromHost(P_SLOT0_TYPE, 2.0);
+    source.setFromHost(P_SLOT0_TYPE,
+                       static_cast<double>(ModuleId::Comp76Black));
     const std::vector<uint8_t> blob = serializeState(source, 1.0);
     Shared restored;
     check(!deserializeState(blob.data(), 4, restored),
@@ -68,24 +71,27 @@ int main() {
     s.setFromHost(P_INPUT, -4.0);
     check(!s.isDirty(P_INPUT), "host changes do not echo back as dirty");
 
-    s.set(P_SLOT0_TYPE, 2.0);
+    s.set(P_SLOT0_TYPE, static_cast<double>(ModuleId::CompVCA));
     const Controls c = controlsFrom(s);
-    check(c.slot[0].type == 2, "automation reaches the slot module type");
+    check(c.slot[0].type == static_cast<int>(ModuleId::CompVCA),
+          "automation reaches the slot module type");
   }
   {
     Shared s;
-    s.setFromHost(P_SLOT0_TYPE, 1.0);
-    s.setFromHost(P_SLOT0_EQ_LOW, 0.75);
-    s.setFromHost(P_SLOT1_TYPE, 2.0);
-    s.setFromHost(P_SLOT1_COMP_THRESHOLD, -12.0);
-    s.setFromHost(P_SLOT1_COMP_RATIO, 6.0);
+    s.setFromHost(P_SLOT0_TYPE, static_cast<double>(ModuleId::Eq4K));
+    s.setFromHost(slotParam(0, kSlotOffsetC0 + kCtlLow), 0.75);
+    s.setFromHost(P_SLOT1_TYPE,
+                  static_cast<double>(ModuleId::Comp76Blue));
+    s.setFromHost(slotParam(1, kSlotOffsetC0 + kCtlThreshold), 0.70);
+    s.setFromHost(slotParam(1, kSlotOffsetC0 + kCtlRatio), 0.75);
     s.setFromHost(P_INPUT, 2.5);
     const Controls c = controlsFrom(s);
-    check(c.slot[0].type == 1 && std::fabs(c.slot[0].eqLow - 0.75f) < 1e-6,
+    check(c.slot[0].type == static_cast<int>(ModuleId::Eq4K) &&
+              std::fabs(c.slot[0].c[kCtlLow] - 0.75f) < 1e-6,
           "slot 0 EQ automation maps to the module");
-    check(c.slot[1].type == 2 &&
-              std::fabs(c.slot[1].compThresholdDb + 12.0f) < 1e-6 &&
-              std::fabs(c.slot[1].compRatio - 6.0f) < 1e-6,
+    check(c.slot[1].type == static_cast<int>(ModuleId::Comp76Blue) &&
+              std::fabs(c.slot[1].c[kCtlThreshold] - 0.70f) < 1e-6 &&
+              std::fabs(c.slot[1].c[kCtlRatio] - 0.75f) < 1e-6,
           "slot 1 compressor automation maps to the module");
     check(std::fabs(c.inputDb - 2.5f) < 1e-6,
           "global input automation maps to the engine");

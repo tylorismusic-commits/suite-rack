@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "dsp/engine.hpp"
+#include "modules.hpp"
 #include "params.hpp"
 #include "state.hpp"
 
@@ -93,6 +94,7 @@ LV2_Handle instantiate(const LV2_Descriptor*, double rate, const char*,
     p->chunkType = p->map->map(p->map->handle, LV2_ATOM__Chunk);
   }
   p->engine.prepare(p->sampleRate);
+  rack::initializeRack(p->shared);
   p->engine.setControls(rack::controlsFrom(p->shared));
   return p;
 }

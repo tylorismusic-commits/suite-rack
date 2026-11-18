@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0-m2 — 2026-11-17
+
+- Module registry with nine modules: 4K EQ, Hearth EQ, Tilt, Air, 76 Blue,
+  76 Black, 2A, 3A and VCA.
+- Generic per-slot controls: type, bypass, mix, gain and twelve module-control
+  slots. All controls are normalised 0–1 and mapped by the registry.
+- Per-slot gain.
+- Browser categories: ALL / EQ / COMP.
+- Module-specific faceplate colours, labels, defaults and value formatting.
+- State format v2 for the generic control layout; older M1 states are rejected.
+- Updated DSP, panel, state and metadata tests for the registry.
+
 ## 0.2.0-m1 — 2026-11-17
 
 - LV2 plugin and X11/Cairo UI, sharing the CLAP DSP and panel.

@@ -24,6 +24,7 @@
 #include <thread>
 
 #include "dsp/engine.hpp"
+#include "modules.hpp"
 #include "params.hpp"
 #include "state.hpp"
 #include "value_text.hpp"
@@ -805,6 +806,7 @@ Plugin* createPlugin(const clap_host_t* host) {
   s->plugin.get_extension = pluginGetExtension;
   s->plugin.on_main_thread = pluginOnMainThread;
   s->engine.prepare(48000.0f);
+  initializeRack(s->shared);
   // Latency may only change while the plugin is being activated, so the
   // oversampling switch is applied on the host's restart, not mid-block.
   s->editor.requestFlush = [s] {

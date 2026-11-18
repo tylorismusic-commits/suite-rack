@@ -18,7 +18,7 @@
 namespace rack {
 
 constexpr uint32_t kStateMagic = 0x53524B32;  // "SRK2"
-constexpr uint32_t kStateVersion = 1;
+constexpr uint32_t kStateVersion = 2;
 constexpr uint32_t kStateMaxParams = 4096;
 
 inline std::vector<uint8_t> serializeState(const Shared& shared, double scale) {
@@ -65,7 +65,7 @@ inline bool deserializeState(const void* data, size_t size, Shared& shared,
       !get(&count, sizeof(count))) {
     return false;
   }
-  if (magic != kStateMagic || version == 0 || version > kStateVersion ||
+  if (magic != kStateMagic || version != kStateVersion ||
       count > kStateMaxParams) {
     return false;
   }

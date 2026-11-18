@@ -21,6 +21,7 @@ struct PanelState {
   bool presetDirty = false;
   int presetOpen = 0;
   int presetScroll = 0;
+  int browserCategory = 0;
   float inLevelL = -120.0f;
   float inLevelR = -120.0f;
   float outLevelL = -120.0f;
@@ -72,7 +73,7 @@ public:
   std::vector<WidgetRect> widgetRects() const;
 
 private:
-  enum class Kind { Knob, Pill, Button, SlotCard, ModuleButton, ModelButton, Power, ModuleName, BrowserOption };
+  enum class Kind { Knob, Pill, Button, SlotCard, ModuleButton, ModelButton, Power, ModuleName, BrowserOption, BrowserTab };
   struct Widget {
     Kind kind = Kind::Knob;
     uint32_t param = 0;
@@ -85,6 +86,7 @@ private:
     bool compact = false;
     int styleSlot = -1;
     int styleType = -1;
+    int moduleControl = -1;
   };
 
   void layout(const Shared& shared, const PanelState& state);
@@ -93,7 +95,8 @@ private:
   void drawBrowser(cairo_t* cr, const Shared& shared, const PanelState& state) const;
   void drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
                   const PanelState& state) const;
-  void drawKnob(cairo_t* cr, const Widget& w, double value) const;
+  void drawKnob(cairo_t* cr, const Widget& w, const Shared& shared,
+                double value) const;
   void drawPill(cairo_t* cr, const Widget& w, bool on, const char* label) const;
   void drawButton(cairo_t* cr, const Widget& w, bool lit) const;
   void drawLevelMeter(cairo_t* cr, double x, double y, double w, double h,

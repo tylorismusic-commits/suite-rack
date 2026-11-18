@@ -3,6 +3,7 @@
 #include <cairo.h>
 #include <cstdio>
 #include <string>
+#include "modules.hpp"
 #include "params.hpp"
 #include "ui/panel.hpp"
 using namespace rack;
@@ -10,6 +11,7 @@ int main(int argc, char** argv) {
   if (argc < 3) return 2;
   const std::string font = argv[1], out = argv[2];
   Shared s;
+  initializeRack(s);
   Panel panel;
   panel.loadFont(font);
   PanelState state;

@@ -5,32 +5,21 @@
 #include <algorithm>
 #include <cmath>
 
+#include "module_ids.hpp"
+
 namespace rack {
 
 constexpr int kSlotCount = 6;
-
-enum class ModuleType : int { Off = 0, Eq = 1, Comp = 2 };
 
 struct SlotControls {
   int type = 0;
   bool bypass = false;
   float mix = 1.0f;
-
-  float eqLow = 0.5f;
-  float eqLowMid = 0.5f;
-  float eqHighMid = 0.5f;
-  float eqHigh = 0.5f;
-  float eqHpf = 0.0f;
-  float eqLpf = 1.0f;
-
-  int compModel = 0;
-  float compThresholdDb = -20.0f;
-  float compRatio = 4.0f;
-  float compAttack = 0.25f;
-  float compRelease = 0.35f;
-  float compMakeup = 0.8f;
-  float compMix = 1.0f;
-  float compScHpf = 0.05f;
+  float gainDb = 0.0f;
+  // Sensible neutral defaults for manually constructed controls. The plugin
+  // always fills these from the parameter table via controlsFrom().
+  float c[kRackControlCount] = {0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 1.0f,
+                                0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f};
 };
 
 inline float eqHpfHz(float v) noexcept {
@@ -40,6 +29,10 @@ inline float eqHpfHz(float v) noexcept {
 inline float eqLpfHz(float v) noexcept {
   v = std::clamp(v, 0.0f, 1.0f);
   return 500.0f * std::pow(40.0f, v);
+}
+inline float airFreqHz(float v) noexcept {
+  v = std::clamp(v, 0.0f, 1.0f);
+  return 2000.0f * std::pow(8.0f, v);
 }
 
 struct Controls {

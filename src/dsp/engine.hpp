@@ -1,4 +1,4 @@
-// Suite Rack — two-slot serial rack engine
+// Suite Rack — serial rack engine
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
@@ -11,6 +11,7 @@
 #include "comp_module.hpp"
 #include "controls.hpp"
 #include "eq_module.hpp"
+#include "module_ids.hpp"
 
 namespace rack {
 
@@ -23,9 +24,11 @@ public:
     input_.setTime(15.0f, sr_);
     output_.setTime(15.0f, sr_);
     power_.setTime(20.0f, sr_);
+    for (auto& gain : slotGain_) gain.setTime(15.0f, sr_);
     input_.reset(1.0f);
     output_.reset(1.0f);
     power_.reset(1.0f);
+    for (auto& gain : slotGain_) gain.reset(1.0f);
     reset();
   }
 
@@ -34,6 +37,7 @@ public:
     for (int i = 0; i < kSlotCount; ++i) {
       eq_[i].setControls(c.slot[i]);
       comp_[i].setControls(c.slot[i]);
+      slotGain_[i].setTarget(hdsp::dbToGain(c.slot[i].gainDb));
     }
     input_.setTarget(hdsp::dbToGain(c.inputDb));
     output_.setTarget(hdsp::dbToGain(c.outputDb));
@@ -52,18 +56,23 @@ public:
       float l = dryL, r = dryR;
       for (int s = 0; s < kSlotCount; ++s) {
         const SlotControls& c = controls_.slot[s];
-        const int type = std::clamp(c.type, 0, 2);
-        if (type == 0 || c.bypass) continue;
+        const int type = c.type;
+        if (type == static_cast<int>(ModuleId::Off) || c.bypass) continue;
         const float sl = l, sr = r;
         float gr = 0.0f;
-        if (type == 1) {
+        if (moduleIsEq(type)) {
           eq_[s].process(l, r);
-        } else {
+        } else if (moduleIsComp(type)) {
           gr = comp_[s].process(l, r);
+        } else {
+          continue;
         }
         const float mix = std::clamp(c.mix, 0.0f, 1.0f);
         l = sl + (l - sl) * mix;
         r = sr + (r - sr) * mix;
+        const float gain = slotGain_[s].next();
+        l *= gain;
+        r *= gain;
         slotGr[s] = std::max(slotGr[s], gr);
       }
       const float active = power_.next();
@@ -94,6 +103,7 @@ public:
     input_.snap();
     output_.snap();
     power_.snap();
+    for (auto& gain : slotGain_) gain.snap();
   }
 
   int latencySamples() const noexcept { return 0; }
@@ -104,6 +114,7 @@ private:
   EqModule eq_[kSlotCount];
   CompModule comp_[kSlotCount];
   hdsp::Smoothed input_, output_, power_;
+  hdsp::Smoothed slotGain_[kSlotCount];
 };
 
 } // namespace rack

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui/panel.hpp"
 
+#include "modules.hpp"
 #include "presets.hpp"
 #include "value_text.hpp"
 
@@ -36,8 +37,9 @@ void setRgb(cairo_t* cr, Rgb c, double a = 1.0) {
 }
 double knobAngle(double f) { return -2.35 + f * 4.70; }
 double clamp01(double x) { return std::clamp(x, 0.0, 1.0); }
-const char* moduleName(int type) {
-  return type == 1 ? "EQ" : (type == 2 ? "COMP" : "EMPTY");
+const char* slotModuleName(int type) {
+  return type == static_cast<int>(ModuleId::Off) ? "EMPTY"
+                                                 : moduleDesc(type)->name;
 }
 
 struct ModuleStyle {
@@ -48,12 +50,38 @@ struct ModuleStyle {
 };
 
 ModuleStyle styleFor(int type) {
-  if (type == 1) return {{0.10, 0.145, 0.215}, {0.18, 0.28, 0.40},
-                         {0.34, 0.74, 0.96}, {0.86, 0.88, 0.90}};
-  if (type == 2) return {{0.19, 0.125, 0.075}, {0.42, 0.25, 0.12},
-                         {0.96, 0.58, 0.20}, {0.90, 0.84, 0.74}};
-  return {{0.105, 0.10, 0.095}, {0.24, 0.22, 0.19},
-          {0.55, 0.50, 0.44}, {0.72, 0.70, 0.66}};
+  switch (static_cast<ModuleId>(type)) {
+    case ModuleId::Eq4K:
+      return {{0.10, 0.145, 0.215}, {0.18, 0.28, 0.40},
+              {0.34, 0.74, 0.96}, {0.86, 0.88, 0.90}};
+    case ModuleId::EqHearth:
+      return {{0.22, 0.115, 0.075}, {0.46, 0.24, 0.14},
+              {0.98, 0.66, 0.30}, {0.92, 0.85, 0.72}};
+    case ModuleId::EqTilt:
+      return {{0.16, 0.17, 0.18}, {0.30, 0.33, 0.35},
+              {0.72, 0.78, 0.84}, {0.88, 0.89, 0.90}};
+    case ModuleId::EqAir:
+      return {{0.10, 0.17, 0.22}, {0.20, 0.36, 0.45},
+              {0.56, 0.86, 0.98}, {0.86, 0.91, 0.93}};
+    case ModuleId::Comp76Blue:
+      return {{0.09, 0.12, 0.20}, {0.18, 0.26, 0.40},
+              {0.42, 0.70, 1.00}, {0.84, 0.87, 0.92}};
+    case ModuleId::Comp76Black:
+      return {{0.075, 0.075, 0.075}, {0.20, 0.20, 0.20},
+              {0.78, 0.80, 0.84}, {0.82, 0.82, 0.82}};
+    case ModuleId::Comp2A:
+      return {{0.17, 0.17, 0.16}, {0.34, 0.34, 0.32},
+              {0.80, 0.82, 0.76}, {0.90, 0.90, 0.86}};
+    case ModuleId::Comp3A:
+      return {{0.16, 0.18, 0.16}, {0.32, 0.36, 0.31},
+              {0.78, 0.86, 0.68}, {0.88, 0.91, 0.84}};
+    case ModuleId::CompVCA:
+      return {{0.10, 0.18, 0.13}, {0.20, 0.36, 0.26},
+              {0.52, 0.90, 0.60}, {0.86, 0.92, 0.87}};
+    default:
+      return {{0.105, 0.10, 0.095}, {0.24, 0.22, 0.19},
+              {0.55, 0.50, 0.44}, {0.72, 0.70, 0.66}};
+  }
 }
 } // namespace
 
@@ -112,7 +140,8 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
   widgets_.push_back(p);
 
   auto knob = [&](uint32_t param, double x, double y, double r,
-                  const char* label, int styleSlot = -1, bool compact = true) {
+                  const char* label, int styleSlot = -1, bool compact = true,
+                  int moduleControl = -1) {
     Widget k{};
     k.kind = Kind::Knob; k.param = param; k.x = x; k.y = y; k.r = r;
     k.label = label; k.labelBelow = false; k.compact = compact;
@@ -121,6 +150,7 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
                       ? static_cast<int>(shared.get(
                             slotParam(styleSlot, kSlotOffsetType)) + 0.5)
                       : -1;
+    k.moduleControl = moduleControl;
     widgets_.push_back(k);
   };
 
@@ -132,13 +162,16 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
   for (int i = 0; i < kSlotCount; ++i) {
     const double x = 60.0 + i * (colW + gap);
     const double y = 92.0;
+    const int type =
+        static_cast<int>(shared.get(slotParam(i, kSlotOffsetType)) + 0.5);
+
     Widget name{};
     name.kind = Kind::ModuleName;
     name.param = static_cast<uint32_t>(i);
     name.value = i;
     name.x = x + 10; name.y = y + 28; name.w = colW - 20; name.h = 28;
     name.styleSlot = i;
-    name.styleType = static_cast<int>(shared.get(slotParam(i, kSlotOffsetType)) + 0.5);
+    name.styleType = type;
     widgets_.push_back(name);
 
     Widget byp{};
@@ -147,68 +180,75 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
     byp.x = x + 10; byp.y = y + 64; byp.w = colW - 20; byp.h = 22;
     byp.label = "BYPASS";
     byp.styleSlot = i;
-    byp.styleType = static_cast<int>(shared.get(slotParam(i, kSlotOffsetType)) + 0.5);
+    byp.styleType = type;
     widgets_.push_back(byp);
 
-    knob(slotParam(i, kSlotOffsetMix), x + colW * 0.5, y + 520, 16,
-         "SLOT MIX", i);
-
-    const int type = static_cast<int>(shared.get(slotParam(i, kSlotOffsetType)) + 0.5);
-    for (auto& w : widgets_) {
-      if (w.styleSlot == i) w.styleType = type;
-    }
+    const ModuleDesc* module = moduleDesc(type);
     const double cx1 = x + 38, cx2 = x + 105;
-    if (type == 1) {
-      static const char* labels[6] = {"LOW", "LOW MID", "HIGH MID", "HIGH",
-                                      "HPF", "LPF"};
-      for (int k = 0; k < 6; ++k) {
+    if (module->controlCount > 0) {
+      const int rows = (module->controlCount + 1) / 2;
+      const double rowH = rows >= 4 ? 82.0 : 96.0;
+      for (int k = 0; k < module->controlCount; ++k) {
+        const ControlDesc& control = module->controls[k];
         const double kx = (k & 1) ? cx2 : cx1;
-        const double ky = y + 165.0 + (k / 2) * 112.0;
-        knob(slotParam(i, kSlotOffsetEqLow + k), kx, ky, 19, labels[k], i);
-      }
-    } else if (type == 2) {
-      for (int m = 0; m < 3; ++m) {
-        Widget b{};
-        b.kind = Kind::ModelButton;
-        b.param = slotParam(i, kSlotOffsetCompModel);
-        b.value = m;
-        b.x = x + 8 + m * 43.0;
-        b.y = y + 118.0;
-        b.w = 39.0; b.h = 20.0;
-        b.label = kCompModelLabels[m];
-        b.styleSlot = i;
-        b.styleType = type;
-        widgets_.push_back(b);
-      }
-      static const char* labels[7] = {"THR", "RAT", "ATK", "REL", "MAKE",
-                                      "MIX", "SC"};
-      for (int k = 0; k < 7; ++k) {
-        const double kx = (k & 1) ? cx2 : cx1;
-        const double ky = y + 188.0 + (k / 2) * 88.0;
-        knob(slotParam(i, kSlotOffsetCompThreshold + k), kx, ky, 18,
-             labels[k], i);
+        const double ky = y + 155.0 + (k / 2) * rowH;
+        knob(slotParam(i, kSlotOffsetC0 + control.param), kx, ky, 18,
+             control.label, i, true, control.param);
       }
     }
+
+    knob(slotParam(i, kSlotOffsetMix), x + colW * 0.30, y + 512, 13, "MIX", i);
+    knob(slotParam(i, kSlotOffsetGain), x + colW * 0.70, y + 512, 13,
+         "GAIN", i);
   }
 
   if (state.browserSlot >= 0 && state.browserSlot < kSlotCount) {
-    const double bx = 300, by = 220, bw = 440, bh = 250;
-    for (int i = 0; i < 3; ++i) {
+    const double bx = 260, by = 140, bw = 520, bh = 420;
+    for (int tab = 0; tab < 3; ++tab) {
+      Widget t{};
+      t.kind = Kind::BrowserTab;
+      t.param = slotParam(state.browserSlot, kSlotOffsetType);
+      t.value = tab;
+      t.x = bx + 24 + tab * 110.0;
+      t.y = by + 46;
+      t.w = 100.0;
+      t.h = 24.0;
+      t.label = tab == 0 ? "ALL" : (tab == 1 ? "EQ" : "COMP");
+      widgets_.push_back(t);
+    }
+
+    std::vector<int> ids;
+    ids.push_back(static_cast<int>(ModuleId::Off));
+    for (int id = 1; id < kModuleCount; ++id) {
+      const ModuleDesc* d = moduleDesc(id);
+      if (state.browserCategory == 1 && !d->isEq) continue;
+      if (state.browserCategory == 2 && !d->isComp) continue;
+      ids.push_back(id);
+    }
+    const int columns = 3;
+    const double ow = 160.0, oh = 46.0, ox = 8.0, oy = 8.0;
+    for (size_t k = 0; k < ids.size() && k < 12; ++k) {
       Widget b{};
       b.kind = Kind::BrowserOption;
       b.param = slotParam(state.browserSlot, kSlotOffsetType);
-      b.value = i;
-      b.x = bx + 24 + (i % 2) * 200.0;
-      b.y = by + 70 + (i / 2) * 70.0;
-      b.w = 180.0; b.h = 48.0;
-      b.label = i == 0 ? "OFF" : (i == 1 ? "EQ" : "COMP");
+      b.value = ids[k];
+      b.x = bx + 18 + static_cast<double>(k % columns) * (ow + ox);
+      b.y = by + 92 + static_cast<double>(k / columns) * (oh + oy);
+      b.w = ow;
+      b.h = oh;
+      b.label = ids[k] == static_cast<int>(ModuleId::Off)
+                    ? "OFF"
+                    : slotModuleName(ids[k]);
+      b.styleType = ids[k];
       widgets_.push_back(b);
     }
+
     Widget cancel{};
     cancel.kind = Kind::BrowserOption;
     cancel.param = slotParam(state.browserSlot, kSlotOffsetType);
     cancel.value = -1;
-    cancel.x = bx + 130; cancel.y = by + bh - 46; cancel.w = 180; cancel.h = 30;
+    cancel.x = bx + bw - 130; cancel.y = by + bh - 42;
+    cancel.w = 110; cancel.h = 28;
     cancel.label = "CANCEL";
     widgets_.push_back(cancel);
   }
@@ -246,7 +286,7 @@ void Panel::drawHeader(cairo_t* cr, const Shared& shared, const PanelState& stat
   text(cr, "SUITE RACK", 520, 44, 24, 1, kText.r, kText.g, kText.b);
 
   struct Pill { const char* label; double x; };
-  const Pill pills[] = {{"6 SLOTS", 650}, {"SERIAL", 760}, {"M0", 880}};
+  const Pill pills[] = {{"6 SLOTS", 650}, {"SERIAL", 760}, {"M2", 880}};
   for (const Pill& pill : pills) {
     roundRect(cr, pill.x, 20, 96, 28, 4);
     setRgb(cr, {0.20, 0.17, 0.14}); cairo_fill(cr);
@@ -273,18 +313,18 @@ void Panel::drawRack(cairo_t* cr, const Shared& shared,
     char num[16];
     std::snprintf(num, sizeof(num), "SLOT %d", i + 1);
     text(cr, num, x + 10, y + 22, 8, 0, st.accent.r, st.accent.g, st.accent.b);
-    if (type == 2) {
+    if (moduleIsComp(type)) {
       char gr[32];
       std::snprintf(gr, sizeof(gr), "GR %.1f dB", state.slotGrDb[i]);
       text(cr, gr, x + colW - 10, y + 108, 7, 2, st.accent.r, st.accent.g,
            st.accent.b);
     }
-    if (type == 0) {
-      text(cr, "EMPTY", x + colW * 0.5, y + 180, 15, 1, st.accent.r,
+    if (type == static_cast<int>(ModuleId::Off)) {
+      text(cr, "EMPTY", x + colW * 0.5, y + 205, 15, 1, st.accent.r,
            st.accent.g, st.accent.b);
-      text(cr, "CHOOSE A", x + colW * 0.5, y + 205, 7, 1, st.accent.r,
+      text(cr, "CHOOSE A", x + colW * 0.5, y + 232, 7, 1, st.accent.r,
            st.accent.g, st.accent.b);
-      text(cr, "MODULE", x + colW * 0.5, y + 218, 7, 1, st.accent.r,
+      text(cr, "MODULE", x + colW * 0.5, y + 245, 7, 1, st.accent.r,
            st.accent.g, st.accent.b);
     }
   }
@@ -296,9 +336,9 @@ void Panel::drawBrowser(cairo_t* cr, const Shared& shared,
                         const PanelState& state) const {
   (void)shared;
   if (state.browserSlot < 0 || state.browserSlot >= kSlotCount) return;
-  cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 0.62);
+  cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 0.64);
   cairo_paint(cr);
-  const double bx = 300, by = 220, bw = 440, bh = 250;
+  const double bx = 260, by = 140, bw = 520, bh = 420;
   roundRect(cr, bx, by, bw, bh, 6);
   setRgb(cr, {0.13, 0.115, 0.10}); cairo_fill(cr);
   setRgb(cr, kAccent, 0.85); cairo_set_line_width(cr, 1.5);
@@ -306,9 +346,13 @@ void Panel::drawBrowser(cairo_t* cr, const Shared& shared,
   char title[48];
   std::snprintf(title, sizeof(title), "CHOOSE MODULE · SLOT %d",
                 state.browserSlot + 1);
-  text(cr, title, 520, by + 38, 14, 1, kText.r, kText.g, kText.b);
-  text(cr, "EQ and Comp are available in M0. More modules follow.", 520,
-       by + 58, 8.5, 1, kDim.r, kDim.g, kDim.b);
+  text(cr, title, bx + bw * 0.5, by + 30, 14, 1, kText.r, kText.g, kText.b);
+  text(cr, "One job per module · 3–8 controls · no deep pages", bx + bw * 0.5,
+       by + 86, 8.5, 1, kDim.r, kDim.g, kDim.b);
+  const double tx = bx + 24, ty = by + 46;
+  cairo_set_source_rgba(cr, 0.20, 0.17, 0.14, 0.7);
+  cairo_rectangle(cr, tx, ty, 330, 24);
+  cairo_fill(cr);
 }
 
 void Panel::draw(cairo_t* cr, Shared& shared, const PanelState& state) {
@@ -318,11 +362,15 @@ void Panel::draw(cairo_t* cr, Shared& shared, const PanelState& state) {
   drawHeader(cr, shared, state);
   drawRack(cr, shared, state);
   for (const Widget& w : widgets_) {
-    if (w.kind != Kind::BrowserOption) drawWidget(cr, w, shared, state);
+    if (w.kind != Kind::BrowserOption && w.kind != Kind::BrowserTab) {
+      drawWidget(cr, w, shared, state);
+    }
   }
   drawBrowser(cr, shared, state);
   for (const Widget& w : widgets_) {
-    if (w.kind == Kind::BrowserOption) drawWidget(cr, w, shared, state);
+    if (w.kind == Kind::BrowserOption || w.kind == Kind::BrowserTab) {
+      drawWidget(cr, w, shared, state);
+    }
   }
   drawLevelMeter(cr, 20, 100, 14, 520, state.inLevelL, state.inLevelR);
   drawLevelMeter(cr, 1006, 100, 14, 520, state.outLevelL, state.outLevelR);
@@ -335,7 +383,7 @@ void Panel::draw(cairo_t* cr, Shared& shared, const PanelState& state) {
 }
 
 void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
-                       const PanelState&) const {
+                       const PanelState& state) const {
   const int type = w.styleSlot >= 0
                        ? static_cast<int>(shared.get(slotParam(w.styleSlot, kSlotOffsetType)) + 0.5)
                        : -1;
@@ -364,10 +412,24 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
       setRgb(cr, st.body); cairo_fill(cr);
       setRgb(cr, st.edge, 0.9); cairo_set_line_width(cr, 1.0);
       roundRect(cr, w.x + 0.5, w.y + 0.5, w.w - 1, w.h - 1, 4); cairo_stroke(cr);
-      text(cr, moduleName(type), w.x + 12, w.y + w.h * 0.5 + 5, 12, 0,
+      text(cr, slotModuleName(type), w.x + 12, w.y + w.h * 0.5 + 5, 12, 0,
            st.accent.r, st.accent.g, st.accent.b);
       text(cr, "CHOOSE", w.x + w.w - 10, w.y + w.h * 0.5 + 4, 7, 2,
            kDim.r, kDim.g, kDim.b);
+      break;
+    }
+    case Kind::BrowserTab: {
+      const bool active = static_cast<int>(w.value) == state.browserCategory;
+      roundRect(cr, w.x, w.y, w.w, w.h, 4);
+      setRgb(cr, active ? kAccent : Rgb{0.20, 0.17, 0.14});
+      cairo_fill(cr);
+      setRgb(cr, kEdge, 0.8);
+      cairo_set_line_width(cr, 1.0);
+      roundRect(cr, w.x + 0.5, w.y + 0.5, w.w - 1, w.h - 1, 4);
+      cairo_stroke(cr);
+      text(cr, w.label, w.x + w.w * 0.5, w.y + w.h * 0.5 + 4, 9, 1,
+           active ? 0.10 : kText.r, active ? 0.08 : kText.g,
+           active ? 0.05 : kText.b);
       break;
     }
     case Kind::BrowserOption: {
@@ -413,12 +475,13 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
       drawButton(cr, w, false);
       break;
     case Kind::Knob:
-      drawKnob(cr, w, shared.get(w.param));
+      drawKnob(cr, w, shared, shared.get(w.param));
       break;
   }
 }
 
-void Panel::drawKnob(cairo_t* cr, const Widget& w, double value) const {
+void Panel::drawKnob(cairo_t* cr, const Widget& w, const Shared& shared,
+                     double value) const {
   const ParamSpec& s = kParamSpecs[w.param];
   const double vmax = w.steps > 1 ? w.steps - 1 : s.max;
   const double span = vmax - s.min;
@@ -452,7 +515,7 @@ void Panel::drawKnob(cairo_t* cr, const Widget& w, double value) const {
                                      : w.y - w.r * 1.5 - (w.compact ? 6.0 : 14.0);
   text(cr, w.label, w.x, labelY, w.compact ? 7.0 : 10.0, 1,
        kText.r, kText.g, kText.b);
-  const std::string val = formatParamValue(Shared{}, w.param, value);
+  const std::string val = formatParamValue(shared, w.param, value);
   text(cr, val.c_str(), w.x, w.y + w.r + (w.compact ? 8.0 : 14.0),
        w.compact ? 6.5 : 8.5, 1, st.accent.r, st.accent.g, st.accent.b);
 }
@@ -502,8 +565,15 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
   if (handlePresetClick(shared, state, x, y)) return true;
   if (state.browserSlot >= 0) {
     for (const Widget& w : widgets_) {
+      if (w.kind == Kind::BrowserTab && hitWidget(w, x, y)) {
+        state.browserCategory = static_cast<int>(w.value);
+        return true;
+      }
       if (w.kind != Kind::BrowserOption || !hitWidget(w, x, y)) continue;
-      if (w.value >= 0) shared.set(w.param, w.value);
+      if (w.value >= 0) {
+        applyModuleDefaults(shared, state.browserSlot,
+                            static_cast<int>(w.value));
+      }
       state.browserSlot = -1;
       state.presetDirty = true;
       return true;
@@ -526,6 +596,7 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
         state.browserSlot = static_cast<int>(w.value);
         return true;
       case Kind::BrowserOption:
+      case Kind::BrowserTab:
         break;
       case Kind::ModuleButton:
         shared.set(w.param, w.value);
