@@ -6,6 +6,10 @@ A virtual mix rack in the Suite visual language: six serial slots, each hosting
 an EQ or Comp module. Slot 1 starts as EQ, slot 2 as Comp, slots 3–6 are empty.
 Modules are chosen from an in-panel browser.
 
+Planned additions include Hearth EQ, 4K EQ (Suite Channel), Patina preamps, the
+Comp Suite models, Space reverb/delay/module options, Bleed Out and Trowel
+modules, plus neutral-named ports of the MIT JClones algorithms.
+
 > Better plugins exist. I just wanted to have a Suite Rack.
 
 ![Suite Rack — six-slot rack](docs/rack-eq.png)

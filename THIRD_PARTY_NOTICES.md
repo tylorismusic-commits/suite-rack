@@ -1,6 +1,6 @@
 # Third-party notices
 
-Comp Suite is GPL-3.0-or-later. It contains or derives from the following work.
+Suite Rack is GPL-3.0-or-later. It contains or derives from the following work.
 
 ## JClones JSFX
 
@@ -34,6 +34,9 @@ SOFTWARE.
 The 2A/3A optical side-chain structure was informed by the same project's
 `JClones_CA2A.jsfx` (MIT), with the DSP reimplemented against the published
 behaviour.
+
+Additional JClones ports are planned for Suite Rack using neutral module names
+and no original vendor trade dress. The MIT notice above applies to those ports.
 
 ## Fonts
 
