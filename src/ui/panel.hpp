@@ -64,10 +64,6 @@ public:
   void applyPreset(Shared& shared, PanelState& state, int index) const;
   int presetCount() const;
   const char* presetName(int index) const;
-  void drawPresetBar(cairo_t* cr, const Shared& shared,
-                     const PanelState& state) const;
-  void drawPresetList(cairo_t* cr, const Shared& shared,
-                      const PanelState& state) const;
   bool wheel(Shared& shared, PanelState& state, double x, double y, double dy);
   void beginTextEntry(Shared& shared, PanelState& state, double x, double y);
   static constexpr int kTextEnter = 1;
@@ -98,6 +94,7 @@ private:
     double x = 0.0, y = 0.0, w = 0.0, h = 0.0, r = 0.0;
     int steps = 0;
     const char* label = "";
+    const char* subLabel = nullptr;
     std::vector<const char*> scale;
     bool labelBelow = false;
     bool compact = false;
@@ -122,6 +119,8 @@ private:
   void drawDragGhost(cairo_t* cr, const Shared& shared) const;
   void drawAbout(cairo_t* cr, const Shared& shared,
                  const PanelState& state) const;
+  void drawPresetList(cairo_t* cr, const Shared& shared,
+                      const PanelState& state) const;
   void drawTextEntry(cairo_t* cr, const PanelState& state) const;
   std::vector<UserPreset> userPresets_;
   std::vector<ModulePreset> modulePresets_;

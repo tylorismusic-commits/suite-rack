@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <string>
 
+#include "factory_module_presets.hpp"
 #include "module_ids.hpp"
 #include "modules.hpp"
 #include "params.hpp"
@@ -267,6 +268,36 @@ int main() {
   check(std::fabs(s.get(savedControl) - 0.33) < 1e-6,
         "user preset recalls the saved rack");
 
+  // Rack preset browser lists factory and user presets.
+  panel.pointerDown(s, state, 237, 34, false);
+  panel.pointerUp(s, state);
+  check(state.presetOpen, "clicking the preset bar opens the preset browser");
+  s.set(savedControl, 0.99);
+  panel.pointerDown(s, state, 200, 100.0, false);
+  panel.pointerUp(s, state);
+  check(!state.presetOpen && state.presetIndex == 0,
+        "preset browser row loads a factory rack");
+  check(std::fabs(s.get(savedControl) - 0.60) < 1e-6,
+        "factory rack restores its stored values");
+  panel.pointerDown(s, state, 237, 34, false);
+  panel.pointerUp(s, state);
+  panel.pointerDown(s, state, 200,
+                    170.0,
+                    false);
+  panel.pointerUp(s, state);
+  check(state.presetIndex == 3, "preset browser loads a saved user rack");
+  check(std::fabs(s.get(savedControl) - 0.33) < 1e-6,
+        "user rack restores its stored values");
+
+  // 2A factory presets use the makeup/mix control indices.
+  const FactoryModulePreset* twoA = nullptr;
+  for (const auto& f : kFactoryModulePresets) {
+    if (std::string(f.name) == "2A Vocal Glue") twoA = &f;
+  }
+  check(twoA && std::fabs(twoA->controls[4] - 0.60f) < 1e-5 &&
+            std::fabs(twoA->controls[5] - 1.0f) < 1e-5,
+        "2A factory preset addresses gain and mix correctly");
+
   // Right-click a module name to save a per-module preset.
   const uint32_t highParam = slotParam(0, kSlotOffsetC0 + kCtlHigh);
   s.set(savedControl, 0.42);
@@ -284,8 +315,19 @@ int main() {
   panel.pointerDown(s, state, 130, 134, false);
   panel.pointerUp(s, state);
   panel.draw(cr, s, state);
-  check(clickLabel(panel, s, state, "USER"),
-        "browser offers the user module category");
+  check(clickLabel(panel, s, state, "PRESET"),
+        "browser offers the preset category");
+  panel.draw(cr, s, state);
+  bool presetSearch = false;
+  for (const auto& r : panel.widgetRects()) {
+    if (std::string(r.label) != "SEARCH") continue;
+    panel.pointerDown(s, state, r.x + r.w * 0.5, r.y + r.h * 0.5, false);
+    presetSearch = true;
+    break;
+  }
+  check(presetSearch, "preset category has a search field");
+  for (const char* c = "Crunch EQ"; *c; ++c) panel.textKey(s, state, 0, *c);
+  panel.textKey(s, state, Panel::kTextEnter, 0);
   panel.draw(cr, s, state);
   check(clickLabel(panel, s, state, "Crunch EQ"),
         "saved module preset appears in the browser");
@@ -294,6 +336,30 @@ int main() {
   check(std::fabs(s.get(savedControl) - 0.42) < 1e-6 &&
             std::fabs(s.get(highParam) - 0.66) < 1e-6,
         "module preset restores the module controls");
+
+  // A factory preset modelled on Comp Suite.
+  panel.draw(cr, s, state);
+  panel.pointerDown(s, state, 130, 134, false);
+  panel.pointerUp(s, state);
+  panel.draw(cr, s, state);
+  check(clickLabel(panel, s, state, "PRESET"),
+        "preset category reopens for factory content");
+  panel.draw(cr, s, state);
+  for (const auto& r : panel.widgetRects()) {
+    if (std::string(r.label) != "SEARCH") continue;
+    panel.pointerDown(s, state, r.x + r.w * 0.5, r.y + r.h * 0.5, false);
+    break;
+  }
+  for (const char* c = "Vocal Push"; *c; ++c) panel.textKey(s, state, 0, *c);
+  panel.textKey(s, state, Panel::kTextEnter, 0);
+  panel.draw(cr, s, state);
+  check(clickLabel(panel, s, state, "76 Vocal Push"),
+        "factory Comp Suite preset appears in the browser");
+  check(s.get(P_SLOT0_TYPE) == static_cast<double>(ModuleId::Comp76Blue),
+        "factory preset loads its module");
+  check(std::fabs(s.get(slotParam(0, kSlotOffsetC0 + kCtlThreshold)) - 0.55f) <
+            1e-5,
+        "factory preset loads its control values");
 
   check(!panel.widgetRects().empty(), "panel reports widget geometry");
   bool sourcesOk = true;

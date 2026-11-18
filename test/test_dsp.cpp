@@ -186,6 +186,7 @@ int main() {
         static_cast<int>(ModuleId::JcVBL),
         static_cast<int>(ModuleId::JcL2),
         static_cast<int>(ModuleId::JcO3),
+        static_cast<int>(ModuleId::HybridEq),
   };
   for (float rate : {48000.0f, 96000.0f}) {
     const int sweepN = rate > 48000.0f ? 24000 : n;

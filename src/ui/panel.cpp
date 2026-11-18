@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui/panel.hpp"
 
+#include "factory_module_presets.hpp"
 #include "modules.hpp"
 #include "presets.hpp"
 #include "value_text.hpp"
@@ -18,6 +19,27 @@ namespace rack {
 namespace {
 
 constexpr double kPi = 3.14159265358979323846;
+
+// Rack preset browser geometry.
+constexpr double kPresetListX = 72.0;
+constexpr double kPresetListY = 54.0;
+constexpr double kPresetListW = 380.0;
+constexpr double kPresetRowH = 20.0;
+constexpr int kPresetVisibleRows = 12;
+constexpr double kPresetHeaderH = 46.0;
+constexpr double kPresetFooterH = 34.0;
+
+int presetRowsFor(int count) {
+  return std::clamp(count, 3, kPresetVisibleRows);
+}
+
+bool cursorVisible() {
+  using namespace std::chrono;
+  const auto ms = duration_cast<milliseconds>(
+                      steady_clock::now().time_since_epoch())
+                      .count();
+  return (ms / 500) % 2 == 0;
+}
 struct Rgb { double r, g, b; };
 const Rgb kAccent{0.93, 0.55, 0.18};
 const Rgb kText{0.94, 0.90, 0.84};
@@ -261,6 +283,9 @@ ModuleStyle styleFor(int type) {
     case ModuleId::JcO3:
       return {{0.09, 0.10, 0.17}, {0.20, 0.22, 0.40},
               {0.62, 0.66, 1.00}, {0.88, 0.90, 0.98}};
+    case ModuleId::HybridEq:
+      return {{0.16, 0.12, 0.09}, {0.33, 0.24, 0.16},
+              {0.98, 0.74, 0.40}, {0.95, 0.90, 0.82}};
     default:
       return {{0.105, 0.10, 0.095}, {0.24, 0.22, 0.19},
               {0.55, 0.50, 0.44}, {0.72, 0.70, 0.66}};
@@ -475,7 +500,7 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
       t.w = 70.0;
       t.h = 24.0;
       static const char* labels[7] = {"ALL", "EQ",     "COMP", "COLOUR",
-                                      "DYN", "SPACE",  "USER"};
+                                      "DYN", "SPACE",  "PRESET"};
       t.label = labels[tab];
       widgets_.push_back(t);
     }
@@ -484,26 +509,37 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
       int value = 0;
       int styleType = 0;
       const char* label = "";
+      const char* subLabel = nullptr;
     };
     std::vector<BEntry> entries;
     if (state.browserCategory == 6) {
-      for (int i = 0; i < static_cast<int>(modulePresets_.size()); ++i) {
-        const ModulePreset& p = modulePresets_[static_cast<size_t>(i)];
-        if (!state.browserQuery.empty() &&
-            lowerText(p.name).find(lowerText(state.browserQuery)) ==
-                std::string::npos) {
+      const std::string needle = lowerText(state.browserQuery);
+      for (int i = 0; i < kFactoryModulePresetCount; ++i) {
+        const FactoryModulePreset& p = kFactoryModulePresets[i];
+        if (!needle.empty() &&
+            lowerText(p.name).find(needle) == std::string::npos) {
           continue;
         }
-        entries.push_back({-1000 - i, p.type, p.name.c_str()});
+        entries.push_back({-1000 - i, static_cast<int>(p.type), p.name,
+                           p.source});
+      }
+      for (int i = 0; i < static_cast<int>(modulePresets_.size()); ++i) {
+        const ModulePreset& p = modulePresets_[static_cast<size_t>(i)];
+        if (!needle.empty() &&
+            lowerText(p.name).find(needle) == std::string::npos) {
+          continue;
+        }
+        entries.push_back({-2000 - i, p.type, p.name.c_str(),
+                           "User module preset"});
       }
     } else {
       if (state.browserQuery.empty())
         entries.push_back({static_cast<int>(ModuleId::Off),
-                           static_cast<int>(ModuleId::Off), "OFF"});
+                           static_cast<int>(ModuleId::Off), "OFF", nullptr});
       for (int id = 1; id < kModuleCount; ++id) {
         if (!browserCategoryMatches(id, state.browserCategory)) continue;
         if (!browserModuleMatchesQuery(id, state.browserQuery)) continue;
-        entries.push_back({id, id, slotModuleName(id)});
+        entries.push_back({id, id, slotModuleName(id), moduleSource(id)});
       }
     }
     const int columns = 4;
@@ -524,6 +560,7 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
       b.w = ow;
       b.h = oh;
       b.label = entry.label;
+      b.subLabel = entry.subLabel;
       b.styleType = entry.styleType;
       widgets_.push_back(b);
     }
@@ -598,13 +635,11 @@ void Panel::drawHeader(cairo_t* cr, const Shared& shared, const PanelState& stat
   text(cr, "SUITE RACK", 520, 44, 24, 1, kText.r, kText.g, kText.b);
 
   struct Pill { const char* label; double x; };
-  const Pill pills[] = {{"SAVE", 600},
-                        {"6 SLOTS", 706},
-                        {"SERIAL", 812},
-                        {"ABOUT", 918}};
+  const Pill pills[] = {{"SAVE", 600}, {"PRESETS", 812}, {"ABOUT", 918}};
   for (const Pill& pill : pills) {
     const bool active = (std::string(pill.label) == "ABOUT" && state.aboutOpen) ||
-                        (std::string(pill.label) == "SAVE" && state.savePreset);
+                        (std::string(pill.label) == "SAVE" && state.savePreset) ||
+                        (std::string(pill.label) == "PRESETS" && state.presetOpen);
     roundRect(cr, pill.x, 20, 96, 28, 4);
     setRgb(cr, active ? kAccent : Rgb{0.20, 0.17, 0.14});
     cairo_fill(cr);
@@ -653,10 +688,19 @@ void Panel::drawRack(cairo_t* cr, const Shared& shared,
 
 int Panel::browserOptionCount(int category, const std::string& query) const {
   if (category == 6) {
+    const std::string needle = lowerText(query);
     int count = 0;
+    for (int i = 0; i < kFactoryModulePresetCount; ++i) {
+      if (!needle.empty() &&
+          lowerText(kFactoryModulePresets[i].name).find(needle) ==
+              std::string::npos) {
+        continue;
+      }
+      ++count;
+    }
     for (const auto& p : modulePresets_) {
-      if (!query.empty() &&
-          lowerText(p.name).find(lowerText(query)) == std::string::npos) {
+      if (!needle.empty() &&
+          lowerText(p.name).find(needle) == std::string::npos) {
         continue;
       }
       ++count;
@@ -712,10 +756,9 @@ void Panel::drawBrowser(cairo_t* cr, const Shared& shared,
   cairo_set_line_width(cr, 1.0);
   roundRect(cr, sx + 0.5, sy + 0.5, sw - 1, sh - 1, 4);
   cairo_stroke(cr);
-  const std::string shown =
-      state.browserQuery.empty()
-          ? "Search modules"
-          : state.browserQuery + (state.browserSearch ? "_" : "");
+  std::string shown =
+      state.browserQuery.empty() ? "Search modules" : state.browserQuery;
+  if (state.browserSearch && cursorVisible()) shown += "_";
   text(cr, shown.c_str(), sx + 10, sy + 18, 9.0, 0,
        state.browserQuery.empty() ? kDim.r : kText.r,
        state.browserQuery.empty() ? kDim.g : kText.g,
@@ -727,6 +770,82 @@ int Panel::aboutMaxScroll() const {
   const int visible = 26;  // 13 rows x 2 columns
   if (total <= visible) return 0;
   return (total - visible + 1) / 2;
+}
+
+void Panel::drawPresetList(cairo_t* cr, const Shared& /*shared*/,
+                           const PanelState& state) const {
+  if (!state.presetOpen) return;
+  const int count = presetCount();
+  const int rows = presetRowsFor(count);
+  const int maxScroll = std::max(0, count - rows);
+  const int scroll = std::clamp(state.presetScroll, 0, maxScroll);
+  const double h =
+      kPresetHeaderH + rows * kPresetRowH + kPresetFooterH;
+
+  setRgb(cr, {0.02, 0.02, 0.03}, 0.55);
+  roundRect(cr, kPresetListX + 4, kPresetListY + 5, kPresetListW, h, 6);
+  cairo_fill(cr);
+  setRgb(cr, {0.12, 0.105, 0.09});
+  roundRect(cr, kPresetListX, kPresetListY, kPresetListW, h, 6);
+  cairo_fill(cr);
+  setRgb(cr, kAccent, 0.9);
+  cairo_set_line_width(cr, 1.3);
+  roundRect(cr, kPresetListX + 0.5, kPresetListY + 0.5, kPresetListW - 1,
+            h - 1, 6);
+  cairo_stroke(cr);
+
+  text(cr, "RACK PRESETS", kPresetListX + 14, kPresetListY + 20, 12, 0,
+       kText.r, kText.g, kText.b);
+  text(cr, "Factory racks and your saved racks", kPresetListX + 14,
+       kPresetListY + 34, 7.0, 0, kDim.r, kDim.g, kDim.b);
+
+  for (int row = 0; row < rows; ++row) {
+    const int index = scroll + row;
+    if (index >= count) break;
+    const double y = kPresetListY + kPresetHeaderH + row * kPresetRowH;
+    const bool current = index == state.presetIndex;
+    if (current) {
+      setRgb(cr, kAccent, 0.22);
+      cairo_rectangle(cr, kPresetListX + 6, y, kPresetListW - 12,
+                      kPresetRowH - 1);
+      cairo_fill(cr);
+    }
+    text(cr, presetName(index), kPresetListX + 14, y + 13, 8.5, 0,
+         current ? kAccent.r : kText.r, current ? kAccent.g : kText.g,
+         current ? kAccent.b : kText.b);
+    text(cr, index < kPresetCount ? kPresets[index].category : "User",
+         kPresetListX + kPresetListW - 14, y + 13, 6.5, 2,
+         current ? kAccent.r : kDim.r, current ? kAccent.g : kDim.g,
+         current ? kAccent.b : kDim.b);
+    if (row < rows - 1) {
+      setRgb(cr, kEdge, 0.18);
+      cairo_set_line_width(cr, 0.6);
+      cairo_move_to(cr, kPresetListX + 14, y + kPresetRowH - 1);
+      cairo_line_to(cr, kPresetListX + kPresetListW - 14,
+                    y + kPresetRowH - 1);
+      cairo_stroke(cr);
+    }
+  }
+
+  const double footerY = kPresetListY + h - kPresetFooterH + 4;
+  if (maxScroll > 0) {
+    roundRect(cr, kPresetListX + 14, footerY, 54, 24, 4);
+    setRgb(cr, scroll > 0 ? Rgb{0.20, 0.17, 0.14} : Rgb{0.12, 0.11, 0.10});
+    cairo_fill(cr);
+    text(cr, "UP", kPresetListX + 41, footerY + 16, 8, 1, kText.r, kText.g,
+         kText.b);
+    roundRect(cr, kPresetListX + 74, footerY, 54, 24, 4);
+    setRgb(cr, scroll < maxScroll ? Rgb{0.20, 0.17, 0.14}
+                                  : Rgb{0.12, 0.11, 0.10});
+    cairo_fill(cr);
+    text(cr, "DOWN", kPresetListX + 101, footerY + 16, 8, 1, kText.r,
+         kText.g, kText.b);
+  }
+  roundRect(cr, kPresetListX + kPresetListW - 84, footerY, 70, 24, 4);
+  setRgb(cr, {0.20, 0.17, 0.14});
+  cairo_fill(cr);
+  text(cr, "CLOSE", kPresetListX + kPresetListW - 49, footerY + 16, 8, 1,
+       kText.r, kText.g, kText.b);
 }
 
 void Panel::drawAbout(cairo_t* cr, const Shared& /*shared*/,
@@ -743,16 +862,16 @@ void Panel::drawAbout(cairo_t* cr, const Shared& /*shared*/,
   cairo_stroke(cr);
 
   text(cr, "ABOUT SUITE RACK", 520, 92, 20, 1, kText.r, kText.g, kText.b);
-  text(cr, "Virtual 500 Series Mix Rack · modules, sources and controls", 520, 114, 8, 1, kDim.r, kDim.g,
-       kDim.b);
+  text(cr, "Virtual 500 Series Mix Rack · modules, sources and character",
+       520, 114, 8, 1, kDim.r, kDim.g, kDim.b);
 
   const double colX[2] = {120.0, 530.0};
   const double headerY = 144.0;
   for (int col = 0; col < 2; ++col) {
     text(cr, "MODULE", colX[col], headerY, 7, 0, kDim.r, kDim.g, kDim.b);
     text(cr, "SOURCE", colX[col] + 104, headerY, 7, 0, kDim.r, kDim.g, kDim.b);
-    text(cr, "CONTROLS", colX[col] + 218, headerY, 7, 0, kDim.r, kDim.g,
-         kDim.b);
+    text(cr, "BASED ON / CHARACTER", colX[col] + 218, headerY, 7, 0, kDim.r,
+         kDim.g, kDim.b);
   }
 
   const int rows = 13;
@@ -766,15 +885,9 @@ void Panel::drawAbout(cairo_t* cr, const Shared& /*shared*/,
       const double y = 162.0 + row * 26.0;
       const ModuleDesc* d = moduleDesc(id);
       const ModuleStyle st = styleFor(id);
-      std::string controls;
-      for (int k = 0; k < d->controlCount; ++k) {
-        if (k > 0) controls += " ";
-        controls += d->controls[k].label;
-      }
-      if (controls.size() > 34) controls = controls.substr(0, 32) + "..";
       text(cr, d->name, x, y, 8.5, 0, st.accent.r, st.accent.g, st.accent.b);
       text(cr, moduleSource(id), x + 104, y, 6.8, 0, kDim.r, kDim.g, kDim.b);
-      text(cr, controls.c_str(), x + 218, y, 6.5, 0, kText.r, kText.g,
+      text(cr, d->description, x + 218, y, 6.5, 0, kText.r, kText.g,
            kText.b);
       setRgb(cr, kEdge, 0.20);
       cairo_set_line_width(cr, 0.6);
@@ -849,6 +962,7 @@ void Panel::draw(cairo_t* cr, Shared& shared, const PanelState& state) {
   text(cr, "OUTPUT", 904, 681, 7.5, 0, kDim.r, kDim.g, kDim.b);
   text(cr, "SUITE RACK · VIRTUAL 500 SERIES MIX RACK · SIX SLOTS", 520, 714, 10.5, 1,
        kText.r, kText.g, kText.b);
+  if (state.presetOpen) drawPresetList(cr, shared, state);
   if (state.aboutOpen) drawAbout(cr, shared, state);
   drawTextEntry(cr, state);
 }
@@ -939,12 +1053,8 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
            current ? 0.08 : bst.accent.r, current ? 0.06 : bst.accent.g,
            current ? 0.04 : bst.accent.b);
       if (!cancel) {
-        const char* src =
-            w.value <= -1000
-                ? "User module preset"
-                : (w.value > 0 ? moduleSource(static_cast<int>(w.value))
-                               : nullptr);
-        if (src) {
+        const char* src = w.subLabel;
+        if (src && *src) {
           text(cr, src, w.x + w.w * 0.5, w.y + w.h - 7, 6.0, 1,
                current ? 0.10 : kDim.r, current ? 0.08 : kDim.g,
                current ? 0.06 : kDim.b);
@@ -1214,7 +1324,53 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
   if (x >= 918 && x <= 1014 && y >= 20 && y <= 48) {
     state.aboutOpen = true;
     state.aboutScroll = 0;
+    state.presetOpen = 0;
     return true;
+  }
+  if (x >= 812 && x <= 908 && y >= 20 && y <= 48) {
+    state.presetOpen = state.presetOpen ? 0 : 1;
+    state.presetScroll = 0;
+    state.browserSlot = -1;
+    return true;
+  }
+  if (state.presetOpen) {
+    const int count = presetCount();
+    const int rows = presetRowsFor(count);
+    const int maxScroll = std::max(0, count - rows);
+    const int scroll = std::clamp(state.presetScroll, 0, maxScroll);
+    const double h = kPresetHeaderH + rows * kPresetRowH + kPresetFooterH;
+    const double footerY = kPresetListY + h - kPresetFooterH + 4;
+    if (x >= kPresetListX + 14 && x <= kPresetListX + 68 &&
+        y >= footerY && y <= footerY + 24) {
+      state.presetScroll = std::max(0, scroll - 1);
+      return true;
+    }
+    if (x >= kPresetListX + 74 && x <= kPresetListX + 128 &&
+        y >= footerY && y <= footerY + 24) {
+      state.presetScroll = std::min(maxScroll, scroll + 1);
+      return true;
+    }
+    if (x >= kPresetListX + kPresetListW - 84 &&
+        x <= kPresetListX + kPresetListW - 14 && y >= footerY &&
+        y <= footerY + 24) {
+      state.presetOpen = 0;
+      return true;
+    }
+    if (x >= kPresetListX && x <= kPresetListX + kPresetListW &&
+        y >= kPresetListY + kPresetHeaderH && y < footerY - 4) {
+      const int row = static_cast<int>((y - kPresetListY - kPresetHeaderH) /
+                                       kPresetRowH);
+      const int index = scroll + row;
+      if (index >= 0 && index < count) {
+        applyPreset(shared, state, index);
+      }
+      state.presetOpen = 0;
+      return true;
+    }
+    if (y >= kPresetListY) {
+      state.presetOpen = 0;
+      return true;
+    }
   }
   if (x >= 600 && x <= 696 && y >= 20 && y <= 48) {
     state.savePreset = true;
@@ -1249,10 +1405,22 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
         return true;
       }
       if (w.kind != Kind::BrowserOption || !hitWidget(w, x, y)) continue;
-      if (w.value <= -1000) {
-        const int idx = -1000 - w.value;
+      if (w.value <= -2000) {
+        const int idx = -2000 - w.value;
         if (idx >= 0 && idx < static_cast<int>(modulePresets_.size())) {
           const ModulePreset& p = modulePresets_[static_cast<size_t>(idx)];
+          const int slot = state.browserSlot;
+          shared.set(slotParam(slot, kSlotOffsetType),
+                     static_cast<double>(p.type));
+          for (int k = 0; k < 12; ++k) {
+            shared.set(slotParam(slot, kSlotOffsetC0 + k),
+                       static_cast<double>(p.controls[static_cast<size_t>(k)]));
+          }
+        }
+      } else if (w.value <= -1000) {
+        const int idx = -1000 - w.value;
+        if (idx >= 0 && idx < kFactoryModulePresetCount) {
+          const FactoryModulePreset& p = kFactoryModulePresets[idx];
           const int slot = state.browserSlot;
           shared.set(slotParam(slot, kSlotOffsetType),
                      static_cast<double>(p.type));
@@ -1400,6 +1568,7 @@ void Panel::pointerUp(Shared& shared, PanelState& state) {
       state.browserScroll = 0;
       state.browserQuery.clear();
       state.browserSearch = false;
+      state.presetOpen = 0;
     }
     dragSlot_ = -1;
     dropSlot_ = -1;
@@ -1409,6 +1578,13 @@ void Panel::pointerUp(Shared& shared, PanelState& state) {
 }
 
 bool Panel::wheel(Shared& shared, PanelState& state, double x, double y, double dy) {
+  if (state.presetOpen) {
+    const int maxScroll =
+        std::max(0, presetCount() - presetRowsFor(presetCount()));
+    state.presetScroll = std::clamp(
+        state.presetScroll - (dy > 0 ? 1 : -1), 0, maxScroll);
+    return true;
+  }
   if (state.aboutOpen) {
     const int maxScroll = aboutMaxScroll();
     state.aboutScroll = std::clamp(
@@ -1456,6 +1632,12 @@ bool Panel::handlePresetClick(Shared& shared, PanelState& state, double x,
     applyPreset(shared, state, next);
     return true;
   }
+  if (x >= 110 && x <= 365) {
+    state.presetOpen = state.presetOpen ? 0 : 1;
+    state.presetScroll = 0;
+    state.browserSlot = -1;
+    return true;
+  }
   return x >= 72 && x <= 402;
 }
 
@@ -1494,8 +1676,6 @@ void Panel::applyPreset(Shared& shared, PanelState& state, int index) const {
   state.presetDirty = false;
 }
 
-void Panel::drawPresetBar(cairo_t*, const Shared&, const PanelState&) const {}
-void Panel::drawPresetList(cairo_t*, const Shared&, const PanelState&) const {}
 void Panel::beginTextEntry(Shared& shared, PanelState& state, double x,
                            double y) {
   for (const Widget& w : widgets_) {
@@ -1523,6 +1703,10 @@ void Panel::beginTextEntry(Shared& shared, PanelState& state, double x,
 }
 
 bool Panel::textKey(Shared& shared, PanelState& state, int key, char ch) {
+  if (state.presetOpen && key == kTextEscape) {
+    state.presetOpen = 0;
+    return true;
+  }
   if (state.saveModule) {
     if (key == kTextEscape) {
       state.saveModule = false;
@@ -1713,7 +1897,8 @@ void Panel::drawTextEntry(cairo_t* cr, const PanelState& state) const {
   text(cr, name, x + 14, y + 16, 8.5, 0, 0.72, 0.78, 0.74);
   text(cr, (state.savePreset || state.saveModule) ? "TYPE NAME" : "TYPE VALUE",
        x + 14, y + 33, 7.0, 0, 0.50, 0.56, 0.52);
-  const std::string shown = state.textBuffer + "_";
+  std::string shown = state.textBuffer;
+  if (cursorVisible()) shown += "_";
   text(cr, shown.c_str(), x + w - 96, y + 29, 16, 2, 0.94, 0.96, 0.94);
   text(cr, "ENTER", x + w - 14, y + 16, 7.0, 2, 0.50, 0.56, 0.52);
 }

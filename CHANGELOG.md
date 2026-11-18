@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.41.0-m2 — 2026-11-18
+
+- Added Hybrid EQ: a Frank-style Helios/Pultec/API/Neve hybrid with low cut,
+  low boost, API midrange, Neve high boost and Pultec high attenuation.
+- Added a full rack preset browser from the preset bar and header PRESETS
+  button, listing factory and user racks.
+- Removed the inactive 6 SLOTS and SERIAL header pills.
+- About now describes each module's character instead of listing controls.
+- Added factory module presets modelled on Comp Suite, Space Suite, Bleed Out,
+  Trowel and Ember.
+- Fixed the 2A factory preset control indices and the O3 ISP phase detector;
+  refreshed the RS-124 input filter on sample-rate changes.
+
 ## 0.40.0-m2 — 2026-11-18
 
 - Added user module presets. Right-click a module name, type a name and press

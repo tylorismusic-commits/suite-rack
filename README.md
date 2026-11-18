@@ -1,7 +1,7 @@
 # Suite Rack
 
-**Status: 0.40.0-m2 — CLAP + LV2, seventy modules, drag reorder, browser search, typed values, rack presets and module presets.**
-Factory module preset content is next.
+**Status: 0.41.0-m2 — CLAP + LV2, seventy-one modules, full preset browsers, drag reorder, browser search and typed values.**
+More factory module presets are next.
 
 A virtual 500 series mix rack in the Suite visual language: six serial slots, each
 hosting one compact module. Slot 1 starts as EQ, slot 2 as Comp, slots 3–6 are
@@ -86,7 +86,11 @@ standalone plugins remain the full versions.
 
 ![Suite Rack — save user preset](docs/rack-save-preset.png)
 
-![Suite Rack — user module presets](docs/rack-browser-user.png)
+![Suite Rack — factory and user module presets](docs/rack-browser-user.png)
+
+![Suite Rack — rack preset browser](docs/rack-presets.png)
+
+![Suite Rack — Hybrid EQ](docs/rack-hybrid-eq.png)
 
 ![Suite Rack — About](docs/rack-about.png)
 
@@ -127,7 +131,7 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.40.0-m2 slice
+## Current 0.41.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
@@ -154,7 +158,7 @@ the 500-series format; Cleanup is the lightweight repair representative.
   four modulation modules, Hearth Comp, Glue, Xpress, Digital, Molot, Red,
   Reel, Ember, Tame, 510 EQ, Pultec, Classic Limiter, Tape Head, Tube Driver,
   DaTube, Fattener, AC-1, LMC-1, Modern Limiter, Hyrax, RS-124, CL-1B, DuTape,
-  VBL, L2, O3 and Bloom.
+  VBL, L2, O3, Bloom and Hybrid EQ.
 - Serial engine and per-slot meters in place; every module is swept at 48 kHz
   and 96 kHz in the DSP tests.
 - **CLAP and LV2 builds** load in REAPER with the six-column editor and process
@@ -163,6 +167,12 @@ the 500-series format; Cleanup is the lightweight repair representative.
   rack settings in both formats.
 - **State and automation mapping tests** cover round-trip recall, dirty-flag
   reporting and slot/global parameter mapping.
+- A full rack preset browser opens from the preset bar or the header
+  **PRESETS** button, listing factory racks and saved user racks.
+- The header keeps only SAVE, PRESETS and ABOUT; the inactive 6 SLOTS and
+  SERIAL pills were removed.
+- The About page shows each module's source plus a short description of its
+  character instead of a control list.
 - User rack presets save to `$XDG_CONFIG_HOME/SuiteRack/presets` (or
   `~/.config/SuiteRack/presets`) and appear in the preset bar after the factory
   presets. The header **SAVE** button opens a name field; Enter writes the
@@ -217,7 +227,7 @@ cp -r build/lv2/suite-rack.lv2 ~/.lv2/
 
 ## Next
 
-1. Factory module preset content for the browser.
+1. More factory module preset content.
 2. Roll the same user-preset format into Comp Suite and Patina.
 3. A final Trowel Smoothing decision; Tame is the current Trowel-derived module.
 

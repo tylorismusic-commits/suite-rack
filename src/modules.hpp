@@ -87,6 +87,14 @@ enum class ControlFormat {
   L2ReleaseMs,
   Threshold20Db,
   Margin6Db,
+  HybridLowCut,
+  HybridLowFreq,
+  HybridBoost15,
+  HybridMidFreq,
+  HybridGain15,
+  HybridHighFreq,
+  HybridHighBoost,
+  HybridHighAtten,
 };
 
 struct ControlDesc {
@@ -193,6 +201,17 @@ inline constexpr const char* kRs124ModelLabels[] = {"60050A", "61010B",
                                                     "60070B"};
 inline constexpr const char* kRs124ReleaseLabels[] = {"1", "2", "3",
                                                       "4", "5", "6"};
+
+inline constexpr ControlDesc kHybridEqControls[] = {
+    {0, "LOW CUT", "Low Cut", ControlFormat::HybridLowCut},
+    {1, "LOW FREQ", "Low Frequency", ControlFormat::HybridLowFreq},
+    {2, "LOW BOOST", "Low Boost", ControlFormat::HybridBoost15},
+    {3, "MID FREQ", "Mid Frequency", ControlFormat::HybridMidFreq},
+    {4, "MID", "Mid Gain", ControlFormat::HybridGain15},
+    {5, "HIGH FREQ", "High Frequency", ControlFormat::HybridHighFreq},
+    {6, "HIGH BOOST", "High Boost", ControlFormat::HybridHighBoost},
+    {7, "HIGH ATTEN", "High Attenuation", ControlFormat::HybridHighAtten},
+};
 
 inline constexpr ControlDesc kJcO3Controls[] = {
     {0, "THRESHOLD", "Threshold", ControlFormat::Threshold20Db},
@@ -842,6 +861,11 @@ inline constexpr ModuleDesc kModules[] = {
     {ModuleId::JcO3, "O3", "Dyn", "JClones maximizer", false, true, 0,
      static_cast<int>(sizeof(kJcO3Controls) / sizeof(kJcO3Controls[0])),
      kJcO3Controls},
+    {ModuleId::HybridEq, "Hybrid EQ", "EQ",
+     "Frank-style hybrid console EQ", true, false, 0,
+     static_cast<int>(sizeof(kHybridEqControls) /
+                      sizeof(kHybridEqControls[0])),
+     kHybridEqControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -919,6 +943,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "JClones",
     "JClones",
     "JClones",
+    "Suite Rack exclusive",
 };
 
 constexpr bool moduleSourcesComplete() noexcept {

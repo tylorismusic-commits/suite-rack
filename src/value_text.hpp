@@ -293,6 +293,32 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::Margin6Db:
       std::snprintf(buf, sizeof(buf), "%.1f dB", -6.0f + 6.0f * v);
       return buf;
+    case ControlFormat::HybridLowCut:
+      std::snprintf(buf, sizeof(buf), "%.0f Hz", 20.0f * std::pow(40.0f, v));
+      return buf;
+    case ControlFormat::HybridLowFreq:
+      std::snprintf(buf, sizeof(buf), "%.0f Hz",
+                    30.0f * std::pow(13.3333f, v));
+      return buf;
+    case ControlFormat::HybridBoost15:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", 15.0f * v);
+      return buf;
+    case ControlFormat::HybridMidFreq:
+      std::snprintf(buf, sizeof(buf), "%.0f Hz", 200.0f * std::pow(25.0f, v));
+      return buf;
+    case ControlFormat::HybridGain15:
+      std::snprintf(buf, sizeof(buf), "%+.1f dB", -15.0f + 30.0f * v);
+      return buf;
+    case ControlFormat::HybridHighFreq:
+      std::snprintf(buf, sizeof(buf), "%.0f Hz",
+                    2500.0f * std::pow(6.4f, v));
+      return buf;
+    case ControlFormat::HybridHighBoost:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", 18.0f * v);
+      return buf;
+    case ControlFormat::HybridHighAtten:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -18.0f * v);
+      return buf;
     case ControlFormat::L2ReleaseMs: {
       const double ms = std::pow(10.0, 5.0 * static_cast<double>(v) - 5.0) * 1000.0;
       if (ms < 10.0)
@@ -506,6 +532,22 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
           }
           case ControlFormat::Threshold20Db: v = (v + 20.0) / 20.0; break;
           case ControlFormat::Margin6Db: v = (v + 6.0) / 6.0; break;
+          case ControlFormat::HybridLowCut:
+            v = std::log(std::max(v, 20.0) / 20.0) / std::log(40.0);
+            break;
+          case ControlFormat::HybridLowFreq:
+            v = std::log(std::max(v, 30.0) / 30.0) / std::log(13.3333);
+            break;
+          case ControlFormat::HybridBoost15: v = v / 15.0; break;
+          case ControlFormat::HybridMidFreq:
+            v = std::log(std::max(v, 200.0) / 200.0) / std::log(25.0);
+            break;
+          case ControlFormat::HybridGain15: v = (v + 15.0) / 30.0; break;
+          case ControlFormat::HybridHighFreq:
+            v = std::log(std::max(v, 2500.0) / 2500.0) / std::log(6.4);
+            break;
+          case ControlFormat::HybridHighBoost: v = v / 18.0; break;
+          case ControlFormat::HybridHighAtten: v = -v / 18.0; break;
           default: break;
         }
       }
