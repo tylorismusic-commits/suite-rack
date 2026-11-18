@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.43.0-m2 — CLAP + LV2, seventy-one modules, full preset browsers, drag reorder, browser search and typed values.**
+**Status: 0.44.0-m2 — CLAP + LV2, seventy-one modules, full preset browsers, drag reorder, browser search and typed values.**
 More factory module presets are next.
 
 A virtual 500 series mix rack in the Suite visual language: six serial slots, each
@@ -133,7 +133,7 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.43.0-m2 slice
+## Current 0.44.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
@@ -181,6 +181,8 @@ the 500-series format; Cleanup is the lightweight repair representative.
   preset and Escape cancels.
 - Long module preset names wrap inside their browser cards instead of running
   into neighbouring cards.
+- The typing cursor is drawn separately from the text, so blinking never
+  shifts the entered letters.
 - Every loaded module card has a small **PRESET** button. It opens the
   browser's **PRESETS** tab filtered to that module, so changing module presets
   does not require hunting through the full list. The tab can also be opened

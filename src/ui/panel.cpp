@@ -2031,9 +2031,22 @@ void Panel::drawTextEntry(cairo_t* cr, const PanelState& state) const {
   text(cr, name, x + 14, y + 16, 8.5, 0, 0.72, 0.78, 0.74);
   text(cr, (state.savePreset || state.saveModule) ? "TYPE NAME" : "TYPE VALUE",
        x + 14, y + 33, 7.0, 0, 0.50, 0.56, 0.52);
-  std::string shown = state.textBuffer;
-  if (cursorVisible()) shown += "_";
-  text(cr, shown.c_str(), x + w - 96, y + 29, 16, 2, 0.94, 0.96, 0.94);
+  const double valueX = x + 150.0;
+  const double valueY = y + 34.0;
+  cairo_save(cr);
+  cairo_rectangle(cr, x + 138, y + 6, w - 210, h - 12);
+  cairo_clip(cr);
+  text(cr, state.textBuffer.c_str(), valueX, valueY, 16, 0, 0.94, 0.96,
+       0.94);
+  if (cursorVisible()) {
+    cairo_set_font_face(cr, font_);
+    cairo_set_font_size(cr, 16);
+    cairo_text_extents_t extents;
+    cairo_text_extents(cr, state.textBuffer.c_str(), &extents);
+    text(cr, "_", valueX + extents.x_advance + 1.0, valueY, 16, 0, 0.94,
+         0.96, 0.94);
+  }
+  cairo_restore(cr);
   text(cr, "ENTER", x + w - 14, y + 16, 7.0, 2, 0.50, 0.56, 0.52);
 }
 

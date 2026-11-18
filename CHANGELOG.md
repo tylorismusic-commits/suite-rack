@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.44.0-m2 — 2026-11-18
+
+- Fixed the typing cursor shifting the entered text left and right as it
+  blinked. Text stays fixed and the cursor is drawn after it.
+
 ## 0.43.0-m2 — 2026-11-18
 
 - Wrapped long module preset names onto two lines inside browser cards so
