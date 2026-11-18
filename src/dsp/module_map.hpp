@@ -130,6 +130,26 @@ inline hdsp::modules::MultibandControls multibandControlsFrom(
   return out;
 }
 
+inline hdsp::modules::RiderControls riderControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::RiderControls out;
+  out.target = c.c[0];
+  out.speed = c.c[1];
+  out.range = c.c[2];
+  out.mix = c.c[3];
+  return out;
+}
+
+inline hdsp::modules::CleanupControls cleanupControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::CleanupControls out;
+  out.declick = c.c[0];
+  out.dehum = c.c[1];
+  out.mains = c.c[2] > 0.5f ? 1 : 0;
+  out.mix = c.c[3];
+  return out;
+}
+
 inline hdsp::modules::SubControls subControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::SubControls out;

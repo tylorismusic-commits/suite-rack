@@ -37,6 +37,8 @@ enum class ModuleId : int {
   Double,
   DynamicEq,
   Multiband,
+  Rider,
+  Cleanup,
   Count
 };
 
@@ -49,6 +51,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Gate",      "Transient", "Clip",     "De-Ess",   "Density",
     "Bleed Out", "Peak Limiter", "Image", "Crush", "Filter", "Motion",
     "Sub",       "Double",   "Dynamic EQ", "Multiband",
+    "Rider",     "Cleanup",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -113,7 +116,8 @@ inline constexpr bool moduleHasGr(int id) noexcept {
   return moduleIsComp(id) || id == static_cast<int>(ModuleId::DynGate) ||
          id == static_cast<int>(ModuleId::DynDeEss) ||
          id == static_cast<int>(ModuleId::BleedOut) ||
-         id == static_cast<int>(ModuleId::Limiter);
+         id == static_cast<int>(ModuleId::Limiter) ||
+         id == static_cast<int>(ModuleId::Rider);
 }
 
 // All controls are normalised to 0..1. The module descriptor maps them to
@@ -323,6 +327,22 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 4: return 0.20;  // Attack
         case 5: return 0.40;  // Release
         case 6: return 0.00;  // Makeup
+        default: return 0.50;
+      }
+    case ModuleId::Rider:
+      switch (control) {
+        case 0: return 0.60;  // Target
+        case 1: return 0.50;  // Speed
+        case 2: return 0.50;  // Range
+        case 3: return 1.00;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::Cleanup:
+      switch (control) {
+        case 0: return 0.50;  // De-click
+        case 1: return 0.50;  // De-hum
+        case 2: return 0.00;  // Mains 50
+        case 3: return 1.00;  // Mix
         default: return 0.50;
       }
     default:

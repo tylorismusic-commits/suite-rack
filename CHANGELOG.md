@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.0-m2 — 2026-11-17
+
+- Added Rider: target, speed, range and mix.
+- Added Cleanup: de-click, de-hum, 50/60 Hz mains and mix.
+- Rider and Cleanup live in hearth-dsp and are consumed through the submodule.
+
 ## 0.13.0-m2 — 2026-11-17
 
 - Added Dynamic EQ: frequency, Q, threshold, range, ratio and mix.

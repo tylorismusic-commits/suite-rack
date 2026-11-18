@@ -23,7 +23,7 @@
     ] ;
     doap:homepage <https://github.com/tylorismusic-commits/suite-rack> ;
     lv2:majorVersion 0 ;
-    lv2:minorVersion 13 ;
+    lv2:minorVersion 14 ;
     lv2:microVersion 0 ;
     lv2:binary <suite_rack.so> ;
     rdfs:seeAlso <manifest.ttl> ;
@@ -96,7 +96,7 @@
         lv2:name "Module" ;
         lv2:default 1 ;
         lv2:minimum 0 ;
-        lv2:maximum 29 ;
+        lv2:maximum 31 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -127,7 +127,9 @@
             [ rdf:value 26 ; rdfs:label "Sub" ] ,
             [ rdf:value 27 ; rdfs:label "Double" ] ,
             [ rdf:value 28 ; rdfs:label "Dynamic EQ" ] ,
-            [ rdf:value 29 ; rdfs:label "Multiband" ] ;
+            [ rdf:value 29 ; rdfs:label "Multiband" ] ,
+            [ rdf:value 30 ; rdfs:label "Rider" ] ,
+            [ rdf:value 31 ; rdfs:label "Cleanup" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
     ] ,
     [
@@ -291,7 +293,7 @@
         lv2:name "Module" ;
         lv2:default 5 ;
         lv2:minimum 0 ;
-        lv2:maximum 29 ;
+        lv2:maximum 31 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -322,7 +324,9 @@
             [ rdf:value 26 ; rdfs:label "Sub" ] ,
             [ rdf:value 27 ; rdfs:label "Double" ] ,
             [ rdf:value 28 ; rdfs:label "Dynamic EQ" ] ,
-            [ rdf:value 29 ; rdfs:label "Multiband" ] ;
+            [ rdf:value 29 ; rdfs:label "Multiband" ] ,
+            [ rdf:value 30 ; rdfs:label "Rider" ] ,
+            [ rdf:value 31 ; rdfs:label "Cleanup" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
@@ -486,7 +490,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 29 ;
+        lv2:maximum 31 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -517,7 +521,9 @@
             [ rdf:value 26 ; rdfs:label "Sub" ] ,
             [ rdf:value 27 ; rdfs:label "Double" ] ,
             [ rdf:value 28 ; rdfs:label "Dynamic EQ" ] ,
-            [ rdf:value 29 ; rdfs:label "Multiband" ] ;
+            [ rdf:value 29 ; rdfs:label "Multiband" ] ,
+            [ rdf:value 30 ; rdfs:label "Rider" ] ,
+            [ rdf:value 31 ; rdfs:label "Cleanup" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
@@ -681,7 +687,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 29 ;
+        lv2:maximum 31 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -712,7 +718,9 @@
             [ rdf:value 26 ; rdfs:label "Sub" ] ,
             [ rdf:value 27 ; rdfs:label "Double" ] ,
             [ rdf:value 28 ; rdfs:label "Dynamic EQ" ] ,
-            [ rdf:value 29 ; rdfs:label "Multiband" ] ;
+            [ rdf:value 29 ; rdfs:label "Multiband" ] ,
+            [ rdf:value 30 ; rdfs:label "Rider" ] ,
+            [ rdf:value 31 ; rdfs:label "Cleanup" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
@@ -876,7 +884,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 29 ;
+        lv2:maximum 31 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -907,7 +915,9 @@
             [ rdf:value 26 ; rdfs:label "Sub" ] ,
             [ rdf:value 27 ; rdfs:label "Double" ] ,
             [ rdf:value 28 ; rdfs:label "Dynamic EQ" ] ,
-            [ rdf:value 29 ; rdfs:label "Multiband" ] ;
+            [ rdf:value 29 ; rdfs:label "Multiband" ] ,
+            [ rdf:value 30 ; rdfs:label "Rider" ] ,
+            [ rdf:value 31 ; rdfs:label "Cleanup" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
@@ -1071,7 +1081,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 29 ;
+        lv2:maximum 31 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -1102,7 +1112,9 @@
             [ rdf:value 26 ; rdfs:label "Sub" ] ,
             [ rdf:value 27 ; rdfs:label "Double" ] ,
             [ rdf:value 28 ; rdfs:label "Dynamic EQ" ] ,
-            [ rdf:value 29 ; rdfs:label "Multiband" ] ;
+            [ rdf:value 29 ; rdfs:label "Multiband" ] ,
+            [ rdf:value 30 ; rdfs:label "Rider" ] ,
+            [ rdf:value 31 ; rdfs:label "Cleanup" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [

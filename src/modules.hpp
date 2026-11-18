@@ -54,6 +54,8 @@ enum class ControlFormat {
   DynRangeDb,
   DynRatio,
   MakeupDb,
+  RiderTargetDb,
+  RiderSpeedMs,
 };
 
 struct ControlDesc {
@@ -180,6 +182,22 @@ inline constexpr ControlDesc kBleedOutControls[] = {
 inline constexpr const char* kFilterModeLabels[] = {"LP", "BP", "HP"};
 inline constexpr const char* kMotionModeLabels[] = {"Tremolo", "Auto-Pan",
                                                     "Rotary"};
+
+inline constexpr const char* kMainsLabels[] = {"50 Hz", "60 Hz"};
+
+inline constexpr ControlDesc kRiderControls[] = {
+    {0, "TARGET", "Target", ControlFormat::RiderTargetDb},
+    {1, "SPEED", "Speed", ControlFormat::RiderSpeedMs},
+    {2, "RANGE", "Range", ControlFormat::DynRangeDb},
+    {3, "MIX", "Mix", ControlFormat::Percent},
+};
+
+inline constexpr ControlDesc kCleanupControls[] = {
+    {0, "DECLICK", "De-Click", ControlFormat::Percent},
+    {1, "DEHUM", "De-Hum", ControlFormat::Percent},
+    {2, "MAINS", "Mains", ControlFormat::Percent, true, labels(kMainsLabels)},
+    {3, "MIX", "Mix", ControlFormat::Percent},
+};
 
 inline constexpr ControlDesc kDynamicEqControls[] = {
     {0, "FREQ", "Frequency", ControlFormat::FilterCutoffHz},
@@ -379,6 +397,13 @@ inline constexpr ModuleDesc kModules[] = {
      static_cast<int>(sizeof(kMultibandControls) /
                       sizeof(kMultibandControls[0])),
      kMultibandControls},
+    {ModuleId::Rider, "Rider", "Dyn", "Auto-level / vocal rider", false, false,
+     0, static_cast<int>(sizeof(kRiderControls) / sizeof(kRiderControls[0])),
+     kRiderControls},
+    {ModuleId::Cleanup, "Cleanup", "Dyn", "De-click and de-hum", false, false,
+     0,
+     static_cast<int>(sizeof(kCleanupControls) / sizeof(kCleanupControls[0])),
+     kCleanupControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,

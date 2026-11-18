@@ -37,6 +37,8 @@ public:
     for (auto& doubler : double_) doubler.prepare(sr_);
     for (auto& dynEq : dynamicEq_) dynEq.prepare(sr_);
     for (auto& multiband : multiband_) multiband.prepare(sr_);
+    for (auto& rider : rider_) rider.prepare(sr_);
+    for (auto& cleanup : cleanup_) cleanup.prepare(sr_);
     input_.setTime(15.0f, sr_);
     output_.setTime(15.0f, sr_);
     power_.setTime(20.0f, sr_);
@@ -69,6 +71,8 @@ public:
       double_[i].setControls(doubleControlsFrom(c.slot[i]));
       dynamicEq_[i].setControls(dynamicEqControlsFrom(c.slot[i]));
       multiband_[i].setControls(multibandControlsFrom(c.slot[i]));
+      rider_[i].setControls(riderControlsFrom(c.slot[i]));
+      cleanup_[i].setControls(cleanupControlsFrom(c.slot[i]));
       slotGain_[i].setTarget(hdsp::dbToGain(c.slot[i].gainDb));
     }
     input_.setTarget(hdsp::dbToGain(c.inputDb));
@@ -168,6 +172,13 @@ public:
             multiband_[s].process(l, r);
             gr = multiband_[s].lastGrDb();
             break;
+          case ModuleId::Rider:
+            rider_[s].process(l, r);
+            gr = rider_[s].lastGrDb();
+            break;
+          case ModuleId::Cleanup:
+            cleanup_[s].process(l, r);
+            break;
           case ModuleId::Count:
             continue;
         }
@@ -220,6 +231,8 @@ public:
     for (auto& doubler : double_) doubler.reset();
     for (auto& dynEq : dynamicEq_) dynEq.reset();
     for (auto& multiband : multiband_) multiband.reset();
+    for (auto& rider : rider_) rider.reset();
+    for (auto& cleanup : cleanup_) cleanup.reset();
     input_.snap();
     output_.snap();
     power_.snap();
@@ -261,6 +274,8 @@ private:
   hdsp::modules::Double double_[kSlotCount];
   hdsp::modules::DynamicEq dynamicEq_[kSlotCount];
   hdsp::modules::Multiband multiband_[kSlotCount];
+  hdsp::modules::Rider rider_[kSlotCount];
+  hdsp::modules::Cleanup cleanup_[kSlotCount];
   hdsp::Smoothed input_, output_, power_;
   hdsp::Smoothed slotGain_[kSlotCount];
 };

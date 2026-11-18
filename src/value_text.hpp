@@ -194,6 +194,12 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::MakeupDb:
       std::snprintf(buf, sizeof(buf), "%.1f dB", v * 24.0f);
       return buf;
+    case ControlFormat::RiderTargetDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -40.0f + 40.0f * v);
+      return buf;
+    case ControlFormat::RiderSpeedMs:
+      std::snprintf(buf, sizeof(buf), "%.0f ms", 20.0f * std::pow(50.0f, v));
+      return buf;
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;
@@ -362,6 +368,10 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
           case ControlFormat::DynRangeDb: v = v / 24.0; break;
           case ControlFormat::DynRatio: v = (v - 1.0) / 9.0; break;
           case ControlFormat::MakeupDb: v = v / 24.0; break;
+          case ControlFormat::RiderTargetDb: v = (v + 40.0) / 40.0; break;
+          case ControlFormat::RiderSpeedMs:
+            v = std::log(std::max(v, 20.0) / 20.0) / std::log(50.0);
+            break;
           default: break;
         }
       }
