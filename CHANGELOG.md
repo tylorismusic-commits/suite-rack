@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.11.0-m2 — 2026-11-17
+
+- Added Sub: tracking frequency, amount, drive and mix.
+- Added Double: delay, detune, width and mix.
+- Sub and Double live in hearth-dsp and are consumed through the submodule.
+
 ## 0.10.0-m2 — 2026-11-17
 
 - Added Filter: cutoff, resonance, envelope amount, LFO rate and LP/BP/HP mode.

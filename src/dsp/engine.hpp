@@ -33,6 +33,8 @@ public:
     for (auto& crush : crush_) crush.prepare(sr_);
     for (auto& filter : filter_) filter.prepare(sr_);
     for (auto& motion : motion_) motion.prepare(sr_);
+    for (auto& sub : sub_) sub.prepare(sr_);
+    for (auto& doubler : double_) doubler.prepare(sr_);
     input_.setTime(15.0f, sr_);
     output_.setTime(15.0f, sr_);
     power_.setTime(20.0f, sr_);
@@ -61,6 +63,8 @@ public:
       crush_[i].setControls(crushControlsFrom(c.slot[i]));
       filter_[i].setControls(filterControlsFrom(c.slot[i]));
       motion_[i].setControls(motionControlsFrom(c.slot[i]));
+      sub_[i].setControls(subControlsFrom(c.slot[i]));
+      double_[i].setControls(doubleControlsFrom(c.slot[i]));
       slotGain_[i].setTarget(hdsp::dbToGain(c.slot[i].gainDb));
     }
     input_.setTarget(hdsp::dbToGain(c.inputDb));
@@ -146,6 +150,12 @@ public:
           case ModuleId::Motion:
             motion_[s].process(l, r);
             break;
+          case ModuleId::Sub:
+            sub_[s].process(l, r);
+            break;
+          case ModuleId::Double:
+            double_[s].process(l, r);
+            break;
           case ModuleId::Count:
             continue;
         }
@@ -194,6 +204,8 @@ public:
     for (auto& crush : crush_) crush.reset();
     for (auto& filter : filter_) filter.reset();
     for (auto& motion : motion_) motion.reset();
+    for (auto& sub : sub_) sub.reset();
+    for (auto& doubler : double_) doubler.reset();
     input_.snap();
     output_.snap();
     power_.snap();
@@ -231,6 +243,8 @@ private:
   hdsp::modules::Crush crush_[kSlotCount];
   hdsp::modules::Filter filter_[kSlotCount];
   hdsp::modules::Motion motion_[kSlotCount];
+  hdsp::modules::Sub sub_[kSlotCount];
+  hdsp::modules::Double double_[kSlotCount];
   hdsp::Smoothed input_, output_, power_;
   hdsp::Smoothed slotGain_[kSlotCount];
 };

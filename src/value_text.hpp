@@ -173,6 +173,15 @@ inline std::string formatControlValue(const ModuleDesc& module,
       static const char* names[3] = {"Tremolo", "Auto-Pan", "Rotary"};
       return names[std::clamp(static_cast<int>(std::lround(v * 2.0f)), 0, 2)];
     }
+    case ControlFormat::SubFreqHz:
+      std::snprintf(buf, sizeof(buf), "%.0f Hz", 30.0f * std::pow(5.0f, v));
+      return buf;
+    case ControlFormat::DelayMs:
+      std::snprintf(buf, sizeof(buf), "%.1f ms", 10.0f + 30.0f * v);
+      return buf;
+    case ControlFormat::DetuneMs:
+      std::snprintf(buf, sizeof(buf), "%.1f ms", 3.0f * v);
+      return buf;
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;
@@ -330,6 +339,11 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
           case ControlFormat::LfoRateHz:
             v = std::log(std::max(v, 0.05) / 0.05) / std::log(200.0);
             break;
+          case ControlFormat::SubFreqHz:
+            v = std::log(std::max(v, 30.0) / 30.0) / std::log(5.0);
+            break;
+          case ControlFormat::DelayMs: v = (v - 10.0) / 30.0; break;
+          case ControlFormat::DetuneMs: v = v / 3.0; break;
           default: break;
         }
       }

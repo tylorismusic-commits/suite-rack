@@ -47,6 +47,9 @@ enum class ControlFormat {
   LfoRateHz,
   FilterMode,
   MotionMode,
+  SubFreqHz,
+  DelayMs,
+  DetuneMs,
 };
 
 struct ControlDesc {
@@ -173,6 +176,20 @@ inline constexpr ControlDesc kBleedOutControls[] = {
 inline constexpr const char* kFilterModeLabels[] = {"LP", "BP", "HP"};
 inline constexpr const char* kMotionModeLabels[] = {"Tremolo", "Auto-Pan",
                                                     "Rotary"};
+
+inline constexpr ControlDesc kSubControls[] = {
+    {0, "FREQ", "Frequency", ControlFormat::SubFreqHz},
+    {1, "AMOUNT", "Amount", ControlFormat::Percent},
+    {2, "DRIVE", "Drive", ControlFormat::Percent},
+    {3, "MIX", "Mix", ControlFormat::Percent},
+};
+
+inline constexpr ControlDesc kDoubleControls[] = {
+    {0, "DELAY", "Delay", ControlFormat::DelayMs},
+    {1, "DETUNE", "Detune", ControlFormat::DetuneMs},
+    {2, "WIDTH", "Width", ControlFormat::Percent},
+    {3, "MIX", "Mix", ControlFormat::Percent},
+};
 
 inline constexpr ControlDesc kFilterControls[] = {
     {0, "CUTOFF", "Cutoff", ControlFormat::FilterCutoffHz},
@@ -323,6 +340,12 @@ inline constexpr ModuleDesc kModules[] = {
      false, 0,
      static_cast<int>(sizeof(kMotionControls) / sizeof(kMotionControls[0])),
      kMotionControls},
+    {ModuleId::Sub, "Sub", "Dyn", "Subharmonic synthesizer", false, false, 0,
+     static_cast<int>(sizeof(kSubControls) / sizeof(kSubControls[0])),
+     kSubControls},
+    {ModuleId::Double, "Double", "Dyn", "Doubler / microshift", false, false, 0,
+     static_cast<int>(sizeof(kDoubleControls) / sizeof(kDoubleControls[0])),
+     kDoubleControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,

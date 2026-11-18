@@ -105,6 +105,26 @@ inline hdsp::modules::ClipControls clipControlsFrom(
   return out;
 }
 
+inline hdsp::modules::SubControls subControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::SubControls out;
+  out.frequency = c.c[0];
+  out.amount = c.c[1];
+  out.drive = c.c[2];
+  out.mix = c.c[3];
+  return out;
+}
+
+inline hdsp::modules::DoubleControls doubleControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::DoubleControls out;
+  out.delay = c.c[0];
+  out.detune = c.c[1];
+  out.width = c.c[2];
+  out.mix = c.c[3];
+  return out;
+}
+
 inline hdsp::modules::FilterControls filterControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::FilterControls out;

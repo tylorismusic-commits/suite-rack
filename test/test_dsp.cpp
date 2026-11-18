@@ -142,6 +142,8 @@ int main() {
         static_cast<int>(ModuleId::Limiter),
         static_cast<int>(ModuleId::Image),
         static_cast<int>(ModuleId::Crush),
+        static_cast<int>(ModuleId::Sub),
+        static_cast<int>(ModuleId::Double),
     };
     for (int id : ids) {
       Engine e;
