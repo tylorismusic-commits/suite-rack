@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.26.0-m2 — 2026-11-18
+
+- Added JClones LMC-1 console compressor with input, threshold, output and
+  box tone.
+- LMC-1 is labelled JClones and reports gain reduction.
+
 ## 0.25.0-m2 — 2026-11-18
 
 - Added JClones AC-1 console channel with input, output, drive, comp, attack,

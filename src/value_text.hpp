@@ -245,6 +245,9 @@ inline std::string formatControlValue(const ModuleDesc& module,
       static const char* names[2] = {"AC1", "AC101"};
       return names[std::clamp(static_cast<int>(std::lround(v)), 0, 1)];
     }
+    case ControlFormat::Threshold48Db:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -48.0f + 48.0f * v);
+      return buf;
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;

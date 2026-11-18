@@ -143,6 +143,11 @@ int main(int argc, char** argv) {
   state.selectedSlot = 2;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-jclones-ac1.png").c_str());
+  applyModuleDefaults(s, 2, static_cast<int>(ModuleId::JcLMC1));
+  applyModuleDefaults(s, 3, static_cast<int>(ModuleId::JcAC1));
+  state.selectedSlot = 2;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-lmc1.png").c_str());
   state.aboutOpen = true;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-about.png").c_str());

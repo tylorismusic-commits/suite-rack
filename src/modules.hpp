@@ -70,6 +70,7 @@ enum class ControlFormat {
   CompAmount,
   AttackShortMs,
   AC1Mode,
+  Threshold48Db,
 };
 
 struct ControlDesc {
@@ -158,6 +159,13 @@ inline constexpr ControlDesc kEq510Controls[] = {
 inline constexpr const char* kTapeColorLabels[] = {"Normal", "Medium",
                                                    "Bright"};
 inline constexpr const char* kAC1ModeLabels[] = {"AC1", "AC101"};
+
+inline constexpr ControlDesc kJcLMC1Controls[] = {
+    {0, "INPUT", "Input", ControlFormat::WideGainDb},
+    {1, "THR", "Threshold", ControlFormat::Threshold48Db},
+    {2, "OUTPUT", "Output", ControlFormat::WideGainDb},
+    {3, "BOX TONE", "Box Tone", ControlFormat::Percent, false, {}, true},
+};
 
 inline constexpr ControlDesc kJcAC1Controls[] = {
     {0, "INPUT", "Input", ControlFormat::WideGainDb},
@@ -671,6 +679,10 @@ inline constexpr ModuleDesc kModules[] = {
     {ModuleId::JcAC1, "AC-1", "Colour", "JClones console channel", false, false,
      0, static_cast<int>(sizeof(kJcAC1Controls) / sizeof(kJcAC1Controls[0])),
      kJcAC1Controls},
+    {ModuleId::JcLMC1, "LMC-1", "Comp", "JClones console compressor", false,
+     true, 0,
+     static_cast<int>(sizeof(kJcLMC1Controls) / sizeof(kJcLMC1Controls[0])),
+     kJcLMC1Controls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -732,6 +744,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Trowel",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
+    "JClones",
     "JClones",
     "JClones",
     "JClones",

@@ -205,6 +205,16 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::LMC1Controls lmc1ControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::LMC1Controls out;
+  out.input = c.c[0];
+  out.threshold = c.c[1];
+  out.output = c.c[2];
+  out.boxTone = c.c[3] > 0.5f;
+  return out;
+}
+
 inline hdsp::modules::AC1Controls ac1ControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::AC1Controls out;
