@@ -39,6 +39,12 @@ inline std::string formatControlValue(const ModuleDesc& module,
                                       double value) {
   char buf[64];
   const float v = static_cast<float>(std::clamp(value, 0.0, 1.0));
+  if (control.labels.count > 0) {
+    const int i = std::clamp(
+        static_cast<int>(std::lround(v * (control.labels.count - 1))), 0,
+        control.labels.count - 1);
+    return control.labels.names[i];
+  }
   switch (control.format) {
     case ControlFormat::Percent:
       std::snprintf(buf, sizeof(buf), "%.0f%%", v * 100.0f);
@@ -230,6 +236,16 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
       const ModuleDesc* module = moduleDesc(type);
       const ControlDesc* desc = controlFor(*module, control);
       if (desc) {
+        if (desc->labels.count > 0) {
+          for (int i = 0; i < desc->labels.count; ++i) {
+            if (text == lowerText(desc->labels.names[i])) {
+              *out = desc->labels.count > 1
+                         ? static_cast<double>(i) / (desc->labels.count - 1)
+                         : 0.0;
+              return true;
+            }
+          }
+        }
         switch (desc->format) {
           case ControlFormat::ThresholdDb: v = (v + 40.0) / 40.0; break;
           case ControlFormat::GainDb: v = v / 20.0 + 0.5; break;

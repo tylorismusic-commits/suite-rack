@@ -131,6 +131,7 @@ void connectPort(LV2_Handle handle, uint32_t port, void* data) {
 void activate(LV2_Handle handle) {
   auto* p = static_cast<Plugin*>(handle);
   p->engine.reset();
+  p->engine.setControls(rack::controlsFrom(p->shared));
   if (p->latency) {
     *p->latency = static_cast<float>(p->engine.latencySamples());
   }

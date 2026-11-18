@@ -106,6 +106,31 @@ int main() {
   check(s.get(P_SLOT3_TYPE) == static_cast<double>(ModuleId::DynGate),
         "Gate module selects into slot 4");
 
+  // Slot 5: Bleed Out and its stepped profile control.
+  panel.draw(cr, s, state);
+  panel.pointerDown(s, state, 750, 134, false);
+  panel.pointerUp();
+  panel.draw(cr, s, state);
+  check(clickLabel(panel, s, state, "DYN"), "DYN tab works on slot 5");
+  panel.draw(cr, s, state);
+  check(clickLabel(panel, s, state, "Bleed Out"),
+        "filtered browser offers Bleed Out");
+  check(s.get(P_SLOT4_TYPE) == static_cast<double>(ModuleId::BleedOut),
+        "Bleed Out selects into slot 5");
+
+  const uint32_t profileParam = slotParam(4, kSlotOffsetC0 + 0);
+  s.set(profileParam, 0.0);
+  panel.draw(cr, s, state);
+  bool wheeled = false;
+  for (const auto& r : panel.widgetRects()) {
+    if (r.param != profileParam) continue;
+    wheeled = panel.wheel(s, state, r.x + r.w * 0.5, r.y + r.h * 0.5, 1.0);
+    break;
+  }
+  check(wheeled, "Bleed Out profile knob is wheelable");
+  check(std::fabs(s.get(profileParam) - 1.0 / 7.0) < 1e-6,
+        "stepped profile snaps to the next profile");
+
   // Bypass pill for slot 2.
   panel.draw(cr, s, state);
   check(clickParam(panel, s, state, P_SLOT1_BYPASS),

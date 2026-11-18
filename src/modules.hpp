@@ -44,6 +44,8 @@ struct ControlDesc {
   const char* label = ""; // short faceplate label
   const char* name = "";  // host / tooltip name
   ControlFormat format = ControlFormat::Percent;
+  bool stepped = false;
+  Labels labels{};
 };
 
 struct ModuleDesc {
@@ -144,6 +146,18 @@ inline constexpr ControlDesc kClipControls[] = {
     {3, "MIX", "Mix", ControlFormat::Percent},
 };
 
+inline constexpr const char* kBleedProfiles[] = {
+    "Kick", "Snare", "Tom", "Hat", "Ride", "Room", "OH", "Bus",
+};
+
+inline constexpr ControlDesc kBleedOutControls[] = {
+    {0, "PROFILE", "Profile", ControlFormat::Percent, true,
+     labels(kBleedProfiles)},
+    {1, "THR", "Threshold", ControlFormat::GateThresholdDb},
+    {2, "DEBLEED", "DeBleed", ControlFormat::Percent},
+    {3, "GHOST", "Ghost", ControlFormat::Percent},
+};
+
 inline constexpr ControlDesc kDensityControls[] = {
     {0, "INPUT", "Input", ControlFormat::TiltDb},
     {1, "DENSITY", "Density", ControlFormat::Percent},
@@ -228,6 +242,11 @@ inline constexpr ModuleDesc kModules[] = {
      0, static_cast<int>(sizeof(kDensityControls) /
                          sizeof(kDensityControls[0])),
      kDensityControls},
+    {ModuleId::BleedOut, "Bleed Out", "Dyn", "Multiband de-bleed gate", false,
+     false, 0,
+     static_cast<int>(sizeof(kBleedOutControls) /
+                      sizeof(kBleedOutControls[0])),
+     kBleedOutControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,

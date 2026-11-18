@@ -108,6 +108,9 @@ ModuleStyle styleFor(int type) {
     case ModuleId::Density:
       return {{0.08, 0.075, 0.07}, {0.24, 0.20, 0.16},
               {0.92, 0.72, 0.34}, {0.90, 0.84, 0.72}};
+    case ModuleId::BleedOut:
+      return {{0.17, 0.09, 0.21}, {0.38, 0.18, 0.46},
+              {0.84, 0.48, 0.98}, {0.94, 0.86, 0.96}};
     default:
       return {{0.105, 0.10, 0.095}, {0.24, 0.22, 0.19},
               {0.55, 0.50, 0.44}, {0.72, 0.70, 0.66}};
@@ -188,7 +191,7 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
 
   auto knob = [&](uint32_t param, double x, double y, double r,
                   const char* label, int styleSlot = -1, bool compact = true,
-                  int moduleControl = -1) {
+                  int moduleControl = -1, int steps = 0) {
     Widget k{};
     k.kind = Kind::Knob; k.param = param; k.x = x; k.y = y; k.r = r;
     k.label = label; k.labelBelow = false; k.compact = compact;
@@ -198,6 +201,7 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
                             slotParam(styleSlot, kSlotOffsetType)) + 0.5)
                       : -1;
     k.moduleControl = moduleControl;
+    k.steps = steps;
     widgets_.push_back(k);
   };
 
@@ -240,7 +244,8 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
         const double kx = (k & 1) ? cx2 : cx1;
         const double ky = y + 165.0 + (k / 2) * rowH;
         knob(slotParam(i, kSlotOffsetC0 + control.param), kx, ky, 18,
-             control.label, i, true, control.param);
+             control.label, i, true, control.param,
+             control.stepped ? control.labels.count : 0);
       }
     }
 
@@ -492,8 +497,10 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
       roundRect(cr, w.x + 0.5, w.y + 0.5, w.w - 1, w.h - 1, 4); cairo_stroke(cr);
       text(cr, slotModuleName(type), w.x + 12, w.y + w.h * 0.5 + 5, 12, 0,
            st.accent.r, st.accent.g, st.accent.b);
-      text(cr, "CHOOSE", w.x + w.w - 10, w.y + w.h * 0.5 + 4, 7, 2,
-           kDim.r, kDim.g, kDim.b);
+      if (type == static_cast<int>(ModuleId::Off)) {
+        text(cr, "CHOOSE", w.x + w.w - 10, w.y + w.h * 0.5 + 4, 7, 2,
+             kDim.r, kDim.g, kDim.b);
+      }
       break;
     }
     case Kind::BrowserTab: {
@@ -573,7 +580,8 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
 void Panel::drawKnob(cairo_t* cr, const Widget& w, const Shared& shared,
                      double value) const {
   const ParamSpec& s = kParamSpecs[w.param];
-  const double vmax = w.steps > 1 ? w.steps - 1 : s.max;
+  const bool stepped01 = w.steps > 1 && w.moduleControl >= 0;
+  const double vmax = (w.steps > 1 && !stepped01) ? w.steps - 1 : s.max;
   const double span = vmax - s.min;
   const double f = clamp01(span > 0.0 ? (value - s.min) / span : 0.0);
   const double a = knobAngle(f);
@@ -775,8 +783,6 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
         dragSteps_ = w.steps;
         dragStartY_ = y;
         dragStartValue_ = shared.get(w.param);
-        if (dragSteps_ > 1)
-          dragStartValue_ = std::min(dragStartValue_, dragSteps_ - 1.0);
         return false;
       }
     }
@@ -792,7 +798,9 @@ bool Panel::pointerMove(Shared& shared, PanelState& state, double, double y,
   const double perPixel = spec.stepped ? 1.0 / 18.0
                                        : (spec.max - spec.min) / (fine ? 800.0 : 200.0);
   double v = dragStartValue_ + (dragStartY_ - y) * perPixel;
-  if (dragSteps_ > 1) v = std::min(v, dragSteps_ - 1.0);
+  if (dragSteps_ > 1) {
+    v = std::round(v * (dragSteps_ - 1)) / (dragSteps_ - 1);
+  }
   shared.set(param, v);
   state.presetDirty = true;
   return true;
@@ -811,10 +819,17 @@ bool Panel::wheel(Shared& shared, PanelState& state, double x, double y, double 
   for (const Widget& w : widgets_) {
     if (w.kind != Kind::Knob || !hitWidget(w, x, y)) continue;
     const ParamSpec& spec = kParamSpecs[w.param];
-    if (spec.stepped)
+    if (w.steps > 1) {
+      const double step = 1.0 / (w.steps - 1);
+      const double cur = shared.get(w.param);
+      double v = cur + (dy > 0 ? step : -step);
+      v = std::round(v / step) * step;
+      shared.set(w.param, v);
+    } else if (spec.stepped) {
       shared.set(w.param, shared.get(w.param) - (dy > 0 ? 1.0 : -1.0));
-    else
+    } else {
       shared.set(w.param, shared.get(w.param) - dy * (spec.max - spec.min) * 0.01);
+    }
     state.presetDirty = true;
     return true;
   }

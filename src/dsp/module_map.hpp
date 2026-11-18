@@ -105,6 +105,18 @@ inline hdsp::modules::ClipControls clipControlsFrom(
   return out;
 }
 
+inline hdsp::modules::BleedOutControls bleedOutControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::BleedOutControls out;
+  out.profile = std::clamp(
+      static_cast<int>(std::lround(std::clamp(c.c[0], 0.0f, 1.0f) * 7.0f)), 0,
+      7);
+  out.threshold = c.c[1];
+  out.deBleed = c.c[2];
+  out.ghost = c.c[3];
+  return out;
+}
+
 inline hdsp::modules::DensityControls densityControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::DensityControls out;

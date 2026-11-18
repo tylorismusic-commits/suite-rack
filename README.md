@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.6.0-m2 — CLAP + LV2, module registry and nineteen modules.**
+**Status: 0.7.0-m2 — CLAP + LV2, module registry and twenty modules.**
 The rest of the catalog, drag/reorder, module presets, browser search and user
 presets are next.
 
@@ -20,6 +20,8 @@ standalone plugins remain the full versions.
 ![Suite Rack — compressor row](docs/rack-comp.png)
 
 ![Suite Rack — module browser](docs/rack-browser.png)
+
+![Suite Rack — Bleed Out](docs/rack-bleedout.png)
 
 ## What goes in the rack
 
@@ -58,7 +60,7 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.6.0-m2 slice
+## Current 0.7.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
@@ -66,12 +68,14 @@ the 500-series format; Cleanup is the lightweight repair representative.
   knob colour.
 - Per-slot bypass, mix and gain.
 - Double-click a knob to reset it to the active module's default.
-- Module browser with **ALL / EQ / COMP / COLOUR / DYN** categories.
+- Stepped controls, used by the Bleed Out profile selector.
+- Filled slots hide the **CHOOSE** hint so longer module names have room.
+- Module browser with **ALL / EQ / COMP / COLOUR / DYN** categories and scrolling.
 - Generic per-slot controls: twelve control slots plus type, bypass, mix and
   gain. Host automation follows the slot, not the module.
 - **Available modules:** 4K EQ, Hearth EQ, Tilt, Air, 76 Blue, 76 Black, 2A,
   3A, VCA, Valve, Console, Bus, Tape, Transformer, Gate, Transient, Clip and
-  De-Ess and Density.
+  De-Ess, Density and Bleed Out.
 - Serial engine and per-slot meters in place; DSP and panel tests pass.
 - **CLAP and LV2 builds** load in REAPER with the six-column editor and process
   audio.

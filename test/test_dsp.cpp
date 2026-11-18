@@ -138,6 +138,7 @@ int main() {
         static_cast<int>(ModuleId::DynClip),
         static_cast<int>(ModuleId::DynDeEss),
         static_cast<int>(ModuleId::Density),
+        static_cast<int>(ModuleId::BleedOut),
     };
     for (int id : ids) {
       Engine e;
@@ -161,6 +162,16 @@ int main() {
       check(finite(l), kModuleLabels[id]);
     }
   }
+  {
+    Engine e;
+    e.prepare(sr);
+    Controls c;
+    c.slot[0].type = static_cast<int>(ModuleId::BleedOut);
+    e.setControls(c);
+    check(e.latencySamples() > 0,
+          "Bleed Out contributes lookahead latency");
+  }
+
   std::printf("%d failure(s)\n", fails);
   return fails == 0 ? 0 : 1;
 }

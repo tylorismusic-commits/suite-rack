@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.7.0-m2 — 2026-11-17
+
+- Added the Bleed Out multiband de-bleed gate module with Profile, Threshold,
+  DeBleed and Ghost.
+- Added stepped control support to the module faceplates.
+- Bleed Out contributes its lookahead latency to the rack's reported latency.
+- Filled slots hide the CHOOSE hint.
+- Bleed Out lives in hearth-dsp and is consumed through the submodule.
+
 ## 0.6.0-m2 — 2026-11-17
 
 - Added the Density harmonic-density module from Mastering Suite.

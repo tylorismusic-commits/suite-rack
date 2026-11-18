@@ -690,6 +690,7 @@ bool pluginActivate(const clap_plugin_t* p, double sampleRate, uint32_t,
   Plugin* s = self(p);
   s->sampleRate = sampleRate;
   s->engine.prepare(static_cast<float>(sampleRate));
+  s->engine.setControls(controlsFrom(s->shared));
   s->active.store(true, std::memory_order_relaxed);
   // REAPER only picks up a new latency when the plugin calls changed(), so do
   // that here (being-activated is the one legal moment) - but only when the
