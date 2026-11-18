@@ -31,6 +31,10 @@ int main(int argc, char** argv) {
   applyModuleDefaults(s, 4, static_cast<int>(ModuleId::BleedOut));
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-bleedout.png").c_str());
+  state.selectedSlot = 5;
+  applyModuleDefaults(s, 5, static_cast<int>(ModuleId::Limiter));
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-limiter.png").c_str());
   cairo_destroy(cr);
   cairo_surface_destroy(surf);
   std::printf("wrote rack-eq.png and rack-comp.png\n");

@@ -39,6 +39,7 @@ inline std::string formatControlValue(const ModuleDesc& module,
                                       double value) {
   char buf[64];
   const float v = static_cast<float>(std::clamp(value, 0.0, 1.0));
+  if (control.toggled) return value > 0.5 ? "On" : "Off";
   if (control.labels.count > 0) {
     const int i = std::clamp(
         static_cast<int>(std::lround(v * (control.labels.count - 1))), 0,
@@ -138,6 +139,14 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::DeEssRangeDb:
       std::snprintf(buf, sizeof(buf), "%.0f dB", v * 24.0f);
       return buf;
+    case ControlFormat::LimiterCeilingDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -6.0f + 6.0f * v);
+      return buf;
+    case ControlFormat::LimiterReleaseMs: {
+      const float ms = 20.0f * std::pow(50.0f, v);
+      std::snprintf(buf, sizeof(buf), "%.0f ms", ms);
+      return buf;
+    }
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;
@@ -277,6 +286,10 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
             v = std::log(std::max(v, 4.0) / 4.0) / std::log(3.0);
             break;
           case ControlFormat::DeEssRangeDb: v = v / 24.0; break;
+          case ControlFormat::LimiterCeilingDb: v = (v + 6.0) / 6.0; break;
+          case ControlFormat::LimiterReleaseMs:
+            v = std::log(std::max(v, 20.0) / 20.0) / std::log(50.0);
+            break;
           default: break;
         }
       }

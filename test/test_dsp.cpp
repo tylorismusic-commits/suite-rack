@@ -139,6 +139,7 @@ int main() {
         static_cast<int>(ModuleId::DynDeEss),
         static_cast<int>(ModuleId::Density),
         static_cast<int>(ModuleId::BleedOut),
+        static_cast<int>(ModuleId::Limiter),
     };
     for (int id : ids) {
       Engine e;
@@ -167,9 +168,32 @@ int main() {
     e.prepare(sr);
     Controls c;
     c.slot[0].type = static_cast<int>(ModuleId::BleedOut);
+    c.slot[0].c[0] = 0.0f;   // Kick profile
+    c.slot[0].c[1] = 0.90f;  // high threshold
+    c.slot[0].c[2] = 0.70f;  // DeBleed
+    c.slot[0].c[3] = 0.0f;   // ghost off
     e.setControls(c);
     check(e.latencySamples() > 0,
           "Bleed Out contributes lookahead latency");
+
+    std::vector<float> quiet(n);
+    for (int i = 0; i < n; ++i)
+      quiet[i] = 0.01f * std::sin(2.0f * 3.14159265f * 1000.0f * i / sr);
+    auto wet = quiet;
+    Meters m;
+    e.process(wet.data(), wet.data(), n, m);
+    check(rms(wet, 4000, n) < rms(quiet, 4000, n) * 0.5,
+          "Bleed Out gates a signal below threshold");
+  }
+
+  {
+    Engine e;
+    e.prepare(sr);
+    Controls c;
+    c.slot[0].type = static_cast<int>(ModuleId::Limiter);
+    e.setControls(c);
+    check(e.latencySamples() > 0,
+          "Peak Limiter contributes lookahead latency");
   }
 
   std::printf("%d failure(s)\n", fails);

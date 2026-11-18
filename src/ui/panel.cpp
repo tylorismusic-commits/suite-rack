@@ -111,6 +111,9 @@ ModuleStyle styleFor(int type) {
     case ModuleId::BleedOut:
       return {{0.17, 0.09, 0.21}, {0.38, 0.18, 0.46},
               {0.84, 0.48, 0.98}, {0.94, 0.86, 0.96}};
+    case ModuleId::Limiter:
+      return {{0.06, 0.06, 0.055}, {0.22, 0.21, 0.18},
+              {0.96, 0.78, 0.36}, {0.90, 0.86, 0.74}};
     default:
       return {{0.105, 0.10, 0.095}, {0.24, 0.22, 0.19},
               {0.55, 0.50, 0.44}, {0.72, 0.70, 0.66}};
@@ -241,11 +244,25 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
       const double rowH = rows >= 4 ? 82.0 : 96.0;
       for (int k = 0; k < module->controlCount; ++k) {
         const ControlDesc& control = module->controls[k];
-        const double kx = (k & 1) ? cx2 : cx1;
         const double ky = y + 165.0 + (k / 2) * rowH;
-        knob(slotParam(i, kSlotOffsetC0 + control.param), kx, ky, 18,
-             control.label, i, true, control.param,
-             control.stepped ? control.labels.count : 0);
+        if (control.toggled) {
+          Widget t{};
+          t.kind = Kind::ModuleToggle;
+          t.param = slotParam(i, kSlotOffsetC0 + control.param);
+          t.x = x + 10;
+          t.y = ky - 12;
+          t.w = colW - 20;
+          t.h = 22;
+          t.label = control.label;
+          t.styleSlot = i;
+          t.styleType = type;
+          widgets_.push_back(t);
+        } else {
+          const double kx = (k & 1) ? cx2 : cx1;
+          knob(slotParam(i, kSlotOffsetC0 + control.param), kx, ky, 18,
+               control.label, i, true, control.param,
+               control.stepped ? control.labels.count : 0);
+        }
       }
     }
 
@@ -545,6 +562,20 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
            current ? 0.04 : bst.accent.b);
       break;
     }
+    case Kind::ModuleToggle: {
+      const bool on = shared.get(w.param) > 0.5;
+      roundRect(cr, w.x, w.y, w.w, w.h, 4);
+      setRgb(cr, on ? st.accent : st.body);
+      cairo_fill(cr);
+      setRgb(cr, st.edge, 0.9);
+      cairo_set_line_width(cr, 1.0);
+      roundRect(cr, w.x + 0.5, w.y + 0.5, w.w - 1, w.h - 1, 4);
+      cairo_stroke(cr);
+      text(cr, w.label, w.x + w.w * 0.5, w.y + w.h * 0.5 + 4, 8, 1,
+           on ? 0.08 : st.accent.r, on ? 0.06 : st.accent.g,
+           on ? 0.04 : st.accent.b);
+      break;
+    }
     case Kind::ModuleButton: {
       const bool lit = std::fabs(shared.get(w.param) - w.value) < 0.5;
       roundRect(cr, w.x, w.y, w.w, w.h, 4);
@@ -738,6 +769,10 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
       case Kind::BrowserTab:
       case Kind::BrowserScroll:
         break;
+      case Kind::ModuleToggle:
+        shared.set(w.param, shared.get(w.param) > 0.5 ? 0.0 : 1.0);
+        state.presetDirty = true;
+        return true;
       case Kind::ModuleButton:
         shared.set(w.param, w.value);
         state.presetDirty = true;

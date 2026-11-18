@@ -131,6 +131,12 @@ int main() {
   check(std::fabs(s.get(profileParam) - 1.0 / 7.0) < 1e-6,
         "stepped profile snaps to the next profile");
 
+  const uint32_t ghostOnParam = slotParam(4, kSlotOffsetC0 + 4);
+  check(s.get(ghostOnParam) == 1.0, "ghost starts enabled");
+  check(clickParam(panel, s, state, ghostOnParam),
+        "ghost toggle is clickable");
+  check(s.get(ghostOnParam) == 0.0, "ghost toggle turns ghost off");
+
   // Bypass pill for slot 2.
   panel.draw(cr, s, state);
   check(clickParam(panel, s, state, P_SLOT1_BYPASS),

@@ -23,7 +23,7 @@
     ] ;
     doap:homepage <https://github.com/tylorismusic-commits/suite-rack> ;
     lv2:majorVersion 0 ;
-    lv2:minorVersion 7 ;
+    lv2:minorVersion 8 ;
     lv2:microVersion 0 ;
     lv2:binary <suite_rack.so> ;
     rdfs:seeAlso <manifest.ttl> ;
@@ -96,7 +96,7 @@
         lv2:name "Module" ;
         lv2:default 1 ;
         lv2:minimum 0 ;
-        lv2:maximum 20 ;
+        lv2:maximum 21 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -118,7 +118,8 @@
             [ rdf:value 17 ; rdfs:label "Clip" ] ,
             [ rdf:value 18 ; rdfs:label "De-Ess" ] ,
             [ rdf:value 19 ; rdfs:label "Density" ] ,
-            [ rdf:value 20 ; rdfs:label "Bleed Out" ] ;
+            [ rdf:value 20 ; rdfs:label "Bleed Out" ] ,
+            [ rdf:value 21 ; rdfs:label "Peak Limiter" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
     ] ,
     [
@@ -282,7 +283,7 @@
         lv2:name "Module" ;
         lv2:default 5 ;
         lv2:minimum 0 ;
-        lv2:maximum 20 ;
+        lv2:maximum 21 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -304,7 +305,8 @@
             [ rdf:value 17 ; rdfs:label "Clip" ] ,
             [ rdf:value 18 ; rdfs:label "De-Ess" ] ,
             [ rdf:value 19 ; rdfs:label "Density" ] ,
-            [ rdf:value 20 ; rdfs:label "Bleed Out" ] ;
+            [ rdf:value 20 ; rdfs:label "Bleed Out" ] ,
+            [ rdf:value 21 ; rdfs:label "Peak Limiter" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
@@ -468,7 +470,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 20 ;
+        lv2:maximum 21 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -490,7 +492,8 @@
             [ rdf:value 17 ; rdfs:label "Clip" ] ,
             [ rdf:value 18 ; rdfs:label "De-Ess" ] ,
             [ rdf:value 19 ; rdfs:label "Density" ] ,
-            [ rdf:value 20 ; rdfs:label "Bleed Out" ] ;
+            [ rdf:value 20 ; rdfs:label "Bleed Out" ] ,
+            [ rdf:value 21 ; rdfs:label "Peak Limiter" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
@@ -654,7 +657,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 20 ;
+        lv2:maximum 21 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -676,7 +679,8 @@
             [ rdf:value 17 ; rdfs:label "Clip" ] ,
             [ rdf:value 18 ; rdfs:label "De-Ess" ] ,
             [ rdf:value 19 ; rdfs:label "Density" ] ,
-            [ rdf:value 20 ; rdfs:label "Bleed Out" ] ;
+            [ rdf:value 20 ; rdfs:label "Bleed Out" ] ,
+            [ rdf:value 21 ; rdfs:label "Peak Limiter" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
@@ -840,7 +844,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 20 ;
+        lv2:maximum 21 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -862,7 +866,8 @@
             [ rdf:value 17 ; rdfs:label "Clip" ] ,
             [ rdf:value 18 ; rdfs:label "De-Ess" ] ,
             [ rdf:value 19 ; rdfs:label "Density" ] ,
-            [ rdf:value 20 ; rdfs:label "Bleed Out" ] ;
+            [ rdf:value 20 ; rdfs:label "Bleed Out" ] ,
+            [ rdf:value 21 ; rdfs:label "Peak Limiter" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
@@ -1026,7 +1031,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 20 ;
+        lv2:maximum 21 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -1048,7 +1053,8 @@
             [ rdf:value 17 ; rdfs:label "Clip" ] ,
             [ rdf:value 18 ; rdfs:label "De-Ess" ] ,
             [ rdf:value 19 ; rdfs:label "Density" ] ,
-            [ rdf:value 20 ; rdfs:label "Bleed Out" ] ;
+            [ rdf:value 20 ; rdfs:label "Bleed Out" ] ,
+            [ rdf:value 21 ; rdfs:label "Peak Limiter" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [

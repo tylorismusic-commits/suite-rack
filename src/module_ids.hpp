@@ -28,6 +28,7 @@ enum class ModuleId : int {
   DynDeEss,
   Density,
   BleedOut,
+  Limiter,
   Count
 };
 
@@ -38,7 +39,7 @@ inline constexpr const char* kModuleLabels[] = {
     "76 Blue",   "76 Black", "2A",        "3A",        "VCA",
     "Valve",     "Console",  "Bus",       "Tape",      "Transformer",
     "Gate",      "Transient", "Clip",     "De-Ess",   "Density",
-    "Bleed Out",
+    "Bleed Out", "Peak Limiter",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -95,13 +96,15 @@ inline constexpr bool moduleIsDynamics(int id) noexcept {
          id == static_cast<int>(ModuleId::DynTransient) ||
          id == static_cast<int>(ModuleId::DynClip) ||
          id == static_cast<int>(ModuleId::DynDeEss) ||
-         id == static_cast<int>(ModuleId::BleedOut);
+         id == static_cast<int>(ModuleId::BleedOut) ||
+         id == static_cast<int>(ModuleId::Limiter);
 }
 
 inline constexpr bool moduleHasGr(int id) noexcept {
   return moduleIsComp(id) || id == static_cast<int>(ModuleId::DynGate) ||
          id == static_cast<int>(ModuleId::DynDeEss) ||
-         id == static_cast<int>(ModuleId::BleedOut);
+         id == static_cast<int>(ModuleId::BleedOut) ||
+         id == static_cast<int>(ModuleId::Limiter);
 }
 
 // All controls are normalised to 0..1. The module descriptor maps them to
@@ -231,6 +234,15 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 1: return 0.50;  // Threshold
         case 2: return 0.70;  // DeBleed
         case 3: return 0.75;  // Ghost
+        case 4: return 1.00;  // Ghost On
+        default: return 0.50;
+      }
+    case ModuleId::Limiter:
+      switch (control) {
+        case 0: return 0.50;  // Input
+        case 1: return 0.90;  // Ceiling
+        case 2: return 0.50;  // Release
+        case 3: return 1.00;  // Link
         default: return 0.50;
       }
     default:

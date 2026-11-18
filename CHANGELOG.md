@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0-m2 — 2026-11-17
+
+- Added the Peak Limiter module with Input, Ceiling, Release and Link.
+- Bleed Out now has an automated GHOST ON toggle next to the Ghost knob.
+- Fixed Bleed Out not being processed in the rack engine dispatch.
+- Peak Limiter and Bleed Out contribute lookahead latency to the rack.
+- Peak Limiter lives in hearth-dsp and is consumed through the submodule.
+
 ## 0.7.0-m2 — 2026-11-17
 
 - Added the Bleed Out multiband de-bleed gate module with Profile, Threshold,

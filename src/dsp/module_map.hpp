@@ -105,6 +105,16 @@ inline hdsp::modules::ClipControls clipControlsFrom(
   return out;
 }
 
+inline hdsp::modules::LimiterControls limiterControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::LimiterControls out;
+  out.input = c.c[0];
+  out.ceiling = c.c[1];
+  out.release = c.c[2];
+  out.link = c.c[3];
+  return out;
+}
+
 inline hdsp::modules::BleedOutControls bleedOutControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::BleedOutControls out;
@@ -114,6 +124,7 @@ inline hdsp::modules::BleedOutControls bleedOutControlsFrom(
   out.threshold = c.c[1];
   out.deBleed = c.c[2];
   out.ghost = c.c[3];
+  out.ghostEnabled = c.c[4] > 0.5f;
   return out;
 }
 

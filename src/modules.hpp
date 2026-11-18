@@ -37,6 +37,8 @@ enum class ControlFormat {
   ClipMode,
   DeEssFreqHz,
   DeEssRangeDb,
+  LimiterCeilingDb,
+  LimiterReleaseMs,
 };
 
 struct ControlDesc {
@@ -46,6 +48,7 @@ struct ControlDesc {
   ControlFormat format = ControlFormat::Percent;
   bool stepped = false;
   Labels labels{};
+  bool toggled = false;
 };
 
 struct ModuleDesc {
@@ -156,6 +159,14 @@ inline constexpr ControlDesc kBleedOutControls[] = {
     {1, "THR", "Threshold", ControlFormat::GateThresholdDb},
     {2, "DEBLEED", "DeBleed", ControlFormat::Percent},
     {3, "GHOST", "Ghost", ControlFormat::Percent},
+    {4, "GHOST ON", "Ghost On", ControlFormat::Percent, false, {}, true},
+};
+
+inline constexpr ControlDesc kLimiterControls[] = {
+    {0, "INPUT", "Input", ControlFormat::TiltDb},
+    {1, "CEIL", "Ceiling", ControlFormat::LimiterCeilingDb},
+    {2, "REL", "Release", ControlFormat::LimiterReleaseMs},
+    {3, "LINK", "Link", ControlFormat::Percent},
 };
 
 inline constexpr ControlDesc kDensityControls[] = {
@@ -247,6 +258,11 @@ inline constexpr ModuleDesc kModules[] = {
      static_cast<int>(sizeof(kBleedOutControls) /
                       sizeof(kBleedOutControls[0])),
      kBleedOutControls},
+    {ModuleId::Limiter, "Peak Limiter", "Dyn", "Lookahead true-peak limiter",
+     false, false, 0,
+     static_cast<int>(sizeof(kLimiterControls) /
+                      sizeof(kLimiterControls[0])),
+     kLimiterControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,

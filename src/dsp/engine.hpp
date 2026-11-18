@@ -28,6 +28,7 @@ public:
     for (auto& deess : deess_) deess.prepare(sr_);
     for (auto& density : density_) density.prepare(sr_);
     for (auto& bleed : bleedOut_) bleed.prepare(sr_);
+    for (auto& limiter : limiter_) limiter.prepare(sr_);
     input_.setTime(15.0f, sr_);
     output_.setTime(15.0f, sr_);
     power_.setTime(20.0f, sr_);
@@ -51,6 +52,7 @@ public:
       deess_[i].setControls(deEssControlsFrom(c.slot[i]));
       density_[i].setControls(densityControlsFrom(c.slot[i]));
       bleedOut_[i].setControls(bleedOutControlsFrom(c.slot[i]));
+      limiter_[i].setControls(limiterControlsFrom(c.slot[i]));
       slotGain_[i].setTarget(hdsp::dbToGain(c.slot[i].gainDb));
     }
     input_.setTarget(hdsp::dbToGain(c.inputDb));
@@ -91,12 +93,15 @@ public:
           } else if (type == static_cast<int>(ModuleId::DynDeEss)) {
             deess_[s].process(l, r);
             gr = deess_[s].lastGrDb();
+          } else if (type == static_cast<int>(ModuleId::BleedOut)) {
+            bleedOut_[s].process(l, r);
+            gr = bleedOut_[s].lastGrDb();
           }
         } else if (type == static_cast<int>(ModuleId::Density)) {
           density_[s].process(l, r);
-        } else if (type == static_cast<int>(ModuleId::BleedOut)) {
-          bleedOut_[s].process(l, r);
-          gr = bleedOut_[s].lastGrDb();
+        } else if (type == static_cast<int>(ModuleId::Limiter)) {
+          limiter_[s].process(l, r);
+          gr = limiter_[s].lastGrDb();
         } else {
           continue;
         }
@@ -140,6 +145,7 @@ public:
     for (auto& deess : deess_) deess.reset();
     for (auto& density : density_) density.reset();
     for (auto& bleed : bleedOut_) bleed.reset();
+    for (auto& limiter : limiter_) limiter.reset();
     input_.snap();
     output_.snap();
     power_.snap();
@@ -150,8 +156,11 @@ public:
     int latency = 0;
     for (int i = 0; i < kSlotCount; ++i) {
       const SlotControls& slot = controls_.slot[i];
-      if (!slot.bypass && slot.type == static_cast<int>(ModuleId::BleedOut)) {
+      if (slot.bypass) continue;
+      if (slot.type == static_cast<int>(ModuleId::BleedOut)) {
         latency += bleedOut_[i].latencySamples();
+      } else if (slot.type == static_cast<int>(ModuleId::Limiter)) {
+        latency += limiter_[i].latencySamples();
       }
     }
     return latency;
@@ -169,6 +178,7 @@ private:
   hdsp::modules::DeEss deess_[kSlotCount];
   hdsp::modules::Density density_[kSlotCount];
   hdsp::modules::BleedOut bleedOut_[kSlotCount];
+  hdsp::modules::Limiter limiter_[kSlotCount];
   hdsp::Smoothed input_, output_, power_;
   hdsp::Smoothed slotGain_[kSlotCount];
 };
