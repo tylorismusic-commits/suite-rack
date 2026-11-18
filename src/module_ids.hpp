@@ -71,6 +71,7 @@ enum class ModuleId : int {
   JcLMC1,
   JcModernLimiter,
   JcHyrax,
+  JcBloom,
   Count
 };
 
@@ -90,6 +91,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Reel",      "Ember",    "Tame",     "510 EQ",   "Pultec",
     "Classic Limiter", "Tape Head", "Tube Driver", "DaTube", "Fattener",
     "AC-1",      "LMC-1",    "Modern Limiter", "Hyrax",
+    "Bloom",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -609,6 +611,16 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 1: return 0.94;  // Threshold
         case 2: return 0.50;  // Output
         case 3: return 1.00;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::JcBloom:
+      switch (control) {
+        case 0: return 0.333;  // Input
+        case 1: return 0.00;   // Effect
+        case 2: return 0.50;   // Curve
+        case 3: return 1.00;   // Output
+        case 4: return 0.00;   // Band Split off
+        case 5: return 1.00;   // Clip on
         default: return 0.50;
       }
     default:

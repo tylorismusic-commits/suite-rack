@@ -72,6 +72,9 @@ enum class ControlFormat {
   AC1Mode,
   Threshold48Db,
   Threshold18Db,
+  CurveBipolar,
+  BloomInputDb,
+  BloomOutputDb,
 };
 
 struct ControlDesc {
@@ -155,6 +158,15 @@ inline constexpr ControlDesc kEq510Controls[] = {
     {1, "MID", "Mid", ControlFormat::TiltDb},
     {2, "HIGH", "High", ControlFormat::TiltDb},
     {3, "HPF", "HPF", ControlFormat::EqHpfHz},
+};
+
+inline constexpr ControlDesc kJcBloomControls[] = {
+    {0, "INPUT", "Input", ControlFormat::BloomInputDb},
+    {1, "EFFECT", "Effect", ControlFormat::Percent},
+    {2, "CURVE", "Curve", ControlFormat::CurveBipolar},
+    {3, "OUTPUT", "Output", ControlFormat::BloomOutputDb},
+    {4, "SPLIT", "Band Split", ControlFormat::Percent, false, {}, true},
+    {5, "CLIP", "Clip", ControlFormat::Percent, false, {}, true},
 };
 
 inline constexpr ControlDesc kJcHyraxControls[] = {
@@ -707,6 +719,10 @@ inline constexpr ModuleDesc kModules[] = {
      true, 0,
      static_cast<int>(sizeof(kJcHyraxControls) / sizeof(kJcHyraxControls[0])),
      kJcHyraxControls},
+    {ModuleId::JcBloom, "Bloom", "Colour", "JClones harmonic enhancer", false,
+     false, 0,
+     static_cast<int>(sizeof(kJcBloomControls) / sizeof(kJcBloomControls[0])),
+     kJcBloomControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -768,6 +784,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Trowel",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
+    "JClones",
     "JClones",
     "JClones",
     "JClones",

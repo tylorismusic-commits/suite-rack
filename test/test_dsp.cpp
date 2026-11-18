@@ -180,6 +180,7 @@ int main() {
         static_cast<int>(ModuleId::JcLMC1),
         static_cast<int>(ModuleId::JcModernLimiter),
         static_cast<int>(ModuleId::JcHyrax),
+        static_cast<int>(ModuleId::JcBloom),
     };
     for (int id : ids) {
       Engine e;

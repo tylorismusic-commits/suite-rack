@@ -205,6 +205,18 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::BloomControls bloomControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::BloomControls out;
+  out.input = c.c[0];
+  out.effect = c.c[1];
+  out.curve = c.c[2];
+  out.output = c.c[3];
+  out.bandSplit = c.c[4] > 0.5f;
+  out.clip = c.c[5] > 0.5f;
+  return out;
+}
+
 inline hdsp::modules::HyraxControls hyraxControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::HyraxControls out;

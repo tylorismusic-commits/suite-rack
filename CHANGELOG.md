@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.29.0-m2 — 2026-11-18
+
+- Added JClones Bloom harmonic enhancer with input, effect, curve, output,
+  band split and clip.
+- Bloom is the renamed JClones Inflator port.
+
 ## 0.28.0-m2 — 2026-11-18
 
 - Added JClones Hyrax brickwall limiter with input, threshold, output and mix.

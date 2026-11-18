@@ -251,6 +251,15 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::Threshold18Db:
       std::snprintf(buf, sizeof(buf), "%.1f dB", -18.0f + 18.0f * v);
       return buf;
+    case ControlFormat::CurveBipolar:
+      std::snprintf(buf, sizeof(buf), "%+.0f", -50.0f + 100.0f * v);
+      return buf;
+    case ControlFormat::BloomInputDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -6.0f + 18.0f * v);
+      return buf;
+    case ControlFormat::BloomOutputDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -12.0f + 12.0f * v);
+      return buf;
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;
