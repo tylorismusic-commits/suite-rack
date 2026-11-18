@@ -25,6 +25,7 @@ struct PanelState {
   int presetScroll = 0;
   int browserCategory = 0;
   int browserScroll = 0;
+  bool aboutOpen = false;
   float inLevelL = -120.0f;
   float inLevelR = -120.0f;
   float outLevelL = -120.0f;
@@ -47,7 +48,7 @@ public:
                    bool fine = false);
   bool pointerMove(Shared& shared, PanelState& state, double x, double y,
                    bool fine = false);
-  void pointerUp();
+  void pointerUp(Shared& shared, PanelState& state);
   bool handlePresetClick(Shared& shared, PanelState& state, double x, double y);
   void applyPreset(Shared& shared, PanelState& state, int index) const;
   void drawPresetBar(cairo_t* cr, const Shared& shared,
@@ -104,6 +105,11 @@ private:
   void drawButton(cairo_t* cr, const Widget& w, bool lit) const;
   void drawLevelMeter(cairo_t* cr, double x, double y, double w, double h,
                       double dbL, double dbR) const;
+  void drawDragGhost(cairo_t* cr, const Shared& shared) const;
+  void drawAbout(cairo_t* cr, const Shared& shared,
+                 const PanelState& state) const;
+  int slotAtX(double x) const;
+  void moveSlot(Shared& shared, int from, int to);
   void drawGrMeter(cairo_t* cr, double x, double y, double w, double h,
                    double grDb) const;
   void text(cairo_t* cr, const char* s, double x, double y, double size,
@@ -112,9 +118,15 @@ private:
 
   std::vector<Widget> widgets_;
   int dragParam_ = -1;
+  int dragSlot_ = -1;
+  int dropSlot_ = -1;
+  bool slotDragging_ = false;
+  double dragStartX_ = 0.0;
+  double dragStartY_ = 0.0;
+  double dragX_ = 0.0;
+  double dragY_ = 0.0;
   int lastClickParam_ = -1;
   std::chrono::steady_clock::time_point lastClickTime_{};
-  double dragStartY_ = 0.0;
   double dragStartValue_ = 0.0;
   int dragSteps_ = 0;
   cairo_surface_t* grain_ = nullptr;

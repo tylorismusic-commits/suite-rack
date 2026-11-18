@@ -141,7 +141,7 @@ struct Ui {
         break;
       }
       case ButtonRelease:
-        panel.pointerUp();
+        panel.pointerUp(shared, state);
         dirty = true;
         break;
       case KeyPress: {

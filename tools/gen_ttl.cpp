@@ -31,11 +31,11 @@ constexpr const char* kUri =
     "https://github.com/tylorismusic-commits/suite-rack";
 constexpr const char* kName = "Suite Rack";
 constexpr const char* kShortDesc =
-    "Six-slot virtual 500-series mix rack with EQ, compression, colour, space, "
+    "Six-slot virtual 500 series mix rack with EQ, compression, colour, space, "
     "dynamics and utility modules";
 constexpr const char* kDescription =
     "A six-slot serial mix rack in the Suite visual language. Each slot hosts "
-    "a compact 500-series module: EQ, colour, compressor, reverb, delay, "
+    "a compact 500 series module: EQ, colour, compressor, reverb, delay, "
     "modulation, gate, transient, de-esser, limiter or utility.";
 constexpr const char* kLicense = "https://spdx.org/licenses/GPL-3.0-or-later.html";
 constexpr const char* kMaintainer = "tylorismusic";

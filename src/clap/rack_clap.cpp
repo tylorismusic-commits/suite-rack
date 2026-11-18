@@ -298,7 +298,7 @@ private:
         break;
       }
       case ButtonRelease:
-        panel_.pointerUp();
+        panel_.pointerUp(shared_, state_);
         break;
       case KeyPress: {
         char buf[8] = {};

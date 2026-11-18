@@ -25,7 +25,7 @@ bool clickParam(Panel& panel, Shared& s, PanelState& state, uint32_t param) {
     const double x = r.x + r.w * 0.5;
     const double y = r.y + r.h * 0.5;
     panel.pointerDown(s, state, x, y, false);
-    panel.pointerUp();
+    panel.pointerUp(s, state);
     return true;
   }
   return false;
@@ -36,7 +36,7 @@ bool clickLabel(Panel& panel, Shared& s, PanelState& state,
   for (const auto& r : panel.widgetRects()) {
     if (std::string(r.label) != label) continue;
     panel.pointerDown(s, state, r.x + r.w * 0.5, r.y + r.h * 0.5, false);
-    panel.pointerUp();
+    panel.pointerUp(s, state);
     return true;
   }
   return false;
@@ -61,7 +61,7 @@ int main() {
 
   // Click the second column's module name to open its browser.
   panel.pointerDown(s, state, 250, 134, false);
-  panel.pointerUp();
+  panel.pointerUp(s, state);
   check(state.selectedSlot == 1 && state.browserSlot == 1,
         "clicking the second module name opens its browser");
   panel.draw(cr, s, state);
@@ -72,7 +72,7 @@ int main() {
 
   panel.draw(cr, s, state);
   panel.pointerDown(s, state, 250, 134, false);
-  panel.pointerUp();
+  panel.pointerUp(s, state);
   panel.draw(cr, s, state);
   check(clickLabel(panel, s, state, "COMP"), "browser category tab is clickable");
   check(state.browserCategory == 2, "COMP tab filters the browser");
@@ -84,7 +84,7 @@ int main() {
   // Slot 3: COLOUR category and the Valve module.
   panel.draw(cr, s, state);
   panel.pointerDown(s, state, 441, 134, false);
-  panel.pointerUp();
+  panel.pointerUp(s, state);
   panel.draw(cr, s, state);
   check(clickLabel(panel, s, state, "COLOUR"),
         "COLOUR category tab is clickable");
@@ -97,7 +97,7 @@ int main() {
   // Slot 4: DYN category and the Gate module.
   panel.draw(cr, s, state);
   panel.pointerDown(s, state, 596, 134, false);
-  panel.pointerUp();
+  panel.pointerUp(s, state);
   panel.draw(cr, s, state);
   check(clickLabel(panel, s, state, "DYN"), "DYN category tab is clickable");
   check(state.browserCategory == 4, "DYN tab filters the browser");
@@ -109,7 +109,7 @@ int main() {
   // Slot 5: Bleed Out and its stepped profile control.
   panel.draw(cr, s, state);
   panel.pointerDown(s, state, 750, 134, false);
-  panel.pointerUp();
+  panel.pointerUp(s, state);
   panel.draw(cr, s, state);
   check(clickLabel(panel, s, state, "DYN"), "DYN tab works on slot 5");
   panel.draw(cr, s, state);
@@ -140,7 +140,7 @@ int main() {
   // Slot 6: Peak Limiter.
   panel.draw(cr, s, state);
   panel.pointerDown(s, state, 906, 134, false);
-  panel.pointerUp();
+  panel.pointerUp(s, state);
   panel.draw(cr, s, state);
   check(clickLabel(panel, s, state, "Peak Limiter"),
         "filtered browser offers Peak Limiter");
@@ -186,6 +186,31 @@ int main() {
         "double-click resets the control to its module default");
 
   check(!panel.widgetRects().empty(), "panel reports widget geometry");
+
+  // Drag slot 1 onto slot 2 and check the rack reorders.
+  Shared dragS;
+  initializeRack(dragS);
+  Panel dragPanel;
+  PanelState dragState;
+  dragPanel.draw(cr, dragS, dragState);
+  dragPanel.pointerDown(dragS, dragState, 130, 134, false);
+  dragPanel.pointerMove(dragS, dragState, 285, 134, false);
+  dragPanel.pointerUp(dragS, dragState);
+  check(dragS.get(P_SLOT0_TYPE) ==
+            static_cast<double>(ModuleId::Comp76Blue),
+        "drag moves the source module into the target slot");
+  check(dragS.get(P_SLOT1_TYPE) == static_cast<double>(ModuleId::Eq4K),
+        "the target slot shifts behind the dragged module");
+  check(dragState.selectedSlot == 1, "selection follows the dragged module");
+
+  // About button opens and closes the module/source/control reference.
+  panel.draw(cr, s, state);
+  panel.pointerDown(s, state, 930, 34, false);
+  panel.pointerUp(s, state);
+  check(state.aboutOpen, "ABOUT button opens the reference");
+  panel.pointerDown(s, state, 860, 667, false);
+  panel.pointerUp(s, state);
+  check(!state.aboutOpen, "ABOUT close button closes the reference");
 
   cairo_destroy(cr);
   cairo_surface_destroy(surf);

@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.12.0-m2 — 2026-11-17
+
+- Drag a module name onto another slot to reorder the rack.
+- Intervening modules shift to fill the gap instead of swapping.
+- The dragged module follows the cursor as a floating name tag and the target
+  slot is highlighted.
+- Clicking a module name still opens the browser when there is no drag.
+- Replaced the M2 pill with an ABOUT reference listing each module's source,
+  controls and attributions.
+- Renamed the tagline to "Virtual 500 Series Mix Rack".
+
 ## 0.11.0-m2 — 2026-11-17
 
 - Added Sub: tracking frequency, amount, drive and mix.

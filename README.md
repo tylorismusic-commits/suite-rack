@@ -1,16 +1,16 @@
 # Suite Rack
 
-**Status: 0.11.0-m2 — CLAP + LV2, module registry and twenty-seven modules.**
+**Status: 0.12.0-m2 — CLAP + LV2, module registry, twenty-seven modules and drag reorder.**
 The rest of the catalog, drag/reorder, module presets, browser search and user
 presets are next.
 
-A virtual 500-series rack in the Suite visual language: six serial slots, each
+A virtual 500 series mix rack in the Suite visual language: six serial slots, each
 hosting one compact module. Slot 1 starts as EQ, slot 2 as Comp, slots 3–6 are
 empty. Modules are chosen from an in-panel browser.
 
 Suite Rack is the flagship “try all my stuff” plugin: one insert that gives the
 flavour of the whole Suite, plus new mix-world extras. Each module is limited to
-a real 500-series control set — one job, a handful of knobs, no deep pages. The
+a real 500 series control set — one job, a handful of knobs, no deep pages. The
 standalone plugins remain the full versions.
 
 > Better plugins exist. I just wanted to have a Suite Rack.
@@ -30,6 +30,8 @@ standalone plugins remain the full versions.
 ![Suite Rack — Filter and Motion](docs/rack-filter.png)
 
 ![Suite Rack — Sub and Double](docs/rack-sub.png)
+
+![Suite Rack — About](docs/rack-about.png)
 
 ## What goes in the rack
 
@@ -68,17 +70,19 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.11.0-m2 slice
+## Current 0.12.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
 - Six vertical 500-series-style module columns, each with its own background and
   knob colour.
 - Per-slot bypass, mix and gain.
+- Drag a module name to another slot to reorder the rack; intervening modules shift to fill the gap.
 - Double-click a knob to reset it to the active module's default.
 - Stepped controls, used by the Bleed Out profile selector.
 - Bleed Out has a separate automated **GHOST ON** button.
 - Filled slots hide the **CHOOSE** hint so longer module names have room.
+- **ABOUT** opens a reference table with each module's source, controls and attributions.
 - Module browser with **ALL / EQ / COMP / COLOUR / DYN** categories and scrolling.
 - Generic per-slot controls: twelve control slots plus type, bypass, mix and
   gain. Host automation follows the slot, not the module.

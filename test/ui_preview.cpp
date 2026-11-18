@@ -50,6 +50,9 @@ int main(int argc, char** argv) {
   state.selectedSlot = 2;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-sub.png").c_str());
+  state.aboutOpen = true;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-about.png").c_str());
   cairo_destroy(cr);
   cairo_surface_destroy(surf);
   std::printf("wrote rack-eq.png and rack-comp.png\n");

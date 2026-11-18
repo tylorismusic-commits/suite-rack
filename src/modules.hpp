@@ -351,6 +351,40 @@ inline constexpr ModuleDesc kModules[] = {
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
               "module registry must cover every module id");
 
+inline constexpr const char* kModuleSources[kModuleCount] = {
+    "—",
+    "Suite Channel",
+    "Hearth Channel",
+    "Mastering Suite",
+    "Vocal Suite",
+    "Comp Suite",
+    "Comp Suite",
+    "Comp Suite",
+    "Comp Suite",
+    "Comp Suite",
+    "Patina",
+    "Patina",
+    "Patina",
+    "Patina",
+    "Patina",
+    "Suite Channel",
+    "Drum Suite",
+    "Drum Suite",
+    "Vocal Suite",
+    "Mastering Suite",
+    "Bleed Out / Drum Suite",
+    "Brick / Mastering Suite",
+    "Suite Rack exclusive",
+    "Suite Rack exclusive",
+    "Suite Rack exclusive",
+    "Suite Rack exclusive",
+    "Suite Rack exclusive",
+    "Suite Rack exclusive",
+};
+
+static_assert(sizeof(kModuleSources) / sizeof(kModuleSources[0]) == kModuleCount,
+              "kModuleSources must cover every module id");
+
 } // namespace detail
 
 inline const ModuleDesc* moduleDesc(int id) noexcept {
@@ -358,6 +392,10 @@ inline const ModuleDesc* moduleDesc(int id) noexcept {
 }
 
 inline const char* moduleName(int id) noexcept { return moduleDesc(id)->name; }
+
+inline const char* moduleSource(int id) noexcept {
+  return validModule(id) ? detail::kModuleSources[id] : "—";
+}
 
 inline void applyModuleDefaults(Shared& shared, int slot, int type,
                                 bool markDirty = true) {
