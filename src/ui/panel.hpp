@@ -35,6 +35,8 @@ struct PanelState {
   std::string textBuffer;
   bool textFresh = true;
   bool savePreset = false;
+  bool saveModule = false;
+  int saveModuleSlot = -1;
   float inLevelL = -120.0f;
   float inLevelR = -120.0f;
   float outLevelL = -120.0f;
@@ -122,8 +124,10 @@ private:
                  const PanelState& state) const;
   void drawTextEntry(cairo_t* cr, const PanelState& state) const;
   std::vector<UserPreset> userPresets_;
+  std::vector<ModulePreset> modulePresets_;
   double browserHeight(int category, const std::string& query) const;
   double browserY(int category, const std::string& query) const;
+  int browserOptionCount(int category, const std::string& query) const;
   int aboutMaxScroll() const;
   int slotAtX(double x) const;
   void moveSlot(Shared& shared, int from, int to);

@@ -241,6 +241,20 @@ int main(int argc, char** argv) {
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-save-preset.png").c_str());
   state.savePreset = false;
+  panel.draw(cr, s, state);
+  panel.beginTextEntry(s, state, 130, 134);
+  for (const char* c = "Tape Head Setting"; *c; ++c) {
+    panel.textKey(s, state, 0, *c);
+  }
+  panel.textKey(s, state, Panel::kTextEnter, 0);
+  state.browserSlot = 0;
+  state.browserCategory = 6;
+  state.browserQuery.clear();
+  state.browserSearch = false;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-browser-user.png").c_str());
+  state.browserSlot = -1;
+  state.browserCategory = 0;
   state.aboutOpen = true;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-about.png").c_str());

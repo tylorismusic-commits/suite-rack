@@ -1,7 +1,7 @@
 # Suite Rack
 
-**Status: 0.39.0-m2 — CLAP + LV2, seventy modules, drag reorder, browser search, typed values and user presets.**
-Per-module factory presets are next.
+**Status: 0.40.0-m2 — CLAP + LV2, seventy modules, drag reorder, browser search, typed values, rack presets and module presets.**
+Factory module preset content is next.
 
 A virtual 500 series mix rack in the Suite visual language: six serial slots, each
 hosting one compact module. Slot 1 starts as EQ, slot 2 as Comp, slots 3–6 are
@@ -86,6 +86,8 @@ standalone plugins remain the full versions.
 
 ![Suite Rack — save user preset](docs/rack-save-preset.png)
 
+![Suite Rack — user module presets](docs/rack-browser-user.png)
+
 ![Suite Rack — About](docs/rack-about.png)
 
 ## What goes in the rack
@@ -125,7 +127,7 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.39.0-m2 slice
+## Current 0.40.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
@@ -165,6 +167,9 @@ the 500-series format; Cleanup is the lightweight repair representative.
   `~/.config/SuiteRack/presets`) and appear in the preset bar after the factory
   presets. The header **SAVE** button opens a name field; Enter writes the
   preset and Escape cancels.
+- Right-click a module name to save that module's type and controls as a user
+  module preset. Saved presets appear in the browser's **USER** tab and can be
+  loaded into any slot.
 
 ## Architecture
 
@@ -212,7 +217,7 @@ cp -r build/lv2/suite-rack.lv2 ~/.lv2/
 
 ## Next
 
-1. Per-module factory presets in the browser.
+1. Factory module preset content for the browser.
 2. Roll the same user-preset format into Comp Suite and Patina.
 3. A final Trowel Smoothing decision; Tame is the current Trowel-derived module.
 

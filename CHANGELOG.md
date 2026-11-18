@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.40.0-m2 — 2026-11-18
+
+- Added user module presets. Right-click a module name, type a name and press
+  Enter to save that module's type and controls.
+- Saved module presets appear in the browser's USER tab and load into any slot.
+- Module preset files live in `$XDG_CONFIG_HOME/SuiteRack/module-presets` or
+  `~/.config/SuiteRack/module-presets`.
+
 ## 0.39.0-m2 — 2026-11-18
 
 - Added a 96 kHz run to the full module sweep so every module is checked at

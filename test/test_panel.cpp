@@ -267,6 +267,34 @@ int main() {
   check(std::fabs(s.get(savedControl) - 0.33) < 1e-6,
         "user preset recalls the saved rack");
 
+  // Right-click a module name to save a per-module preset.
+  const uint32_t highParam = slotParam(0, kSlotOffsetC0 + kCtlHigh);
+  s.set(savedControl, 0.42);
+  s.set(highParam, 0.66);
+  panel.draw(cr, s, state);
+  panel.beginTextEntry(s, state, 130, 134);
+  check(state.saveModule, "right-click on a module name saves a module preset");
+  for (const char* c = "Crunch EQ"; *c; ++c) panel.textKey(s, state, 0, *c);
+  panel.textKey(s, state, Panel::kTextEnter, 0);
+  check(std::filesystem::exists(modulePresetDir() / "Crunch EQ.suite-module"),
+        "module preset file exists");
+
+  s.set(P_SLOT0_TYPE, static_cast<double>(ModuleId::Off));
+  panel.draw(cr, s, state);
+  panel.pointerDown(s, state, 130, 134, false);
+  panel.pointerUp(s, state);
+  panel.draw(cr, s, state);
+  check(clickLabel(panel, s, state, "USER"),
+        "browser offers the user module category");
+  panel.draw(cr, s, state);
+  check(clickLabel(panel, s, state, "Crunch EQ"),
+        "saved module preset appears in the browser");
+  check(s.get(P_SLOT0_TYPE) == static_cast<double>(ModuleId::Eq4K),
+        "module preset restores the module type");
+  check(std::fabs(s.get(savedControl) - 0.42) < 1e-6 &&
+            std::fabs(s.get(highParam) - 0.66) < 1e-6,
+        "module preset restores the module controls");
+
   check(!panel.widgetRects().empty(), "panel reports widget geometry");
   bool sourcesOk = true;
   for (int id = 0; id < kModuleCount; ++id) {

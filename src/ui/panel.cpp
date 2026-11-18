@@ -300,7 +300,10 @@ int browserEntryCount(int category, const std::string& query) {
 
 } // namespace
 
-Panel::Panel() { userPresets_ = loadUserPresets(userPresetDir()); }
+Panel::Panel() {
+  userPresets_ = loadUserPresets(userPresetDir());
+  modulePresets_ = loadModulePresets(modulePresetDir());
+}
 Panel::~Panel() {
   if (font_) cairo_font_face_destroy(font_);
   if (ftFace_) FT_Done_Face(static_cast<FT_Face>(ftFace_));
@@ -462,48 +465,66 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
     const double bx = 240, bw = 560;
     const double bh = browserHeight(state.browserCategory, state.browserQuery);
     const double by = browserY(state.browserCategory, state.browserQuery);
-    for (int tab = 0; tab < 6; ++tab) {
+    for (int tab = 0; tab < 7; ++tab) {
       Widget t{};
       t.kind = Kind::BrowserTab;
       t.param = slotParam(state.browserSlot, kSlotOffsetType);
       t.value = tab;
-      t.x = bx + 30 + tab * 84.0;
+      t.x = bx + 30 + tab * 74.0;
       t.y = by + 46;
-      t.w = 80.0;
+      t.w = 70.0;
       t.h = 24.0;
-      static const char* labels[6] = {"ALL", "EQ", "COMP",
-                                      "COLOUR", "DYN", "SPACE"};
+      static const char* labels[7] = {"ALL", "EQ",     "COMP", "COLOUR",
+                                      "DYN", "SPACE",  "USER"};
       t.label = labels[tab];
       widgets_.push_back(t);
     }
 
-    std::vector<int> ids;
-    if (state.browserQuery.empty()) ids.push_back(static_cast<int>(ModuleId::Off));
-    for (int id = 1; id < kModuleCount; ++id) {
-      if (!browserCategoryMatches(id, state.browserCategory)) continue;
-      if (!browserModuleMatchesQuery(id, state.browserQuery)) continue;
-      ids.push_back(id);
+    struct BEntry {
+      int value = 0;
+      int styleType = 0;
+      const char* label = "";
+    };
+    std::vector<BEntry> entries;
+    if (state.browserCategory == 6) {
+      for (int i = 0; i < static_cast<int>(modulePresets_.size()); ++i) {
+        const ModulePreset& p = modulePresets_[static_cast<size_t>(i)];
+        if (!state.browserQuery.empty() &&
+            lowerText(p.name).find(lowerText(state.browserQuery)) ==
+                std::string::npos) {
+          continue;
+        }
+        entries.push_back({-1000 - i, p.type, p.name.c_str()});
+      }
+    } else {
+      if (state.browserQuery.empty())
+        entries.push_back({static_cast<int>(ModuleId::Off),
+                           static_cast<int>(ModuleId::Off), "OFF"});
+      for (int id = 1; id < kModuleCount; ++id) {
+        if (!browserCategoryMatches(id, state.browserCategory)) continue;
+        if (!browserModuleMatchesQuery(id, state.browserQuery)) continue;
+        entries.push_back({id, id, slotModuleName(id)});
+      }
     }
     const int columns = 4;
     const int visible = browserVisibleCount(state.browserQuery);
-    const int maxScroll = std::max(0, static_cast<int>(ids.size()) - visible);
+    const int maxScroll = std::max(0, static_cast<int>(entries.size()) - visible);
     const int scroll = std::clamp(state.browserScroll, 0, maxScroll);
     const double ow = 120.0, oh = 46.0, ox = 6.0, oy = 8.0;
     for (int k = scroll;
-         k < static_cast<int>(ids.size()) && k < scroll + visible; ++k) {
+         k < static_cast<int>(entries.size()) && k < scroll + visible; ++k) {
       const int pos = k - scroll;
+      const BEntry& entry = entries[static_cast<size_t>(k)];
       Widget b{};
       b.kind = Kind::BrowserOption;
       b.param = slotParam(state.browserSlot, kSlotOffsetType);
-      b.value = ids[k];
+      b.value = entry.value;
       b.x = bx + 31 + static_cast<double>(pos % columns) * (ow + ox);
       b.y = by + 92 + static_cast<double>(pos / columns) * (oh + oy);
       b.w = ow;
       b.h = oh;
-      b.label = ids[k] == static_cast<int>(ModuleId::Off)
-                    ? "OFF"
-                    : slotModuleName(ids[k]);
-      b.styleType = ids[k];
+      b.label = entry.label;
+      b.styleType = entry.styleType;
       widgets_.push_back(b);
     }
     Widget search{};
@@ -630,8 +651,23 @@ void Panel::drawRack(cairo_t* cr, const Shared& shared,
        kDim.g, kDim.b);
 }
 
+int Panel::browserOptionCount(int category, const std::string& query) const {
+  if (category == 6) {
+    int count = 0;
+    for (const auto& p : modulePresets_) {
+      if (!query.empty() &&
+          lowerText(p.name).find(lowerText(query)) == std::string::npos) {
+        continue;
+      }
+      ++count;
+    }
+    return count;
+  }
+  return browserEntryCount(category, query);
+}
+
 double Panel::browserHeight(int category, const std::string& query) const {
-  const int count = browserEntryCount(category, query);
+  const int count = browserOptionCount(category, query);
   const int visible =
       query.empty() ? std::min(count, 16) : browserVisibleCount(query);
   const int rows = std::max(1, (visible + 3) / 4);
@@ -889,10 +925,10 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
     case Kind::BrowserSearch:
       break;
     case Kind::BrowserOption: {
-      const bool cancel = w.value < 0;
-      const bool current = !cancel &&
+      const bool cancel = w.value == -1;
+      const bool current = !cancel && w.value >= 0 &&
           std::fabs(shared.get(w.param) - w.value) < 0.5;
-      const ModuleStyle bst = cancel ? styleFor(0) : styleFor(static_cast<int>(w.value));
+      const ModuleStyle bst = cancel ? styleFor(0) : styleFor(w.styleType);
       roundRect(cr, w.x, w.y, w.w, w.h, 4);
       setRgb(cr, current ? bst.accent : bst.body);
       cairo_fill(cr);
@@ -902,11 +938,17 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
            cancel ? 9 : 13, 1,
            current ? 0.08 : bst.accent.r, current ? 0.06 : bst.accent.g,
            current ? 0.04 : bst.accent.b);
-      if (!cancel && w.value > 0) {
-        const char* src = moduleSource(static_cast<int>(w.value));
-        text(cr, src, w.x + w.w * 0.5, w.y + w.h - 7, 6.0, 1,
-             current ? 0.10 : kDim.r, current ? 0.08 : kDim.g,
-             current ? 0.06 : kDim.b);
+      if (!cancel) {
+        const char* src =
+            w.value <= -1000
+                ? "User module preset"
+                : (w.value > 0 ? moduleSource(static_cast<int>(w.value))
+                               : nullptr);
+        if (src) {
+          text(cr, src, w.x + w.w * 0.5, w.y + w.h - 7, 6.0, 1,
+               current ? 0.10 : kDim.r, current ? 0.08 : kDim.g,
+               current ? 0.06 : kDim.b);
+        }
       }
       break;
     }
@@ -1144,7 +1186,11 @@ void Panel::beginSlotDrag(PanelState& state, int slot, double x, double y) {
 bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
                         bool fine) {
   (void)fine;
-  if (state.savePreset) {
+  if (state.saveModule) {
+    state.saveModule = false;
+    state.saveModuleSlot = -1;
+    state.textBuffer.clear();
+  } else if (state.savePreset) {
     state.savePreset = false;
     state.textBuffer.clear();
   } else if (state.textParam >= 0) {
@@ -1196,14 +1242,26 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
       }
       if (w.kind == Kind::BrowserScroll && hitWidget(w, x, y)) {
         const int maxScroll = std::max(
-            0, browserEntryCount(state.browserCategory, state.browserQuery) -
+            0, browserOptionCount(state.browserCategory, state.browserQuery) -
                    browserVisibleCount(state.browserQuery));
         state.browserScroll = std::clamp(
             state.browserScroll + static_cast<int>(w.value), 0, maxScroll);
         return true;
       }
       if (w.kind != Kind::BrowserOption || !hitWidget(w, x, y)) continue;
-      if (w.value >= 0) {
+      if (w.value <= -1000) {
+        const int idx = -1000 - w.value;
+        if (idx >= 0 && idx < static_cast<int>(modulePresets_.size())) {
+          const ModulePreset& p = modulePresets_[static_cast<size_t>(idx)];
+          const int slot = state.browserSlot;
+          shared.set(slotParam(slot, kSlotOffsetType),
+                     static_cast<double>(p.type));
+          for (int k = 0; k < 12; ++k) {
+            shared.set(slotParam(slot, kSlotOffsetC0 + k),
+                       static_cast<double>(p.controls[static_cast<size_t>(k)]));
+          }
+        }
+      } else if (w.value >= 0) {
         applyModuleDefaults(shared, state.browserSlot,
                             static_cast<int>(w.value));
       }
@@ -1359,7 +1417,7 @@ bool Panel::wheel(Shared& shared, PanelState& state, double x, double y, double 
   }
   if (state.browserSlot >= 0) {
     const int maxScroll = std::max(
-        0, browserEntryCount(state.browserCategory, state.browserQuery) -
+        0, browserOptionCount(state.browserCategory, state.browserQuery) -
                browserVisibleCount(state.browserQuery));
     state.browserScroll = std::clamp(
         state.browserScroll - (dy > 0 ? 1 : -1), 0, maxScroll);
@@ -1447,11 +1505,71 @@ void Panel::beginTextEntry(Shared& shared, PanelState& state, double x,
     state.textFresh = true;
     return;
   }
+  for (const Widget& w : widgets_) {
+    if (w.kind != Kind::ModuleName || !hitWidget(w, x, y)) continue;
+    const int slot = static_cast<int>(w.value);
+    const int type =
+        static_cast<int>(shared.get(slotParam(slot, kSlotOffsetType)) + 0.5);
+    if (type <= 0) break;
+    state.saveModule = true;
+    state.saveModuleSlot = slot;
+    state.textParam = -1;
+    state.textBuffer = std::string(slotModuleName(type)) + " Setting";
+    state.textFresh = true;
+    return;
+  }
   state.textParam = -1;
   state.textBuffer.clear();
 }
 
 bool Panel::textKey(Shared& shared, PanelState& state, int key, char ch) {
+  if (state.saveModule) {
+    if (key == kTextEscape) {
+      state.saveModule = false;
+      state.saveModuleSlot = -1;
+      state.textBuffer.clear();
+      return true;
+    }
+    if (key == kTextEnter) {
+      const int slot = state.saveModuleSlot;
+      if (slot >= 0 && slot < kSlotCount) {
+        const int type =
+            static_cast<int>(shared.get(slotParam(slot, kSlotOffsetType)) + 0.5);
+        if (type > 0) {
+          std::array<float, 12> controls{};
+          for (int k = 0; k < 12; ++k) {
+            controls[static_cast<size_t>(k)] = static_cast<float>(
+                shared.get(slotParam(slot, kSlotOffsetC0 + k)));
+          }
+          if (saveModulePreset(modulePresetDir(), state.textBuffer, type,
+                               controls)) {
+            modulePresets_ = loadModulePresets(modulePresetDir());
+          }
+        }
+      }
+      state.saveModule = false;
+      state.saveModuleSlot = -1;
+      state.textBuffer.clear();
+      return true;
+    }
+    if (key == kTextBackspace) {
+      if (state.textFresh) {
+        state.textBuffer.clear();
+        state.textFresh = false;
+      } else if (!state.textBuffer.empty()) {
+        state.textBuffer.pop_back();
+      }
+      return true;
+    }
+    if (ch >= 32 && ch < 127 && state.textBuffer.size() < 60) {
+      if (state.textFresh) {
+        state.textBuffer.clear();
+        state.textFresh = false;
+      }
+      state.textBuffer.push_back(ch);
+    }
+    return true;
+  }
   if (state.savePreset) {
     if (key == kTextEscape) {
       state.savePreset = false;
@@ -1561,9 +1679,9 @@ bool Panel::textKey(Shared& shared, PanelState& state, int key, char ch) {
 }
 
 void Panel::drawTextEntry(cairo_t* cr, const PanelState& state) const {
-  if (state.textParam < 0 && !state.savePreset) return;
+  if (state.textParam < 0 && !state.savePreset && !state.saveModule) return;
   const Widget* target = nullptr;
-  if (!state.savePreset) {
+  if (!state.savePreset && !state.saveModule) {
     for (const Widget& w : widgets_) {
       if (w.kind == Kind::Knob &&
           static_cast<int>(w.param) == state.textParam) {
@@ -1589,10 +1707,12 @@ void Panel::drawTextEntry(cairo_t* cr, const PanelState& state) const {
 
   const char* name = state.savePreset
                          ? "SAVE PRESET"
-                         : (target ? target->label : "Value");
+                         : (state.saveModule
+                                ? "SAVE MODULE PRESET"
+                                : (target ? target->label : "Value"));
   text(cr, name, x + 14, y + 16, 8.5, 0, 0.72, 0.78, 0.74);
-  text(cr, state.savePreset ? "TYPE NAME" : "TYPE VALUE", x + 14, y + 33, 7.0,
-       0, 0.50, 0.56, 0.52);
+  text(cr, (state.savePreset || state.saveModule) ? "TYPE NAME" : "TYPE VALUE",
+       x + 14, y + 33, 7.0, 0, 0.50, 0.56, 0.52);
   const std::string shown = state.textBuffer + "_";
   text(cr, shown.c_str(), x + w - 96, y + 29, 16, 2, 0.94, 0.96, 0.94);
   text(cr, "ENTER", x + w - 14, y + 16, 7.0, 2, 0.50, 0.56, 0.52);

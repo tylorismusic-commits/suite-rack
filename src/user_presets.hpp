@@ -3,6 +3,7 @@
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <cctype>
 #include <cstdlib>
 #include <filesystem>
@@ -20,6 +21,12 @@ struct UserPreset {
   std::vector<double> values;
 };
 
+struct ModulePreset {
+  std::string name;
+  int type = 0;
+  std::array<float, 12> controls{};
+};
+
 inline std::filesystem::path userPresetDir() {
   const char* xdg = std::getenv("XDG_CONFIG_HOME");
   std::filesystem::path base;
@@ -31,6 +38,10 @@ inline std::filesystem::path userPresetDir() {
                          : std::filesystem::path(".");
   }
   return base / "SuiteRack" / "presets";
+}
+
+inline std::filesystem::path modulePresetDir() {
+  return userPresetDir().parent_path() / "module-presets";
 }
 
 inline std::string sanitizePresetName(const std::string& raw) {
@@ -79,6 +90,79 @@ inline bool saveUserPreset(const std::filesystem::path& dir,
     std::filesystem::rename(tempPath, finalPath, ec);
   }
   return !ec;
+}
+
+inline bool saveModulePreset(const std::filesystem::path& dir,
+                             const std::string& rawName, int type,
+                             const std::array<float, 12>& controls) {
+  const std::string name = sanitizePresetName(rawName);
+  if (name.empty()) return false;
+  std::error_code ec;
+  std::filesystem::create_directories(dir, ec);
+  if (ec) return false;
+  const std::filesystem::path finalPath = dir / (name + ".suite-module");
+  const std::filesystem::path tempPath = dir / (name + ".suite-module.tmp");
+  std::ofstream out(tempPath, std::ios::trunc);
+  if (!out) return false;
+  out << "SuiteRackModulePreset 1\n";
+  out << "name " << name << "\n";
+  out << "type " << type << "\n";
+  out.precision(9);
+  for (size_t i = 0; i < controls.size(); ++i) {
+    out << i << ' ' << controls[i] << '\n';
+  }
+  out.close();
+  if (!out) return false;
+  std::filesystem::rename(tempPath, finalPath, ec);
+  if (ec) {
+    std::filesystem::remove(finalPath, ec);
+    ec.clear();
+    std::filesystem::rename(tempPath, finalPath, ec);
+  }
+  return !ec;
+}
+
+inline std::vector<ModulePreset> loadModulePresets(
+    const std::filesystem::path& dir) {
+  std::vector<ModulePreset> out;
+  std::error_code ec;
+  if (!std::filesystem::is_directory(dir, ec)) return out;
+  std::vector<std::filesystem::path> files;
+  for (const auto& entry : std::filesystem::directory_iterator(dir, ec)) {
+    if (ec) break;
+    if (!entry.is_regular_file()) continue;
+    if (entry.path().extension() != ".suite-module") continue;
+    files.push_back(entry.path());
+  }
+  std::sort(files.begin(), files.end());
+  for (const auto& path : files) {
+    std::ifstream in(path);
+    if (!in) continue;
+    std::string magic;
+    int version = 0;
+    in >> magic >> version;
+    if (magic != "SuiteRackModulePreset" || version != 1) continue;
+    ModulePreset preset;
+    std::string key;
+    in >> key;
+    if (key == "name") {
+      std::getline(in, preset.name);
+      const size_t a = preset.name.find_first_not_of(' ');
+      preset.name = a == std::string::npos ? "" : preset.name.substr(a);
+    }
+    in >> key;
+    if (key == "type") in >> preset.type;
+    if (preset.name.empty()) preset.name = path.stem().string();
+    int index = 0;
+    float value = 0.0f;
+    while (in >> index >> value) {
+      if (index >= 0 && index < 12) {
+        preset.controls[static_cast<size_t>(index)] = value;
+      }
+    }
+    out.push_back(std::move(preset));
+  }
+  return out;
 }
 
 inline std::vector<UserPreset> loadUserPresets(
