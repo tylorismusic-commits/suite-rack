@@ -1106,14 +1106,73 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
       cairo_fill(cr);
       setRgb(cr, bst.edge, 0.9); cairo_set_line_width(cr, 1.0);
       roundRect(cr, w.x + 0.5, w.y + 0.5, w.w - 1, w.h - 1, 4); cairo_stroke(cr);
-      text(cr, w.label, w.x + w.w * 0.5, w.y + w.h * 0.5 + 2,
-           cancel ? 9 : 13, 1,
-           current ? 0.08 : bst.accent.r, current ? 0.06 : bst.accent.g,
-           current ? 0.04 : bst.accent.b);
+      auto textWidth = [&](const std::string& text, double size) {
+        cairo_set_font_face(cr, font_);
+        cairo_set_font_size(cr, size);
+        cairo_text_extents_t extents;
+        cairo_text_extents(cr, text.c_str(), &extents);
+        return extents.x_advance;
+      };
+      const std::string label = w.label ? w.label : "";
+      const double avail = w.w - 10.0;
+      double nameSize = cancel ? 9.0 : 13.0;
+      std::string line1 = label;
+      std::string line2;
+      if (!cancel && textWidth(label, 13.0) > avail) {
+        if (textWidth(label, 11.0) <= avail) {
+          nameSize = 11.0;
+        } else {
+          nameSize = 10.2;
+          std::vector<std::string> words;
+          size_t start = 0;
+          while (start < label.size()) {
+            const size_t space = label.find(' ', start);
+            words.push_back(label.substr(
+                start, space == std::string::npos ? std::string::npos
+                                                  : space - start));
+            if (space == std::string::npos) break;
+            start = space + 1;
+          }
+          for (double size = 10.2; size >= 8.2; size -= 0.4) {
+            line1.clear();
+            line2.clear();
+            for (const auto& word : words) {
+              const std::string candidate =
+                  line1.empty() ? word : line1 + " " + word;
+              if (line1.empty() || textWidth(candidate, size) <= avail) {
+                line1 = candidate;
+              } else if (line2.empty()) {
+                line2 = word;
+              } else {
+                const std::string extended = line2 + " " + word;
+                if (textWidth(extended, size) <= avail) line2 = extended;
+              }
+            }
+            if (line2.empty() || textWidth(line2, size) <= avail) {
+              nameSize = size;
+              break;
+            }
+          }
+        }
+      }
+      const double nameR = current ? 0.08 : bst.accent.r;
+      const double nameG = current ? 0.06 : bst.accent.g;
+      const double nameB = current ? 0.04 : bst.accent.b;
+      if (line2.empty()) {
+        text(cr, line1.c_str(), w.x + w.w * 0.5, w.y + w.h * 0.5 + 2,
+             nameSize, 1, nameR, nameG, nameB);
+      } else {
+        text(cr, line1.c_str(), w.x + w.w * 0.5, w.y + 17, nameSize, 1,
+             nameR, nameG, nameB);
+        text(cr, line2.c_str(), w.x + w.w * 0.5, w.y + 28, nameSize, 1,
+             nameR, nameG, nameB);
+      }
       if (!cancel) {
         const char* src = w.subLabel;
         if (src && *src) {
-          text(cr, src, w.x + w.w * 0.5, w.y + w.h - 7, 6.0, 1,
+          text(cr, src, w.x + w.w * 0.5,
+               w.y + (line2.empty() ? w.h - 7 : w.h - 4),
+               line2.empty() ? 6.0 : 5.2, 1,
                current ? 0.10 : kDim.r, current ? 0.08 : kDim.g,
                current ? 0.06 : kDim.b);
         }

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.43.0-m2 — 2026-11-18
+
+- Wrapped long module preset names onto two lines inside browser cards so
+  they no longer spill into neighbouring options.
+- Shrunk the source line slightly for wrapped names to keep the card readable.
+
 ## 0.42.0-m2 — 2026-11-18
 
 - Moved SAVE next to the PRESETS header button.
