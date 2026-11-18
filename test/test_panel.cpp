@@ -11,6 +11,7 @@
 #include "module_ids.hpp"
 #include "modules.hpp"
 #include "params.hpp"
+#include "presets.hpp"
 #include "ui/panel.hpp"
 #include "user_presets.hpp"
 
@@ -253,18 +254,19 @@ int main() {
   const uint32_t savedControl = slotParam(0, kSlotOffsetC0 + kCtlLow);
   s.set(savedControl, 0.33);
   panel.draw(cr, s, state);
-  panel.pointerDown(s, state, 648, 34, false);
+  panel.pointerDown(s, state, 860, 34, false);
   panel.pointerUp(s, state);
   check(state.savePreset, "SAVE opens the preset name field");
   for (const char* c = "Test Rack"; *c; ++c) panel.textKey(s, state, 0, *c);
   panel.textKey(s, state, Panel::kTextEnter, 0);
-  check(panel.presetCount() == 4, "saving adds a user preset to the list");
-  check(std::string(panel.presetName(3)) == "Test Rack",
+  check(panel.presetCount() == kPresetCount + 1,
+        "saving adds a user preset to the list");
+  check(std::string(panel.presetName(kPresetCount)) == "Test Rack",
         "saved preset keeps its name");
   check(std::filesystem::exists(userPresetDir() / "Test Rack.suite-rack"),
         "saved preset file exists");
   s.set(savedControl, 0.77);
-  panel.applyPreset(s, state, 3);
+  panel.applyPreset(s, state, kPresetCount);
   check(std::fabs(s.get(savedControl) - 0.33) < 1e-6,
         "user preset recalls the saved rack");
 
@@ -282,10 +284,10 @@ int main() {
   panel.pointerDown(s, state, 237, 34, false);
   panel.pointerUp(s, state);
   panel.pointerDown(s, state, 200,
-                    170.0,
-                    false);
+                    100.0 + kPresetCount * 20.0 + 10.0, false);
   panel.pointerUp(s, state);
-  check(state.presetIndex == 3, "preset browser loads a saved user rack");
+  check(state.presetIndex == kPresetCount,
+        "preset browser loads a saved user rack");
   check(std::fabs(s.get(savedControl) - 0.33) < 1e-6,
         "user rack restores its stored values");
 
@@ -315,7 +317,7 @@ int main() {
   panel.pointerDown(s, state, 130, 134, false);
   panel.pointerUp(s, state);
   panel.draw(cr, s, state);
-  check(clickLabel(panel, s, state, "PRESET"),
+  check(clickLabel(panel, s, state, "PRESETS"),
         "browser offers the preset category");
   panel.draw(cr, s, state);
   bool presetSearch = false;
@@ -342,7 +344,7 @@ int main() {
   panel.pointerDown(s, state, 130, 134, false);
   panel.pointerUp(s, state);
   panel.draw(cr, s, state);
-  check(clickLabel(panel, s, state, "PRESET"),
+  check(clickLabel(panel, s, state, "PRESETS"),
         "preset category reopens for factory content");
   panel.draw(cr, s, state);
   for (const auto& r : panel.widgetRects()) {
@@ -360,6 +362,19 @@ int main() {
   check(std::fabs(s.get(slotParam(0, kSlotOffsetC0 + kCtlThreshold)) - 0.55f) <
             1e-5,
         "factory preset loads its control values");
+
+  // Card PRESETS button focuses the browser on the loaded module.
+  panel.draw(cr, s, state);
+  check(clickLabel(panel, s, state, "PRESET"),
+        "card PRESET button opens the preset browser");
+  check(state.browserSlot == 0 && state.browserCategory == 6 &&
+            state.browserPresetFilter,
+        "card PRESET button filters to the loaded module");
+  panel.draw(cr, s, state);
+  check(!clickLabel(panel, s, state, "2A Vocal Glue"),
+        "module preset filter hides other module families");
+  check(clickLabel(panel, s, state, "76 Vocal Push"),
+        "filtered module preset can still be chosen");
 
   check(!panel.widgetRects().empty(), "panel reports widget geometry");
   bool sourcesOk = true;

@@ -271,6 +271,17 @@ int main(int argc, char** argv) {
   s.set(slotParam(2, kSlotOffsetC0 + 6), 0.40);
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-hybrid-eq.png").c_str());
+  applyModuleDefaults(s, 0, static_cast<int>(ModuleId::Comp76Blue));
+  state.selectedSlot = 0;
+  state.browserSlot = 0;
+  state.browserCategory = 6;
+  state.browserPresetFilter = true;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(
+      surf, (out + "/rack-browser-module-presets.png").c_str());
+  state.browserSlot = -1;
+  state.browserCategory = 0;
+  state.browserPresetFilter = false;
   state.aboutOpen = true;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-about.png").c_str());

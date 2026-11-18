@@ -29,6 +29,12 @@ constexpr int kPresetVisibleRows = 12;
 constexpr double kPresetHeaderH = 46.0;
 constexpr double kPresetFooterH = 34.0;
 
+int presetFilterTypeFor(const Shared& shared, const PanelState& state) {
+  if (!state.browserPresetFilter || state.browserSlot < 0) return -1;
+  return static_cast<int>(
+      shared.get(slotParam(state.browserSlot, kSlotOffsetType)) + 0.5);
+}
+
 int presetRowsFor(int count) {
   return std::clamp(count, 3, kPresetVisibleRows);
 }
@@ -418,6 +424,21 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
     name.styleType = type;
     widgets_.push_back(name);
 
+    if (type != static_cast<int>(ModuleId::Off)) {
+      Widget presets{};
+      presets.kind = Kind::ModulePresetButton;
+      presets.param = static_cast<uint32_t>(i);
+      presets.value = i;
+      presets.x = x + colW - 64;
+      presets.y = y + 8;
+      presets.w = 56;
+      presets.h = 15;
+      presets.label = "PRESET";
+      presets.styleSlot = i;
+      presets.styleType = type;
+      widgets_.push_back(presets);
+    }
+
     Widget handle{};
     handle.kind = Kind::ModuleDragHandle;
     handle.param = static_cast<uint32_t>(i);
@@ -488,8 +509,11 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
 
   if (state.browserSlot >= 0 && state.browserSlot < kSlotCount) {
     const double bx = 240, bw = 560;
-    const double bh = browserHeight(state.browserCategory, state.browserQuery);
-    const double by = browserY(state.browserCategory, state.browserQuery);
+    const int filterType = presetFilterTypeFor(shared, state);
+    const double bh =
+        browserHeight(state.browserCategory, state.browserQuery, filterType);
+    const double by =
+        browserY(state.browserCategory, state.browserQuery, filterType);
     for (int tab = 0; tab < 7; ++tab) {
       Widget t{};
       t.kind = Kind::BrowserTab;
@@ -500,7 +524,7 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
       t.w = 70.0;
       t.h = 24.0;
       static const char* labels[7] = {"ALL", "EQ",     "COMP", "COLOUR",
-                                      "DYN", "SPACE",  "PRESET"};
+                                      "DYN", "SPACE",  "PRESETS"};
       t.label = labels[tab];
       widgets_.push_back(t);
     }
@@ -516,6 +540,7 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
       const std::string needle = lowerText(state.browserQuery);
       for (int i = 0; i < kFactoryModulePresetCount; ++i) {
         const FactoryModulePreset& p = kFactoryModulePresets[i];
+        if (filterType >= 0 && static_cast<int>(p.type) != filterType) continue;
         if (!needle.empty() &&
             lowerText(p.name).find(needle) == std::string::npos) {
           continue;
@@ -525,6 +550,7 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
       }
       for (int i = 0; i < static_cast<int>(modulePresets_.size()); ++i) {
         const ModulePreset& p = modulePresets_[static_cast<size_t>(i)];
+        if (filterType >= 0 && p.type != filterType) continue;
         if (!needle.empty() &&
             lowerText(p.name).find(needle) == std::string::npos) {
           continue;
@@ -635,7 +661,7 @@ void Panel::drawHeader(cairo_t* cr, const Shared& shared, const PanelState& stat
   text(cr, "SUITE RACK", 520, 44, 24, 1, kText.r, kText.g, kText.b);
 
   struct Pill { const char* label; double x; };
-  const Pill pills[] = {{"SAVE", 600}, {"PRESETS", 812}, {"ABOUT", 918}};
+  const Pill pills[] = {{"PRESETS", 706}, {"SAVE", 812}, {"ABOUT", 918}};
   for (const Pill& pill : pills) {
     const bool active = (std::string(pill.label) == "ABOUT" && state.aboutOpen) ||
                         (std::string(pill.label) == "SAVE" && state.savePreset) ||
@@ -686,11 +712,16 @@ void Panel::drawRack(cairo_t* cr, const Shared& shared,
        kDim.g, kDim.b);
 }
 
-int Panel::browserOptionCount(int category, const std::string& query) const {
+int Panel::browserOptionCount(int category, const std::string& query,
+                              int presetFilterType) const {
   if (category == 6) {
     const std::string needle = lowerText(query);
     int count = 0;
     for (int i = 0; i < kFactoryModulePresetCount; ++i) {
+      if (presetFilterType >= 0 &&
+          static_cast<int>(kFactoryModulePresets[i].type) != presetFilterType) {
+        continue;
+      }
       if (!needle.empty() &&
           lowerText(kFactoryModulePresets[i].name).find(needle) ==
               std::string::npos) {
@@ -699,6 +730,7 @@ int Panel::browserOptionCount(int category, const std::string& query) const {
       ++count;
     }
     for (const auto& p : modulePresets_) {
+      if (presetFilterType >= 0 && p.type != presetFilterType) continue;
       if (!needle.empty() &&
           lowerText(p.name).find(needle) == std::string::npos) {
         continue;
@@ -710,28 +742,31 @@ int Panel::browserOptionCount(int category, const std::string& query) const {
   return browserEntryCount(category, query);
 }
 
-double Panel::browserHeight(int category, const std::string& query) const {
-  const int count = browserOptionCount(category, query);
+double Panel::browserHeight(int category, const std::string& query,
+                            int presetFilterType) const {
+  const int count = browserOptionCount(category, query, presetFilterType);
   const int visible =
       query.empty() ? std::min(count, 16) : browserVisibleCount(query);
   const int rows = std::max(1, (visible + 3) / 4);
   return 92.0 + rows * 54.0 + 70.0;
 }
 
-double Panel::browserY(int category, const std::string& query) const {
-  const double h = browserHeight(category, query);
+double Panel::browserY(int category, const std::string& query,
+                       int presetFilterType) const {
+  const double h = browserHeight(category, query, presetFilterType);
   return std::max(84.0, (720.0 - h) * 0.5);
 }
 
 void Panel::drawBrowser(cairo_t* cr, const Shared& shared,
                         const PanelState& state) const {
-  (void)shared;
   if (state.browserSlot < 0 || state.browserSlot >= kSlotCount) return;
   cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 0.64);
   cairo_paint(cr);
   const double bx = 240, bw = 560;
-  const double bh = browserHeight(state.browserCategory, state.browserQuery);
-  const double by = browserY(state.browserCategory, state.browserQuery);
+  const double bh = browserHeight(state.browserCategory, state.browserQuery,
+                                  presetFilterTypeFor(shared, state));
+  const double by = browserY(state.browserCategory, state.browserQuery,
+                             presetFilterTypeFor(shared, state));
   roundRect(cr, bx, by, bw, bh, 6);
   setRgb(cr, {0.13, 0.115, 0.10}); cairo_fill(cr);
   setRgb(cr, kAccent, 0.85); cairo_set_line_width(cr, 1.5);
@@ -740,8 +775,19 @@ void Panel::drawBrowser(cairo_t* cr, const Shared& shared,
   std::snprintf(title, sizeof(title), "CHOOSE MODULE · SLOT %d",
                 state.browserSlot + 1);
   text(cr, title, bx + bw * 0.5, by + 30, 14, 1, kText.r, kText.g, kText.b);
-  text(cr, "One job per module · 3–8 controls · no deep pages", bx + bw * 0.5,
-       by + 86, 8.5, 1, kDim.r, kDim.g, kDim.b);
+  const char* subtitle =
+      state.browserCategory == 6
+          ? (state.browserPresetFilter
+                 ? "Presets for the loaded module · click one to load"
+                 : "Factory and user module presets · click one to load")
+          : "One job per module · 3–8 controls · no deep pages";
+  text(cr, subtitle, bx + bw * 0.5, by + 86, 8.5, 1, kDim.r, kDim.g, kDim.b);
+  if (state.browserCategory == 6 &&
+      browserOptionCount(6, state.browserQuery,
+                         presetFilterTypeFor(shared, state)) == 0) {
+    text(cr, "No presets for this module yet", bx + bw * 0.5, by + 160, 10, 1,
+         kDim.r, kDim.g, kDim.b);
+  }
   const double tx = bx + 28, ty = by + 46;
   cairo_set_source_rgba(cr, 0.20, 0.17, 0.14, 0.7);
   cairo_rectangle(cr, tx, ty, 506, 24);
@@ -1036,6 +1082,18 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
            kText.r, kText.g, kText.b);
       break;
     }
+    case Kind::ModulePresetButton: {
+      roundRect(cr, w.x, w.y, w.w, w.h, 3);
+      setRgb(cr, st.body);
+      cairo_fill(cr);
+      setRgb(cr, st.accent, 0.85);
+      cairo_set_line_width(cr, 0.9);
+      roundRect(cr, w.x + 0.5, w.y + 0.5, w.w - 1, w.h - 1, 3);
+      cairo_stroke(cr);
+      text(cr, w.label, w.x + w.w * 0.5, w.y + 10, 6.0, 1, st.accent.r,
+           st.accent.g, st.accent.b);
+      break;
+    }
     case Kind::BrowserSearch:
       break;
     case Kind::BrowserOption: {
@@ -1327,7 +1385,7 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
     state.presetOpen = 0;
     return true;
   }
-  if (x >= 812 && x <= 908 && y >= 20 && y <= 48) {
+  if (x >= 706 && x <= 802 && y >= 20 && y <= 48) {
     state.presetOpen = state.presetOpen ? 0 : 1;
     state.presetScroll = 0;
     state.browserSlot = -1;
@@ -1372,7 +1430,7 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
       return true;
     }
   }
-  if (x >= 600 && x <= 696 && y >= 20 && y <= 48) {
+  if (x >= 812 && x <= 908 && y >= 20 && y <= 48) {
     state.savePreset = true;
     state.textFresh = true;
     state.textParam = -1;
@@ -1389,6 +1447,7 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
       if (w.kind == Kind::BrowserTab && hitWidget(w, x, y)) {
         state.browserCategory = static_cast<int>(w.value);
         state.browserScroll = 0;
+        state.browserPresetFilter = false;
         return true;
       }
       if (w.kind == Kind::BrowserSearch && hitWidget(w, x, y)) {
@@ -1398,7 +1457,8 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
       }
       if (w.kind == Kind::BrowserScroll && hitWidget(w, x, y)) {
         const int maxScroll = std::max(
-            0, browserOptionCount(state.browserCategory, state.browserQuery) -
+            0, browserOptionCount(state.browserCategory, state.browserQuery,
+                                  presetFilterTypeFor(shared, state)) -
                    browserVisibleCount(state.browserQuery));
         state.browserScroll = std::clamp(
             state.browserScroll + static_cast<int>(w.value), 0, maxScroll);
@@ -1436,12 +1496,14 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
       state.browserSlot = -1;
       state.browserSearch = false;
       state.browserQuery.clear();
+      state.browserPresetFilter = false;
       state.presetDirty = true;
       return true;
     }
     state.browserSlot = -1;
     state.browserSearch = false;
     state.browserQuery.clear();
+    state.browserPresetFilter = false;
     return true;
   }
   for (const Widget& w : widgets_) {
@@ -1453,6 +1515,15 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
         return true;
       case Kind::SlotCard:
         state.selectedSlot = static_cast<int>(w.param);
+        return true;
+      case Kind::ModulePresetButton:
+        state.browserSlot = static_cast<int>(w.value);
+        state.browserCategory = 6;
+        state.browserScroll = 0;
+        state.browserQuery.clear();
+        state.browserSearch = false;
+        state.browserPresetFilter = true;
+        state.presetOpen = 0;
         return true;
       case Kind::ModuleName:
       case Kind::ModuleDragHandle:
@@ -1568,6 +1639,7 @@ void Panel::pointerUp(Shared& shared, PanelState& state) {
       state.browserScroll = 0;
       state.browserQuery.clear();
       state.browserSearch = false;
+      state.browserPresetFilter = false;
       state.presetOpen = 0;
     }
     dragSlot_ = -1;
@@ -1593,7 +1665,8 @@ bool Panel::wheel(Shared& shared, PanelState& state, double x, double y, double 
   }
   if (state.browserSlot >= 0) {
     const int maxScroll = std::max(
-        0, browserOptionCount(state.browserCategory, state.browserQuery) -
+        0, browserOptionCount(state.browserCategory, state.browserQuery,
+                              presetFilterTypeFor(shared, state)) -
                browserVisibleCount(state.browserQuery));
     state.browserScroll = std::clamp(
         state.browserScroll - (dy > 0 ? 1 : -1), 0, maxScroll);

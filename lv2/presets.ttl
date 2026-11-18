@@ -15,6 +15,30 @@
     a pset:Bank ;
     rdfs:label "Drum" .
 
+<https://github.com/tylorismusic-commits/suite-rack#bank_mix-bus>
+    a pset:Bank ;
+    rdfs:label "Mix Bus" .
+
+<https://github.com/tylorismusic-commits/suite-rack#bank_bass>
+    a pset:Bank ;
+    rdfs:label "Bass" .
+
+<https://github.com/tylorismusic-commits/suite-rack#bank_drums>
+    a pset:Bank ;
+    rdfs:label "Drums" .
+
+<https://github.com/tylorismusic-commits/suite-rack#bank_mastering>
+    a pset:Bank ;
+    rdfs:label "Mastering" .
+
+<https://github.com/tylorismusic-commits/suite-rack#bank_guitar>
+    a pset:Bank ;
+    rdfs:label "Guitar" .
+
+<https://github.com/tylorismusic-commits/suite-rack#bank_parallel>
+    a pset:Bank ;
+    rdfs:label "Parallel" .
+
 <https://github.com/tylorismusic-commits/suite-rack#preset_init>
     a pset:Preset ;
     lv2:appliesTo <https://github.com/tylorismusic-commits/suite-rack> ;
@@ -90,4 +114,274 @@
     [ lv2:symbol "slot1_c4" ; pset:value 0.8 ] ,
     [ lv2:symbol "slot1_c5" ; pset:value 1 ] ,
     [ lv2:symbol "slot1_c6" ; pset:value 0.05 ] .
+
+<https://github.com/tylorismusic-commits/suite-rack#preset_mix-bus-glue>
+    a pset:Preset ;
+    lv2:appliesTo <https://github.com/tylorismusic-commits/suite-rack> ;
+    rdfs:label "Mix Bus Glue" ;
+    rdfs:comment "Mix Bus" ;
+    pset:bank <https://github.com/tylorismusic-commits/suite-rack#bank_mix-bus> ;
+    lv2:port
+    [ lv2:symbol "power" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_type" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_c0" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot0_c1" ; pset:value 0.48 ] ,
+    [ lv2:symbol "slot0_c2" ; pset:value 0.52 ] ,
+    [ lv2:symbol "slot0_c3" ; pset:value 0.54 ] ,
+    [ lv2:symbol "slot0_c4" ; pset:value 0.15 ] ,
+    [ lv2:symbol "slot0_c5" ; pset:value 1 ] ,
+    [ lv2:symbol "slot1_type" ; pset:value 45 ] ,
+    [ lv2:symbol "slot1_c0" ; pset:value 0.45 ] ,
+    [ lv2:symbol "slot2_type" ; pset:value 69 ] ,
+    [ lv2:symbol "slot2_c0" ; pset:value 0.8 ] ,
+    [ lv2:symbol "slot2_c1" ; pset:value 0.95 ] ,
+    [ lv2:symbol "slot2_c2" ; pset:value 1 ] ,
+    [ lv2:symbol "slot2_c3" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot2_c4" ; pset:value 1 ] ,
+    [ lv2:symbol "slot2_c5" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot2_c6" ; pset:value 0.667 ] ,
+    [ lv2:symbol "slot3_type" ; pset:value 0 ] ,
+    [ lv2:symbol "slot4_type" ; pset:value 0 ] ,
+    [ lv2:symbol "slot5_type" ; pset:value 0 ] .
+
+<https://github.com/tylorismusic-commits/suite-rack#preset_bass-di>
+    a pset:Preset ;
+    lv2:appliesTo <https://github.com/tylorismusic-commits/suite-rack> ;
+    rdfs:label "Bass DI" ;
+    rdfs:comment "Bass" ;
+    pset:bank <https://github.com/tylorismusic-commits/suite-rack#bank_bass> ;
+    lv2:port
+    [ lv2:symbol "power" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_type" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_c0" ; pset:value 0.62 ] ,
+    [ lv2:symbol "slot0_c1" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot0_c2" ; pset:value 0.45 ] ,
+    [ lv2:symbol "slot0_c3" ; pset:value 0.48 ] ,
+    [ lv2:symbol "slot0_c4" ; pset:value 0.05 ] ,
+    [ lv2:symbol "slot0_c5" ; pset:value 1 ] ,
+    [ lv2:symbol "slot1_type" ; pset:value 5 ] ,
+    [ lv2:symbol "slot1_c0" ; pset:value 0.58 ] ,
+    [ lv2:symbol "slot1_c1" ; pset:value 0.375 ] ,
+    [ lv2:symbol "slot1_c2" ; pset:value 0.45 ] ,
+    [ lv2:symbol "slot1_c3" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot1_c4" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot1_c5" ; pset:value 1 ] ,
+    [ lv2:symbol "slot1_c6" ; pset:value 0.02 ] ,
+    [ lv2:symbol "slot2_type" ; pset:value 52 ] ,
+    [ lv2:symbol "slot2_c0" ; pset:value 0.2 ] ,
+    [ lv2:symbol "slot2_c1" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot2_c2" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot2_c3" ; pset:value 0.4 ] ,
+    [ lv2:symbol "slot2_c4" ; pset:value 0.3 ] ,
+    [ lv2:symbol "slot3_type" ; pset:value 0 ] ,
+    [ lv2:symbol "slot4_type" ; pset:value 0 ] ,
+    [ lv2:symbol "slot5_type" ; pset:value 0 ] .
+
+<https://github.com/tylorismusic-commits/suite-rack#preset_vocal-air>
+    a pset:Preset ;
+    lv2:appliesTo <https://github.com/tylorismusic-commits/suite-rack> ;
+    rdfs:label "Vocal Air" ;
+    rdfs:comment "Vocal" ;
+    pset:bank <https://github.com/tylorismusic-commits/suite-rack#bank_vocal> ;
+    lv2:port
+    [ lv2:symbol "power" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_type" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_c0" ; pset:value 0.48 ] ,
+    [ lv2:symbol "slot0_c1" ; pset:value 0.45 ] ,
+    [ lv2:symbol "slot0_c2" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot0_c3" ; pset:value 0.58 ] ,
+    [ lv2:symbol "slot0_c4" ; pset:value 0.45 ] ,
+    [ lv2:symbol "slot0_c5" ; pset:value 1 ] ,
+    [ lv2:symbol "slot1_type" ; pset:value 7 ] ,
+    [ lv2:symbol "slot1_c0" ; pset:value 0.45 ] ,
+    [ lv2:symbol "slot1_c4" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot1_c5" ; pset:value 1 ] ,
+    [ lv2:symbol "slot2_type" ; pset:value 32 ] ,
+    [ lv2:symbol "slot2_c0" ; pset:value 0.45 ] ,
+    [ lv2:symbol "slot2_c1" ; pset:value 0.162 ] ,
+    [ lv2:symbol "slot2_c2" ; pset:value 0.1 ] ,
+    [ lv2:symbol "slot2_c3" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot2_c4" ; pset:value 0.65 ] ,
+    [ lv2:symbol "slot2_c5" ; pset:value 0.28 ] ,
+    [ lv2:symbol "slot3_type" ; pset:value 52 ] ,
+    [ lv2:symbol "slot3_c0" ; pset:value 0.35 ] ,
+    [ lv2:symbol "slot3_c1" ; pset:value 0.6 ] ,
+    [ lv2:symbol "slot3_c2" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot3_c3" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot3_c4" ; pset:value 1 ] ,
+    [ lv2:symbol "slot4_type" ; pset:value 0 ] ,
+    [ lv2:symbol "slot5_type" ; pset:value 0 ] .
+
+<https://github.com/tylorismusic-commits/suite-rack#preset_drum-room>
+    a pset:Preset ;
+    lv2:appliesTo <https://github.com/tylorismusic-commits/suite-rack> ;
+    rdfs:label "Drum Room" ;
+    rdfs:comment "Drums" ;
+    pset:bank <https://github.com/tylorismusic-commits/suite-rack#bank_drums> ;
+    lv2:port
+    [ lv2:symbol "power" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_type" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_c0" ; pset:value 0.6 ] ,
+    [ lv2:symbol "slot0_c1" ; pset:value 0.45 ] ,
+    [ lv2:symbol "slot0_c2" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot0_c3" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot0_c4" ; pset:value 0.02 ] ,
+    [ lv2:symbol "slot0_c5" ; pset:value 1 ] ,
+    [ lv2:symbol "slot1_type" ; pset:value 6 ] ,
+    [ lv2:symbol "slot1_c0" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot1_c1" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot1_c2" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot1_c3" ; pset:value 0.3 ] ,
+    [ lv2:symbol "slot1_c4" ; pset:value 0.4 ] ,
+    [ lv2:symbol "slot1_c5" ; pset:value 0.45 ] ,
+    [ lv2:symbol "slot1_c6" ; pset:value 0.05 ] ,
+    [ lv2:symbol "slot2_type" ; pset:value 20 ] ,
+    [ lv2:symbol "slot2_c0" ; pset:value 0.714 ] ,
+    [ lv2:symbol "slot2_c1" ; pset:value 0.366 ] ,
+    [ lv2:symbol "slot2_c2" ; pset:value 0.15 ] ,
+    [ lv2:symbol "slot2_c3" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot2_c4" ; pset:value 0 ] ,
+    [ lv2:symbol "slot3_type" ; pset:value 33 ] ,
+    [ lv2:symbol "slot3_c0" ; pset:value 0.4 ] ,
+    [ lv2:symbol "slot3_c1" ; pset:value 0.06 ] ,
+    [ lv2:symbol "slot3_c2" ; pset:value 0.04 ] ,
+    [ lv2:symbol "slot3_c3" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot3_c4" ; pset:value 0.45 ] ,
+    [ lv2:symbol "slot3_c5" ; pset:value 0.2 ] ,
+    [ lv2:symbol "slot4_type" ; pset:value 0 ] ,
+    [ lv2:symbol "slot5_type" ; pset:value 0 ] .
+
+<https://github.com/tylorismusic-commits/suite-rack#preset_mastering-chain>
+    a pset:Preset ;
+    lv2:appliesTo <https://github.com/tylorismusic-commits/suite-rack> ;
+    rdfs:label "Mastering Chain" ;
+    rdfs:comment "Mastering" ;
+    pset:bank <https://github.com/tylorismusic-commits/suite-rack#bank_mastering> ;
+    lv2:port
+    [ lv2:symbol "power" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_type" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_c0" ; pset:value 0.52 ] ,
+    [ lv2:symbol "slot0_c1" ; pset:value 0.49 ] ,
+    [ lv2:symbol "slot0_c2" ; pset:value 0.51 ] ,
+    [ lv2:symbol "slot0_c3" ; pset:value 0.54 ] ,
+    [ lv2:symbol "slot0_c4" ; pset:value 0.1 ] ,
+    [ lv2:symbol "slot0_c5" ; pset:value 1 ] ,
+    [ lv2:symbol "slot1_type" ; pset:value 44 ] ,
+    [ lv2:symbol "slot1_c0" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot2_type" ; pset:value 69 ] ,
+    [ lv2:symbol "slot2_c0" ; pset:value 0.85 ] ,
+    [ lv2:symbol "slot2_c1" ; pset:value 0.97 ] ,
+    [ lv2:symbol "slot2_c2" ; pset:value 1 ] ,
+    [ lv2:symbol "slot2_c3" ; pset:value 0.4 ] ,
+    [ lv2:symbol "slot2_c4" ; pset:value 1 ] ,
+    [ lv2:symbol "slot2_c5" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot2_c6" ; pset:value 0.667 ] ,
+    [ lv2:symbol "slot3_type" ; pset:value 70 ] ,
+    [ lv2:symbol "slot3_c0" ; pset:value 0.8 ] ,
+    [ lv2:symbol "slot3_c1" ; pset:value 0.9 ] ,
+    [ lv2:symbol "slot3_c2" ; pset:value 0.4 ] ,
+    [ lv2:symbol "slot3_c3" ; pset:value 1 ] ,
+    [ lv2:symbol "slot4_type" ; pset:value 0 ] ,
+    [ lv2:symbol "slot5_type" ; pset:value 0 ] .
+
+<https://github.com/tylorismusic-commits/suite-rack#preset_space-vocal>
+    a pset:Preset ;
+    lv2:appliesTo <https://github.com/tylorismusic-commits/suite-rack> ;
+    rdfs:label "Space Vocal" ;
+    rdfs:comment "Vocal" ;
+    pset:bank <https://github.com/tylorismusic-commits/suite-rack#bank_vocal> ;
+    lv2:port
+    [ lv2:symbol "power" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_type" ; pset:value 5 ] ,
+    [ lv2:symbol "slot0_c0" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot0_c1" ; pset:value 0.25 ] ,
+    [ lv2:symbol "slot0_c2" ; pset:value 0.25 ] ,
+    [ lv2:symbol "slot0_c3" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot0_c4" ; pset:value 0.6 ] ,
+    [ lv2:symbol "slot0_c5" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_c6" ; pset:value 0.2 ] ,
+    [ lv2:symbol "slot1_type" ; pset:value 1 ] ,
+    [ lv2:symbol "slot1_c0" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot1_c1" ; pset:value 0.45 ] ,
+    [ lv2:symbol "slot1_c2" ; pset:value 0.58 ] ,
+    [ lv2:symbol "slot1_c3" ; pset:value 0.6 ] ,
+    [ lv2:symbol "slot1_c4" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot1_c5" ; pset:value 1 ] ,
+    [ lv2:symbol "slot2_type" ; pset:value 34 ] ,
+    [ lv2:symbol "slot2_c0" ; pset:value 0.7 ] ,
+    [ lv2:symbol "slot2_c1" ; pset:value 0.359 ] ,
+    [ lv2:symbol "slot2_c2" ; pset:value 0.175 ] ,
+    [ lv2:symbol "slot2_c3" ; pset:value 0.45 ] ,
+    [ lv2:symbol "slot2_c4" ; pset:value 0.8 ] ,
+    [ lv2:symbol "slot2_c5" ; pset:value 0.3 ] ,
+    [ lv2:symbol "slot3_type" ; pset:value 52 ] ,
+    [ lv2:symbol "slot3_c0" ; pset:value 0.3 ] ,
+    [ lv2:symbol "slot3_c1" ; pset:value 0.6 ] ,
+    [ lv2:symbol "slot3_c2" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot3_c3" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot3_c4" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot4_type" ; pset:value 0 ] ,
+    [ lv2:symbol "slot5_type" ; pset:value 0 ] .
+
+<https://github.com/tylorismusic-commits/suite-rack#preset_guitar-spring>
+    a pset:Preset ;
+    lv2:appliesTo <https://github.com/tylorismusic-commits/suite-rack> ;
+    rdfs:label "Guitar Spring" ;
+    rdfs:comment "Guitar" ;
+    pset:bank <https://github.com/tylorismusic-commits/suite-rack#bank_guitar> ;
+    lv2:port
+    [ lv2:symbol "power" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_type" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_c0" ; pset:value 0.52 ] ,
+    [ lv2:symbol "slot0_c1" ; pset:value 0.48 ] ,
+    [ lv2:symbol "slot0_c2" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot0_c3" ; pset:value 0.57 ] ,
+    [ lv2:symbol "slot0_c4" ; pset:value 0.15 ] ,
+    [ lv2:symbol "slot0_c5" ; pset:value 1 ] ,
+    [ lv2:symbol "slot1_type" ; pset:value 7 ] ,
+    [ lv2:symbol "slot1_c0" ; pset:value 0.35 ] ,
+    [ lv2:symbol "slot1_c4" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot1_c5" ; pset:value 1 ] ,
+    [ lv2:symbol "slot2_type" ; pset:value 35 ] ,
+    [ lv2:symbol "slot2_c0" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot2_c1" ; pset:value 0.145 ] ,
+    [ lv2:symbol "slot2_c2" ; pset:value 0 ] ,
+    [ lv2:symbol "slot2_c3" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot2_c4" ; pset:value 0.6 ] ,
+    [ lv2:symbol "slot2_c5" ; pset:value 0.3 ] ,
+    [ lv2:symbol "slot3_type" ; pset:value 0 ] ,
+    [ lv2:symbol "slot4_type" ; pset:value 0 ] ,
+    [ lv2:symbol "slot5_type" ; pset:value 0 ] .
+
+<https://github.com/tylorismusic-commits/suite-rack#preset_parallel-smash>
+    a pset:Preset ;
+    lv2:appliesTo <https://github.com/tylorismusic-commits/suite-rack> ;
+    rdfs:label "Parallel Smash" ;
+    rdfs:comment "Parallel" ;
+    pset:bank <https://github.com/tylorismusic-commits/suite-rack#bank_parallel> ;
+    lv2:port
+    [ lv2:symbol "power" ; pset:value 1 ] ,
+    [ lv2:symbol "slot0_type" ; pset:value 5 ] ,
+    [ lv2:symbol "slot0_c0" ; pset:value 0.68 ] ,
+    [ lv2:symbol "slot0_c1" ; pset:value 0.75 ] ,
+    [ lv2:symbol "slot0_c2" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot0_c3" ; pset:value 0.2 ] ,
+    [ lv2:symbol "slot0_c4" ; pset:value 0.45 ] ,
+    [ lv2:symbol "slot0_c5" ; pset:value 0.35 ] ,
+    [ lv2:symbol "slot0_c6" ; pset:value 0.05 ] ,
+    [ lv2:symbol "slot1_type" ; pset:value 1 ] ,
+    [ lv2:symbol "slot1_c0" ; pset:value 0.58 ] ,
+    [ lv2:symbol "slot1_c1" ; pset:value 0.46 ] ,
+    [ lv2:symbol "slot1_c2" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot1_c3" ; pset:value 0.55 ] ,
+    [ lv2:symbol "slot1_c4" ; pset:value 0.1 ] ,
+    [ lv2:symbol "slot1_c5" ; pset:value 1 ] ,
+    [ lv2:symbol "slot2_type" ; pset:value 31 ] ,
+    [ lv2:symbol "slot2_c0" ; pset:value 0.3 ] ,
+    [ lv2:symbol "slot2_c1" ; pset:value 0.2 ] ,
+    [ lv2:symbol "slot2_c2" ; pset:value 0 ] ,
+    [ lv2:symbol "slot2_c3" ; pset:value 0.5 ] ,
+    [ lv2:symbol "slot3_type" ; pset:value 0 ] ,
+    [ lv2:symbol "slot4_type" ; pset:value 0 ] ,
+    [ lv2:symbol "slot5_type" ; pset:value 0 ] .
 

@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.41.0-m2 — CLAP + LV2, seventy-one modules, full preset browsers, drag reorder, browser search and typed values.**
+**Status: 0.42.0-m2 — CLAP + LV2, seventy-one modules, full preset browsers, drag reorder, browser search and typed values.**
 More factory module presets are next.
 
 A virtual 500 series mix rack in the Suite visual language: six serial slots, each
@@ -88,6 +88,8 @@ standalone plugins remain the full versions.
 
 ![Suite Rack — factory and user module presets](docs/rack-browser-user.png)
 
+![Suite Rack — module presets filtered from a module card](docs/rack-browser-module-presets.png)
+
 ![Suite Rack — rack preset browser](docs/rack-presets.png)
 
 ![Suite Rack — Hybrid EQ](docs/rack-hybrid-eq.png)
@@ -131,7 +133,7 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.41.0-m2 slice
+## Current 0.42.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
@@ -168,18 +170,22 @@ the 500-series format; Cleanup is the lightweight repair representative.
 - **State and automation mapping tests** cover round-trip recall, dirty-flag
   reporting and slot/global parameter mapping.
 - A full rack preset browser opens from the preset bar or the header
-  **PRESETS** button, listing factory racks and saved user racks.
-- The header keeps only SAVE, PRESETS and ABOUT; the inactive 6 SLOTS and
-  SERIAL pills were removed.
+  **PRESETS** button, listing eleven factory racks and saved user racks.
+- The header keeps only PRESETS, SAVE and ABOUT, grouped on the right; the
+  inactive 6 SLOTS and SERIAL pills were removed.
 - The About page shows each module's source plus a short description of its
   character instead of a control list.
 - User rack presets save to `$XDG_CONFIG_HOME/SuiteRack/presets` (or
   `~/.config/SuiteRack/presets`) and appear in the preset bar after the factory
   presets. The header **SAVE** button opens a name field; Enter writes the
   preset and Escape cancels.
+- Every loaded module card has a small **PRESET** button. It opens the
+  browser's **PRESETS** tab filtered to that module, so changing module presets
+  does not require hunting through the full list. The tab can also be opened
+  normally to browse all module presets.
 - Right-click a module name to save that module's type and controls as a user
-  module preset. Saved presets appear in the browser's **USER** tab and can be
-  loaded into any slot.
+  module preset. Saved presets appear in the browser's **PRESETS** tab and can
+  be loaded into any slot.
 
 ## Architecture
 

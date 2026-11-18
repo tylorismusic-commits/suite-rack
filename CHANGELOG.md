@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.42.0-m2 — 2026-11-18
+
+- Moved SAVE next to the PRESETS header button.
+- Expanded the factory rack presets to eleven chains, including Mix Bus Glue,
+  Bass DI, Vocal Air, Drum Room, Mastering Chain, Space Vocal, Guitar Spring
+  and Parallel Smash.
+- Added a PRESET button to every loaded module card. It opens the browser's
+  PRESETS tab filtered to that module.
+- Kept the PRESETS tab available for browsing all factory and user module
+  presets.
+
 ## 0.41.0-m2 — 2026-11-18
 
 - Added Hybrid EQ: a Frank-style Helios/Pultec/API/Neve hybrid with low cut,
