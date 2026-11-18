@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.35.0-m2 — 2026-11-18
+
+- Added JClones O3 maximizer with input drive, margin, character and
+  prevent-ISP.
+- O3 uses 5x oversampled peak detection, max hold, windowed attack FIR and
+  adaptive release, and reports latency and gain reduction.
+- The JClones port set is now complete.
+
 ## 0.34.0-m2 — 2026-11-18
 
 - Added JClones L2 lookahead limiter with threshold, ceiling, auto release,

@@ -205,6 +205,16 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::O3Controls o3ControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::O3Controls out;
+  out.threshold = c.c[0];
+  out.margin = c.c[1];
+  out.character = c.c[2];
+  out.preventIsp = c.c[3] > 0.5f;
+  return out;
+}
+
 inline hdsp::modules::L2Controls l2ControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::L2Controls out;

@@ -85,6 +85,8 @@ enum class ControlFormat {
   Comp48Db,
   Threshold30Db,
   L2ReleaseMs,
+  Threshold20Db,
+  Margin6Db,
 };
 
 struct ControlDesc {
@@ -191,6 +193,13 @@ inline constexpr const char* kRs124ModelLabels[] = {"60050A", "61010B",
                                                     "60070B"};
 inline constexpr const char* kRs124ReleaseLabels[] = {"1", "2", "3",
                                                       "4", "5", "6"};
+
+inline constexpr ControlDesc kJcO3Controls[] = {
+    {0, "THRESHOLD", "Threshold", ControlFormat::Threshold20Db},
+    {1, "MARGIN", "Margin", ControlFormat::Margin6Db},
+    {2, "CHARACTER", "Character", ControlFormat::Unit10},
+    {3, "PREVENT ISP", "Prevent ISP", ControlFormat::Percent, false, {}, true},
+};
 
 inline constexpr ControlDesc kJcL2Controls[] = {
     {0, "THRESHOLD", "Threshold", ControlFormat::Threshold30Db},
@@ -830,6 +839,9 @@ inline constexpr ModuleDesc kModules[] = {
     {ModuleId::JcL2, "L2", "Dyn", "JClones lookahead limiter", false, true, 0,
      static_cast<int>(sizeof(kJcL2Controls) / sizeof(kJcL2Controls[0])),
      kJcL2Controls},
+    {ModuleId::JcO3, "O3", "Dyn", "JClones maximizer", false, true, 0,
+     static_cast<int>(sizeof(kJcO3Controls) / sizeof(kJcO3Controls[0])),
+     kJcO3Controls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -891,6 +903,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Trowel",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
+    "JClones",
     "JClones",
     "JClones",
     "JClones",
