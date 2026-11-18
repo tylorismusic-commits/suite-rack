@@ -98,6 +98,22 @@ ModuleStyle styleFor(int type) {
               {0.55, 0.50, 0.44}, {0.72, 0.70, 0.66}};
   }
 }
+bool browserCategoryMatches(int id, int category) {
+  const ModuleDesc* d = moduleDesc(id);
+  if (category == 1) return d->isEq;
+  if (category == 2) return d->isComp;
+  if (category == 3) return moduleIsColour(id);
+  return true;
+}
+
+int browserEntryCount(int category) {
+  int count = 1;  // Off
+  for (int id = 1; id < kModuleCount; ++id) {
+    if (browserCategoryMatches(id, category)) ++count;
+  }
+  return count;
+}
+
 } // namespace
 
 Panel::Panel() = default;
@@ -236,21 +252,24 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
     std::vector<int> ids;
     ids.push_back(static_cast<int>(ModuleId::Off));
     for (int id = 1; id < kModuleCount; ++id) {
-      const ModuleDesc* d = moduleDesc(id);
-      if (state.browserCategory == 1 && !d->isEq) continue;
-      if (state.browserCategory == 2 && !d->isComp) continue;
-      if (state.browserCategory == 3 && !moduleIsColour(id)) continue;
+      if (!browserCategoryMatches(id, state.browserCategory)) continue;
       ids.push_back(id);
     }
     const int columns = 4;
+    const int visible = 16;
+    const int maxScroll =
+        std::max(0, static_cast<int>(ids.size()) - visible);
+    const int scroll = std::clamp(state.browserScroll, 0, maxScroll);
     const double ow = 120.0, oh = 46.0, ox = 6.0, oy = 8.0;
-    for (size_t k = 0; k < ids.size() && k < 16; ++k) {
+    for (int k = scroll;
+         k < static_cast<int>(ids.size()) && k < scroll + visible; ++k) {
+      const int pos = k - scroll;
       Widget b{};
       b.kind = Kind::BrowserOption;
       b.param = slotParam(state.browserSlot, kSlotOffsetType);
       b.value = ids[k];
-      b.x = bx + 18 + static_cast<double>(k % columns) * (ow + ox);
-      b.y = by + 92 + static_cast<double>(k / columns) * (oh + oy);
+      b.x = bx + 18 + static_cast<double>(pos % columns) * (ow + ox);
+      b.y = by + 92 + static_cast<double>(pos / columns) * (oh + oy);
       b.w = ow;
       b.h = oh;
       b.label = ids[k] == static_cast<int>(ModuleId::Off)
@@ -258,6 +277,26 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
                     : slotModuleName(ids[k]);
       b.styleType = ids[k];
       widgets_.push_back(b);
+    }
+    if (maxScroll > 0) {
+      Widget up{};
+      up.kind = Kind::BrowserScroll;
+      up.value = -1.0;
+      up.x = bx + 18;
+      up.y = by + bh - 42;
+      up.w = 58;
+      up.h = 28;
+      up.label = "UP";
+      widgets_.push_back(up);
+      Widget down{};
+      down.kind = Kind::BrowserScroll;
+      down.value = 1.0;
+      down.x = bx + 82;
+      down.y = by + bh - 42;
+      down.w = 58;
+      down.h = 28;
+      down.label = "DOWN";
+      widgets_.push_back(down);
     }
 
     Widget cancel{};
@@ -379,13 +418,15 @@ void Panel::draw(cairo_t* cr, Shared& shared, const PanelState& state) {
   drawHeader(cr, shared, state);
   drawRack(cr, shared, state);
   for (const Widget& w : widgets_) {
-    if (w.kind != Kind::BrowserOption && w.kind != Kind::BrowserTab) {
+    if (w.kind != Kind::BrowserOption && w.kind != Kind::BrowserTab &&
+        w.kind != Kind::BrowserScroll) {
       drawWidget(cr, w, shared, state);
     }
   }
   drawBrowser(cr, shared, state);
   for (const Widget& w : widgets_) {
-    if (w.kind == Kind::BrowserOption || w.kind == Kind::BrowserTab) {
+    if (w.kind == Kind::BrowserOption || w.kind == Kind::BrowserTab ||
+        w.kind == Kind::BrowserScroll) {
       drawWidget(cr, w, shared, state);
     }
   }
@@ -447,6 +488,18 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
       text(cr, w.label, w.x + w.w * 0.5, w.y + w.h * 0.5 + 4, 9, 1,
            active ? 0.10 : kText.r, active ? 0.08 : kText.g,
            active ? 0.05 : kText.b);
+      break;
+    }
+    case Kind::BrowserScroll: {
+      roundRect(cr, w.x, w.y, w.w, w.h, 4);
+      setRgb(cr, {0.20, 0.17, 0.14});
+      cairo_fill(cr);
+      setRgb(cr, kEdge, 0.8);
+      cairo_set_line_width(cr, 1.0);
+      roundRect(cr, w.x + 0.5, w.y + 0.5, w.w - 1, w.h - 1, 4);
+      cairo_stroke(cr);
+      text(cr, w.label, w.x + w.w * 0.5, w.y + w.h * 0.5 + 4, 9, 1,
+           kText.r, kText.g, kText.b);
       break;
     }
     case Kind::BrowserOption: {
@@ -584,6 +637,14 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
     for (const Widget& w : widgets_) {
       if (w.kind == Kind::BrowserTab && hitWidget(w, x, y)) {
         state.browserCategory = static_cast<int>(w.value);
+        state.browserScroll = 0;
+        return true;
+      }
+      if (w.kind == Kind::BrowserScroll && hitWidget(w, x, y)) {
+        const int maxScroll =
+            std::max(0, browserEntryCount(state.browserCategory) - 16);
+        state.browserScroll = std::clamp(
+            state.browserScroll + static_cast<int>(w.value), 0, maxScroll);
         return true;
       }
       if (w.kind != Kind::BrowserOption || !hitWidget(w, x, y)) continue;
@@ -611,9 +672,11 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
       case Kind::ModuleName:
         state.selectedSlot = static_cast<int>(w.value);
         state.browserSlot = static_cast<int>(w.value);
+        state.browserScroll = 0;
         return true;
       case Kind::BrowserOption:
       case Kind::BrowserTab:
+      case Kind::BrowserScroll:
         break;
       case Kind::ModuleButton:
         shared.set(w.param, w.value);
@@ -660,6 +723,13 @@ bool Panel::pointerMove(Shared& shared, PanelState& state, double, double y,
 void Panel::pointerUp() { dragParam_ = -1; }
 
 bool Panel::wheel(Shared& shared, PanelState& state, double x, double y, double dy) {
+  if (state.browserSlot >= 0) {
+    const int maxScroll =
+        std::max(0, browserEntryCount(state.browserCategory) - 16);
+    state.browserScroll = std::clamp(
+        state.browserScroll - (dy > 0 ? 1 : -1), 0, maxScroll);
+    return true;
+  }
   for (const Widget& w : widgets_) {
     if (w.kind != Kind::Knob || !hitWidget(w, x, y)) continue;
     const ParamSpec& spec = kParamSpecs[w.param];

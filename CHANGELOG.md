@@ -7,6 +7,7 @@
 - Single-band colour module with Drive, Character, Tone and Mix.
 - Browser COLOUR category and a four-column module grid.
 - Added colour modules to the DSP sweep.
+- Browser scrolling for catalogs larger than sixteen entries.
 
 ## 0.3.0-m2 — 2026-11-17
 

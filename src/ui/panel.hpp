@@ -22,6 +22,7 @@ struct PanelState {
   int presetOpen = 0;
   int presetScroll = 0;
   int browserCategory = 0;
+  int browserScroll = 0;
   float inLevelL = -120.0f;
   float inLevelR = -120.0f;
   float outLevelL = -120.0f;
@@ -73,7 +74,7 @@ public:
   std::vector<WidgetRect> widgetRects() const;
 
 private:
-  enum class Kind { Knob, Pill, Button, SlotCard, ModuleButton, ModelButton, Power, ModuleName, BrowserOption, BrowserTab };
+  enum class Kind { Knob, Pill, Button, SlotCard, ModuleButton, ModelButton, Power, ModuleName, BrowserOption, BrowserTab, BrowserScroll };
   struct Widget {
     Kind kind = Kind::Knob;
     uint32_t param = 0;
