@@ -26,6 +26,10 @@ int main(int argc, char** argv) {
   state.browserSlot = 1;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-browser.png").c_str());
+  state.browserCategory = 1;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-browser-eq.png").c_str());
+  state.browserCategory = 0;
   state.browserSlot = -1;
   state.selectedSlot = 4;
   applyModuleDefaults(s, 4, static_cast<int>(ModuleId::BleedOut));

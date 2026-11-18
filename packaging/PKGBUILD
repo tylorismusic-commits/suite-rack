@@ -1,6 +1,6 @@
 # Maintainer: tylor <tylorismusic@users.noreply.github.com>
 pkgname=suite-rack
-pkgver=0.12.0
+pkgver=0.12.1
 pkgrel=1
 pkgdesc="Six-slot virtual 500-series mix rack for Linux (CLAP + LV2)"
 arch=('x86_64')

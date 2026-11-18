@@ -246,6 +246,15 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
     name.styleType = type;
     widgets_.push_back(name);
 
+    Widget handle{};
+    handle.kind = Kind::ModuleDragHandle;
+    handle.param = static_cast<uint32_t>(i);
+    handle.value = i;
+    handle.x = x + 4; handle.y = y + 8; handle.w = colW - 8; handle.h = 52;
+    handle.styleSlot = i;
+    handle.styleType = type;
+    widgets_.push_back(handle);
+
     Widget byp{};
     byp.kind = Kind::Pill;
     byp.param = slotParam(i, kSlotOffsetBypass);
@@ -291,10 +300,24 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
     knob(slotParam(i, kSlotOffsetMix), x + colW * 0.30, y + 512, 13, "MIX", i);
     knob(slotParam(i, kSlotOffsetGain), x + colW * 0.70, y + 512, 13,
          "GAIN", i);
+
+    // Full-card fallback drag handle. Controls are added first, so knobs and
+    // buttons still win the hit test; clicking any empty part of the module
+    // starts a drag or opens the browser.
+    Widget card{};
+    card.kind = Kind::ModuleDragHandle;
+    card.param = static_cast<uint32_t>(i);
+    card.value = i;
+    card.x = x; card.y = y; card.w = colW; card.h = 556.0;
+    card.styleSlot = i;
+    card.styleType = type;
+    widgets_.push_back(card);
   }
 
   if (state.browserSlot >= 0 && state.browserSlot < kSlotCount) {
-    const double bx = 240, by = 140, bw = 560, bh = 420;
+    const double bx = 240, bw = 560;
+    const double bh = browserHeight(state.browserCategory);
+    const double by = browserY(state.browserCategory);
     for (int tab = 0; tab < 5; ++tab) {
       Widget t{};
       t.kind = Kind::BrowserTab;
@@ -427,17 +450,11 @@ void Panel::drawRack(cairo_t* cr, const Shared& shared,
     roundRect(cr, x, y, colW, h, 6);
     setRgb(cr, st.body); cairo_fill(cr);
     const bool dropTarget = slotDragging_ && dropSlot_ == i;
-    const bool dragSource = slotDragging_ && dragSlot_ == i;
     cairo_set_line_width(cr,
                          dropTarget ? 2.5 : (state.browserSlot == i ? 2.0 : 1.0));
     setRgb(cr, dropTarget ? st.accent : (state.browserSlot == i ? st.accent : st.edge),
            dropTarget ? 1.0 : (state.browserSlot == i ? 1.0 : 0.75));
     roundRect(cr, x + 0.5, y + 0.5, colW - 1, h - 1, 6); cairo_stroke(cr);
-    if (dragSource) {
-      setRgb(cr, st.body, 0.35);
-      roundRect(cr, x + 2, y + 2, colW - 4, h - 4, 5);
-      cairo_fill(cr);
-    }
     // 500-series colour cap.
     roundRect(cr, x + 1, y + 1, colW - 2, 7, 4);
     setRgb(cr, st.accent, 0.95); cairo_fill(cr);
@@ -460,13 +477,26 @@ void Panel::drawRack(cairo_t* cr, const Shared& shared,
        kDim.g, kDim.b);
 }
 
+double Panel::browserHeight(int category) const {
+  const int visible = std::min(browserEntryCount(category), 16);
+  const int rows = std::max(1, (visible + 3) / 4);
+  return 92.0 + rows * 54.0 + 70.0;
+}
+
+double Panel::browserY(int category) const {
+  const double h = browserHeight(category);
+  return 92.0 + std::max(0.0, (556.0 - h) * 0.5);
+}
+
 void Panel::drawBrowser(cairo_t* cr, const Shared& shared,
                         const PanelState& state) const {
   (void)shared;
   if (state.browserSlot < 0 || state.browserSlot >= kSlotCount) return;
   cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 0.64);
   cairo_paint(cr);
-  const double bx = 240, by = 140, bw = 560, bh = 420;
+  const double bx = 240, bw = 560;
+  const double bh = browserHeight(state.browserCategory);
+  const double by = browserY(state.browserCategory);
   roundRect(cr, bx, by, bw, bh, 6);
   setRgb(cr, {0.13, 0.115, 0.10}); cairo_fill(cr);
   setRgb(cr, kAccent, 0.85); cairo_set_line_width(cr, 1.5);
@@ -477,9 +507,9 @@ void Panel::drawBrowser(cairo_t* cr, const Shared& shared,
   text(cr, title, bx + bw * 0.5, by + 30, 14, 1, kText.r, kText.g, kText.b);
   text(cr, "One job per module · 3–8 controls · no deep pages", bx + bw * 0.5,
        by + 86, 8.5, 1, kDim.r, kDim.g, kDim.b);
-  const double tx = bx + 24, ty = by + 46;
+  const double tx = bx + 18, ty = by + 46;
   cairo_set_source_rgba(cr, 0.20, 0.17, 0.14, 0.7);
-  cairo_rectangle(cr, tx, ty, 500, 24);
+  cairo_rectangle(cr, tx, ty, 494, 24);
   cairo_fill(cr);
 }
 
@@ -533,14 +563,16 @@ void Panel::drawAbout(cairo_t* cr, const Shared& /*shared*/,
     cairo_stroke(cr);
   }
 
+  text(cr, "Click a module name or empty card area to open its browser. Drag it to reorder slots.",
+       120, 574, 7.5, 0, kText.r, kText.g, kText.b);
+  text(cr, "Double-click a knob to reset it. Right-click text entry is coming.",
+       120, 588, 7.5, 0, kText.r, kText.g, kText.b);
   text(cr, "Suite Rack is GPL-3.0-or-later. Shared module DSP lives in hearth-dsp.",
-       120, 604, 7.0, 0, kDim.r, kDim.g, kDim.b);
+       120, 608, 7.0, 0, kDim.r, kDim.g, kDim.b);
   text(cr, "JClones-derived ports use MIT-licensed JClones DSP; see THIRD_PARTY_NOTICES.md.",
-       120, 618, 7.0, 0, kDim.r, kDim.g, kDim.b);
-  text(cr, "Jost font: SIL OFL 1.1. CLAP headers: MIT.",
-       120, 632, 7.0, 0, kDim.r, kDim.g, kDim.b);
-  text(cr, "Modules marked Suite Rack exclusive are unique to this plugin.",
-       120, 646, 7.0, 0, kDim.r, kDim.g, kDim.b);
+       120, 622, 7.0, 0, kDim.r, kDim.g, kDim.b);
+  text(cr, "Jost font: SIL OFL 1.1. CLAP headers: MIT. Exclusive modules are unique to this plugin.",
+       120, 636, 7.0, 0, kDim.r, kDim.g, kDim.b);
 
   roundRect(cr, 820, 654, 80, 26, 4);
   setRgb(cr, kAccent);
@@ -604,6 +636,7 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
       break;
     }
     case Kind::SlotCard:
+    case Kind::ModuleDragHandle:
       break;
     case Kind::ModuleName: {
       const int slot = static_cast<int>(w.value);
@@ -883,6 +916,17 @@ void Panel::drawDragGhost(cairo_t* cr, const Shared& shared) const {
        st.accent.r, st.accent.g, st.accent.b);
 }
 
+void Panel::beginSlotDrag(PanelState& state, int slot, double x, double y) {
+  state.selectedSlot = slot;
+  dragSlot_ = slot;
+  dropSlot_ = slot;
+  slotDragging_ = false;
+  dragStartX_ = x;
+  dragStartY_ = y;
+  dragX_ = x;
+  dragY_ = y;
+}
+
 bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
                         bool fine) {
   (void)fine;
@@ -935,14 +979,8 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
         state.selectedSlot = static_cast<int>(w.param);
         return true;
       case Kind::ModuleName:
-        state.selectedSlot = static_cast<int>(w.value);
-        dragSlot_ = static_cast<int>(w.value);
-        dropSlot_ = dragSlot_;
-        slotDragging_ = false;
-        dragStartX_ = x;
-        dragStartY_ = y;
-        dragX_ = x;
-        dragY_ = y;
+      case Kind::ModuleDragHandle:
+        beginSlotDrag(state, static_cast<int>(w.value), x, y);
         return true;
       case Kind::BrowserOption:
       case Kind::BrowserTab:
@@ -1017,7 +1055,16 @@ bool Panel::pointerMove(Shared& shared, PanelState& state, double x, double y,
     if (slotDragging_) {
       dragX_ = x;
       dragY_ = y;
-      dropSlot_ = slotAtX(x);
+      const int target = slotAtX(x);
+      if (target != dragSlot_) {
+        moveSlot(shared, dragSlot_, target);
+        dragSlot_ = target;
+        dropSlot_ = target;
+        state.selectedSlot = target;
+        state.presetDirty = true;
+      } else {
+        dropSlot_ = target;
+      }
     }
     return true;
   }
@@ -1036,12 +1083,9 @@ bool Panel::pointerMove(Shared& shared, PanelState& state, double x, double y,
 }
 
 void Panel::pointerUp(Shared& shared, PanelState& state) {
+  (void)shared;
   if (dragSlot_ >= 0) {
-    if (slotDragging_ && dropSlot_ >= 0 && dropSlot_ != dragSlot_) {
-      moveSlot(shared, dragSlot_, dropSlot_);
-      state.selectedSlot = dropSlot_;
-      state.presetDirty = true;
-    } else if (!slotDragging_) {
+    if (!slotDragging_) {
       state.selectedSlot = dragSlot_;
       state.browserSlot = dragSlot_;
       state.browserScroll = 0;

@@ -77,7 +77,7 @@ public:
   std::vector<WidgetRect> widgetRects() const;
 
 private:
-  enum class Kind { Knob, Pill, Button, SlotCard, ModuleButton, ModelButton, ModuleToggle, Power, ModuleName, BrowserOption, BrowserTab, BrowserScroll };
+  enum class Kind { Knob, Pill, Button, SlotCard, ModuleButton, ModelButton, ModuleToggle, Power, ModuleName, ModuleDragHandle, BrowserOption, BrowserTab, BrowserScroll };
   struct Widget {
     Kind kind = Kind::Knob;
     uint32_t param = 0;
@@ -105,9 +105,12 @@ private:
   void drawButton(cairo_t* cr, const Widget& w, bool lit) const;
   void drawLevelMeter(cairo_t* cr, double x, double y, double w, double h,
                       double dbL, double dbR) const;
+  void beginSlotDrag(PanelState& state, int slot, double x, double y);
   void drawDragGhost(cairo_t* cr, const Shared& shared) const;
   void drawAbout(cairo_t* cr, const Shared& shared,
                  const PanelState& state) const;
+  double browserHeight(int category) const;
+  double browserY(int category) const;
   int slotAtX(double x) const;
   void moveSlot(Shared& shared, int from, int to);
   void drawGrMeter(cairo_t* cr, double x, double y, double w, double h,

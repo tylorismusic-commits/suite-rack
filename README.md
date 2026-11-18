@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.12.0-m2 — CLAP + LV2, module registry, twenty-seven modules and drag reorder.**
+**Status: 0.12.1-m2 — CLAP + LV2, module registry, twenty-seven modules and drag reorder.**
 The rest of the catalog, drag/reorder, module presets, browser search and user
 presets are next.
 
@@ -20,6 +20,8 @@ standalone plugins remain the full versions.
 ![Suite Rack — compressor row](docs/rack-comp.png)
 
 ![Suite Rack — module browser](docs/rack-browser.png)
+
+![Suite Rack — EQ category](docs/rack-browser-eq.png)
 
 ![Suite Rack — Bleed Out](docs/rack-bleedout.png)
 
@@ -70,14 +72,14 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.12.0-m2 slice
+## Current 0.12.1-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
 - Six vertical 500-series-style module columns, each with its own background and
   knob colour.
 - Per-slot bypass, mix and gain.
-- Drag a module name to another slot to reorder the rack; intervening modules shift to fill the gap.
+- Drag a module name or empty card area to another slot to reorder the rack; modules shift live to fill the gap.
 - Double-click a knob to reset it to the active module's default.
 - Stepped controls, used by the Bleed Out profile selector.
 - Bleed Out has a separate automated **GHOST ON** button.

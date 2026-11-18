@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.12.1-m2 — 2026-11-17
+
+- Drag reorder now updates the rack live as the pointer crosses slots.
+- The whole module card is draggable, not only the name button.
+- The module browser resizes to the number of options in the selected category.
+- The About reference explains click-to-browse and drag-to-reorder.
+
 ## 0.12.0-m2 — 2026-11-17
 
 - Drag a module name onto another slot to reorder the rack.

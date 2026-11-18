@@ -195,6 +195,9 @@ int main() {
   dragPanel.draw(cr, dragS, dragState);
   dragPanel.pointerDown(dragS, dragState, 130, 134, false);
   dragPanel.pointerMove(dragS, dragState, 285, 134, false);
+  check(dragS.get(P_SLOT0_TYPE) ==
+            static_cast<double>(ModuleId::Comp76Blue),
+        "slots reorder live while dragging");
   dragPanel.pointerUp(dragS, dragState);
   check(dragS.get(P_SLOT0_TYPE) ==
             static_cast<double>(ModuleId::Comp76Blue),
