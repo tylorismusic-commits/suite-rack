@@ -182,6 +182,18 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::DetuneMs:
       std::snprintf(buf, sizeof(buf), "%.1f ms", 3.0f * v);
       return buf;
+    case ControlFormat::QValue:
+      std::snprintf(buf, sizeof(buf), "%.2f", 0.3f * std::pow(20.0f, v));
+      return buf;
+    case ControlFormat::DynRangeDb:
+      std::snprintf(buf, sizeof(buf), "%.0f dB", v * 24.0f);
+      return buf;
+    case ControlFormat::DynRatio:
+      std::snprintf(buf, sizeof(buf), "%.1f:1", 1.0f + 9.0f * v);
+      return buf;
+    case ControlFormat::MakeupDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", v * 24.0f);
+      return buf;
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;
@@ -344,6 +356,12 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
             break;
           case ControlFormat::DelayMs: v = (v - 10.0) / 30.0; break;
           case ControlFormat::DetuneMs: v = v / 3.0; break;
+          case ControlFormat::QValue:
+            v = std::log(std::max(v, 0.3) / 0.3) / std::log(20.0);
+            break;
+          case ControlFormat::DynRangeDb: v = v / 24.0; break;
+          case ControlFormat::DynRatio: v = (v - 1.0) / 9.0; break;
+          case ControlFormat::MakeupDb: v = v / 24.0; break;
           default: break;
         }
       }

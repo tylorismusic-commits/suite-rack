@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.12.1-m2 — CLAP + LV2, module registry, twenty-seven modules and drag reorder.**
+**Status: 0.13.0-m2 — CLAP + LV2, module registry, twenty-nine modules and drag reorder.**
 The rest of the catalog, drag/reorder, module presets, browser search and user
 presets are next.
 
@@ -32,6 +32,8 @@ standalone plugins remain the full versions.
 ![Suite Rack — Filter and Motion](docs/rack-filter.png)
 
 ![Suite Rack — Sub and Double](docs/rack-sub.png)
+
+![Suite Rack — Dynamic EQ and Multiband](docs/rack-dyn.png)
 
 ![Suite Rack — About](docs/rack-about.png)
 
@@ -72,7 +74,7 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.12.1-m2 slice
+## Current 0.13.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
@@ -90,8 +92,8 @@ the 500-series format; Cleanup is the lightweight repair representative.
   gain. Host automation follows the slot, not the module.
 - **Available modules:** 4K EQ, Hearth EQ, Tilt, Air, 76 Blue, 76 Black, 2A,
   3A, VCA, Valve, Console, Bus, Tape, Transformer, Gate, Transient, Clip and
-  De-Ess, Density, Bleed Out, Peak Limiter, Image, Crush, Filter, Motion, Sub
-  and Double.
+  De-Ess, Density, Bleed Out, Peak Limiter, Image, Crush, Filter, Motion, Sub,
+  Double, Dynamic EQ and Multiband.
 - Serial engine and per-slot meters in place; DSP and panel tests pass.
 - **CLAP and LV2 builds** load in REAPER with the six-column editor and process
   audio.

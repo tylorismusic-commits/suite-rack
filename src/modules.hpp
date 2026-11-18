@@ -50,6 +50,10 @@ enum class ControlFormat {
   SubFreqHz,
   DelayMs,
   DetuneMs,
+  QValue,
+  DynRangeDb,
+  DynRatio,
+  MakeupDb,
 };
 
 struct ControlDesc {
@@ -176,6 +180,25 @@ inline constexpr ControlDesc kBleedOutControls[] = {
 inline constexpr const char* kFilterModeLabels[] = {"LP", "BP", "HP"};
 inline constexpr const char* kMotionModeLabels[] = {"Tremolo", "Auto-Pan",
                                                     "Rotary"};
+
+inline constexpr ControlDesc kDynamicEqControls[] = {
+    {0, "FREQ", "Frequency", ControlFormat::FilterCutoffHz},
+    {1, "Q", "Q", ControlFormat::QValue},
+    {2, "THR", "Threshold", ControlFormat::ThresholdDb},
+    {3, "RANGE", "Range", ControlFormat::DynRangeDb},
+    {4, "RATIO", "Ratio", ControlFormat::DynRatio},
+    {5, "MIX", "Mix", ControlFormat::Percent},
+};
+
+inline constexpr ControlDesc kMultibandControls[] = {
+    {0, "LOW", "Low Threshold", ControlFormat::GateThresholdDb},
+    {1, "MID", "Mid Threshold", ControlFormat::GateThresholdDb},
+    {2, "HIGH", "High Threshold", ControlFormat::GateThresholdDb},
+    {3, "RATIO", "Ratio", ControlFormat::DynRatio},
+    {4, "ATK", "Attack", ControlFormat::GateAttackMs},
+    {5, "REL", "Release", ControlFormat::GateReleaseMs},
+    {6, "MAKE", "Makeup", ControlFormat::MakeupDb},
+};
 
 inline constexpr ControlDesc kSubControls[] = {
     {0, "FREQ", "Frequency", ControlFormat::SubFreqHz},
@@ -346,6 +369,16 @@ inline constexpr ModuleDesc kModules[] = {
     {ModuleId::Double, "Double", "Dyn", "Doubler / microshift", false, false, 0,
      static_cast<int>(sizeof(kDoubleControls) / sizeof(kDoubleControls[0])),
      kDoubleControls},
+    {ModuleId::DynamicEq, "Dynamic EQ", "Dyn", "Single-band dynamic EQ", false,
+     false, 0,
+     static_cast<int>(sizeof(kDynamicEqControls) /
+                      sizeof(kDynamicEqControls[0])),
+     kDynamicEqControls},
+    {ModuleId::Multiband, "Multiband", "Dyn", "Three-band compressor", false,
+     false, 0,
+     static_cast<int>(sizeof(kMultibandControls) /
+                      sizeof(kMultibandControls[0])),
+     kMultibandControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,

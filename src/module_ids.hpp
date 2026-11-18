@@ -35,6 +35,8 @@ enum class ModuleId : int {
   Motion,
   Sub,
   Double,
+  DynamicEq,
+  Multiband,
   Count
 };
 
@@ -46,7 +48,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Valve",     "Console",  "Bus",       "Tape",      "Transformer",
     "Gate",      "Transient", "Clip",     "De-Ess",   "Density",
     "Bleed Out", "Peak Limiter", "Image", "Crush", "Filter", "Motion",
-    "Sub",       "Double",
+    "Sub",       "Double",   "Dynamic EQ", "Multiband",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -300,6 +302,27 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 1: return 0.40;  // Detune
         case 2: return 0.50;  // Width
         case 3: return 0.35;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::DynamicEq:
+      switch (control) {
+        case 0: return 0.50;  // Frequency
+        case 1: return 0.50;  // Q
+        case 2: return 0.60;  // Threshold
+        case 3: return 0.50;  // Range
+        case 4: return 0.50;  // Ratio
+        case 5: return 1.00;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::Multiband:
+      switch (control) {
+        case 0: return 0.50;  // Low threshold
+        case 1: return 0.50;  // Mid threshold
+        case 2: return 0.50;  // High threshold
+        case 3: return 0.30;  // Ratio
+        case 4: return 0.20;  // Attack
+        case 5: return 0.40;  // Release
+        case 6: return 0.00;  // Makeup
         default: return 0.50;
       }
     default:

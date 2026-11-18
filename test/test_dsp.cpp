@@ -144,6 +144,8 @@ int main() {
         static_cast<int>(ModuleId::Crush),
         static_cast<int>(ModuleId::Sub),
         static_cast<int>(ModuleId::Double),
+        static_cast<int>(ModuleId::DynamicEq),
+        static_cast<int>(ModuleId::Multiband),
     };
     for (int id : ids) {
       Engine e;

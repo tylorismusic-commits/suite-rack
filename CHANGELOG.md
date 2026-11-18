@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.13.0-m2 — 2026-11-17
+
+- Added Dynamic EQ: frequency, Q, threshold, range, ratio and mix.
+- Added Multiband: per-band thresholds, shared ratio/attack/release and makeup.
+- Dynamic EQ and Multiband live in hearth-dsp and are consumed through the
+  submodule.
+
 ## 0.12.1-m2 — 2026-11-17
 
 - Drag reorder now updates the rack live as the pointer crosses slots.

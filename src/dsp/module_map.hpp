@@ -105,6 +105,31 @@ inline hdsp::modules::ClipControls clipControlsFrom(
   return out;
 }
 
+inline hdsp::modules::DynamicEqControls dynamicEqControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::DynamicEqControls out;
+  out.frequency = c.c[0];
+  out.q = c.c[1];
+  out.threshold = c.c[2];
+  out.range = c.c[3];
+  out.ratio = c.c[4];
+  out.mix = c.c[5];
+  return out;
+}
+
+inline hdsp::modules::MultibandControls multibandControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::MultibandControls out;
+  out.lowThreshold = c.c[0];
+  out.midThreshold = c.c[1];
+  out.highThreshold = c.c[2];
+  out.ratio = c.c[3];
+  out.attack = c.c[4];
+  out.release = c.c[5];
+  out.makeup = c.c[6];
+  return out;
+}
+
 inline hdsp::modules::SubControls subControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::SubControls out;

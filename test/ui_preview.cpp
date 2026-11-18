@@ -54,6 +54,11 @@ int main(int argc, char** argv) {
   state.selectedSlot = 2;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-sub.png").c_str());
+  applyModuleDefaults(s, 2, static_cast<int>(ModuleId::DynamicEq));
+  applyModuleDefaults(s, 3, static_cast<int>(ModuleId::Multiband));
+  state.selectedSlot = 2;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-dyn.png").c_str());
   state.aboutOpen = true;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-about.png").c_str());

@@ -35,6 +35,8 @@ public:
     for (auto& motion : motion_) motion.prepare(sr_);
     for (auto& sub : sub_) sub.prepare(sr_);
     for (auto& doubler : double_) doubler.prepare(sr_);
+    for (auto& dynEq : dynamicEq_) dynEq.prepare(sr_);
+    for (auto& multiband : multiband_) multiband.prepare(sr_);
     input_.setTime(15.0f, sr_);
     output_.setTime(15.0f, sr_);
     power_.setTime(20.0f, sr_);
@@ -65,6 +67,8 @@ public:
       motion_[i].setControls(motionControlsFrom(c.slot[i]));
       sub_[i].setControls(subControlsFrom(c.slot[i]));
       double_[i].setControls(doubleControlsFrom(c.slot[i]));
+      dynamicEq_[i].setControls(dynamicEqControlsFrom(c.slot[i]));
+      multiband_[i].setControls(multibandControlsFrom(c.slot[i]));
       slotGain_[i].setTarget(hdsp::dbToGain(c.slot[i].gainDb));
     }
     input_.setTarget(hdsp::dbToGain(c.inputDb));
@@ -156,6 +160,14 @@ public:
           case ModuleId::Double:
             double_[s].process(l, r);
             break;
+          case ModuleId::DynamicEq:
+            dynamicEq_[s].process(l, r);
+            gr = dynamicEq_[s].lastGrDb();
+            break;
+          case ModuleId::Multiband:
+            multiband_[s].process(l, r);
+            gr = multiband_[s].lastGrDb();
+            break;
           case ModuleId::Count:
             continue;
         }
@@ -206,6 +218,8 @@ public:
     for (auto& motion : motion_) motion.reset();
     for (auto& sub : sub_) sub.reset();
     for (auto& doubler : double_) doubler.reset();
+    for (auto& dynEq : dynamicEq_) dynEq.reset();
+    for (auto& multiband : multiband_) multiband.reset();
     input_.snap();
     output_.snap();
     power_.snap();
@@ -245,6 +259,8 @@ private:
   hdsp::modules::Motion motion_[kSlotCount];
   hdsp::modules::Sub sub_[kSlotCount];
   hdsp::modules::Double double_[kSlotCount];
+  hdsp::modules::DynamicEq dynamicEq_[kSlotCount];
+  hdsp::modules::Multiband multiband_[kSlotCount];
   hdsp::Smoothed input_, output_, power_;
   hdsp::Smoothed slotGain_[kSlotCount];
 };
