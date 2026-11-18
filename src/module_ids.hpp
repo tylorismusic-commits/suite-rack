@@ -17,6 +17,11 @@ enum class ModuleId : int {
   Comp2A,
   Comp3A,
   CompVCA,
+  ColourValve,
+  ColourConsole,
+  ColourBus,
+  ColourTape,
+  ColourTransformer,
   Count
 };
 
@@ -25,6 +30,7 @@ constexpr int kModuleCount = static_cast<int>(ModuleId::Count);
 inline constexpr const char* kModuleLabels[] = {
     "Off",       "4K EQ",    "Hearth EQ", "Tilt",      "Air",
     "76 Blue",   "76 Black", "2A",        "3A",        "VCA",
+    "Valve",     "Console",  "Bus",       "Tape",      "Transformer",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -66,6 +72,14 @@ inline constexpr bool moduleIsComp(int id) noexcept {
          id == static_cast<int>(ModuleId::Comp2A) ||
          id == static_cast<int>(ModuleId::Comp3A) ||
          id == static_cast<int>(ModuleId::CompVCA);
+}
+
+inline constexpr bool moduleIsColour(int id) noexcept {
+  return id == static_cast<int>(ModuleId::ColourValve) ||
+         id == static_cast<int>(ModuleId::ColourConsole) ||
+         id == static_cast<int>(ModuleId::ColourBus) ||
+         id == static_cast<int>(ModuleId::ColourTape) ||
+         id == static_cast<int>(ModuleId::ColourTransformer);
 }
 
 // All controls are normalised to 0..1. The module descriptor maps them to
@@ -136,6 +150,18 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case kCtlMakeup: return 0.50;
         case kCtlMix: return 1.00;
         case kCtlScHpf: return 0.05;
+        default: return 0.50;
+      }
+    case ModuleId::ColourValve:
+    case ModuleId::ColourConsole:
+    case ModuleId::ColourBus:
+    case ModuleId::ColourTape:
+    case ModuleId::ColourTransformer:
+      switch (control) {
+        case 0: return 0.45;  // Drive
+        case 1: return 0.50;  // Character
+        case 2: return 0.50;  // Tone
+        case 3: return 1.00;  // Mix
         default: return 0.50;
       }
     default:

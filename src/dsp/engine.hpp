@@ -8,6 +8,7 @@
 #include <hdsp/db.hpp>
 #include <hdsp/smoother.hpp>
 
+#include "colour_module.hpp"
 #include "comp_module.hpp"
 #include "controls.hpp"
 #include "eq_module.hpp"
@@ -21,6 +22,7 @@ public:
     sr_ = sampleRate > 0.0f ? sampleRate : 48000.0f;
     for (auto& eq : eq_) eq.prepare(sr_);
     for (auto& comp : comp_) comp.prepare(sr_);
+    for (auto& colour : colour_) colour.prepare(sr_);
     input_.setTime(15.0f, sr_);
     output_.setTime(15.0f, sr_);
     power_.setTime(20.0f, sr_);
@@ -37,6 +39,7 @@ public:
     for (int i = 0; i < kSlotCount; ++i) {
       eq_[i].setControls(c.slot[i]);
       comp_[i].setControls(c.slot[i]);
+      colour_[i].setControls(c.slot[i]);
       slotGain_[i].setTarget(hdsp::dbToGain(c.slot[i].gainDb));
     }
     input_.setTarget(hdsp::dbToGain(c.inputDb));
@@ -64,6 +67,8 @@ public:
           eq_[s].process(l, r);
         } else if (moduleIsComp(type)) {
           gr = comp_[s].process(l, r);
+        } else if (moduleIsColour(type)) {
+          colour_[s].process(l, r);
         } else {
           continue;
         }
@@ -100,6 +105,7 @@ public:
   void reset() noexcept {
     for (auto& eq : eq_) eq.reset();
     for (auto& comp : comp_) comp.reset();
+    for (auto& colour : colour_) colour.reset();
     input_.snap();
     output_.snap();
     power_.snap();
@@ -113,6 +119,7 @@ private:
   Controls controls_;
   EqModule eq_[kSlotCount];
   CompModule comp_[kSlotCount];
+  ColourModule colour_[kSlotCount];
   hdsp::Smoothed input_, output_, power_;
   hdsp::Smoothed slotGain_[kSlotCount];
 };

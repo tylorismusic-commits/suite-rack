@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0-m2 — 2026-11-17
+
+- Added the five Patina colour modules: Valve, Console, Bus, Tape and
+  Transformer.
+- Single-band colour module with Drive, Character, Tone and Mix.
+- Browser COLOUR category and a four-column module grid.
+- Added colour modules to the DSP sweep.
+
 ## 0.3.0-m2 — 2026-11-17
 
 - Module registry with nine modules: 4K EQ, Hearth EQ, Tilt, Air, 76 Blue,

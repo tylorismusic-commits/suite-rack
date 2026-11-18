@@ -78,6 +78,21 @@ ModuleStyle styleFor(int type) {
     case ModuleId::CompVCA:
       return {{0.10, 0.18, 0.13}, {0.20, 0.36, 0.26},
               {0.52, 0.90, 0.60}, {0.86, 0.92, 0.87}};
+    case ModuleId::ColourValve:
+      return {{0.22, 0.15, 0.08}, {0.48, 0.32, 0.14},
+              {0.98, 0.72, 0.30}, {0.94, 0.86, 0.68}};
+    case ModuleId::ColourConsole:
+      return {{0.25, 0.16, 0.09}, {0.52, 0.30, 0.14},
+              {0.98, 0.62, 0.24}, {0.95, 0.88, 0.74}};
+    case ModuleId::ColourBus:
+      return {{0.26, 0.10, 0.09}, {0.54, 0.20, 0.16},
+              {0.98, 0.42, 0.28}, {0.95, 0.84, 0.76}};
+    case ModuleId::ColourTape:
+      return {{0.24, 0.20, 0.14}, {0.48, 0.40, 0.28},
+              {0.92, 0.80, 0.58}, {0.96, 0.90, 0.78}};
+    case ModuleId::ColourTransformer:
+      return {{0.20, 0.14, 0.10}, {0.44, 0.30, 0.18},
+              {0.86, 0.56, 0.30}, {0.94, 0.84, 0.70}};
     default:
       return {{0.105, 0.10, 0.095}, {0.24, 0.22, 0.19},
               {0.55, 0.50, 0.44}, {0.72, 0.70, 0.66}};
@@ -203,17 +218,18 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
   }
 
   if (state.browserSlot >= 0 && state.browserSlot < kSlotCount) {
-    const double bx = 260, by = 140, bw = 520, bh = 420;
-    for (int tab = 0; tab < 3; ++tab) {
+    const double bx = 240, by = 140, bw = 560, bh = 420;
+    for (int tab = 0; tab < 4; ++tab) {
       Widget t{};
       t.kind = Kind::BrowserTab;
       t.param = slotParam(state.browserSlot, kSlotOffsetType);
       t.value = tab;
-      t.x = bx + 24 + tab * 110.0;
+      t.x = bx + 32 + tab * 102.0;
       t.y = by + 46;
-      t.w = 100.0;
+      t.w = 94.0;
       t.h = 24.0;
-      t.label = tab == 0 ? "ALL" : (tab == 1 ? "EQ" : "COMP");
+      t.label = tab == 0 ? "ALL"
+                         : (tab == 1 ? "EQ" : (tab == 2 ? "COMP" : "COLOUR"));
       widgets_.push_back(t);
     }
 
@@ -223,11 +239,12 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
       const ModuleDesc* d = moduleDesc(id);
       if (state.browserCategory == 1 && !d->isEq) continue;
       if (state.browserCategory == 2 && !d->isComp) continue;
+      if (state.browserCategory == 3 && !moduleIsColour(id)) continue;
       ids.push_back(id);
     }
-    const int columns = 3;
-    const double ow = 160.0, oh = 46.0, ox = 8.0, oy = 8.0;
-    for (size_t k = 0; k < ids.size() && k < 12; ++k) {
+    const int columns = 4;
+    const double ow = 120.0, oh = 46.0, ox = 6.0, oy = 8.0;
+    for (size_t k = 0; k < ids.size() && k < 16; ++k) {
       Widget b{};
       b.kind = Kind::BrowserOption;
       b.param = slotParam(state.browserSlot, kSlotOffsetType);
@@ -338,7 +355,7 @@ void Panel::drawBrowser(cairo_t* cr, const Shared& shared,
   if (state.browserSlot < 0 || state.browserSlot >= kSlotCount) return;
   cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 0.64);
   cairo_paint(cr);
-  const double bx = 260, by = 140, bw = 520, bh = 420;
+  const double bx = 240, by = 140, bw = 560, bh = 420;
   roundRect(cr, bx, by, bw, bh, 6);
   setRgb(cr, {0.13, 0.115, 0.10}); cairo_fill(cr);
   setRgb(cr, kAccent, 0.85); cairo_set_line_width(cr, 1.5);
@@ -351,7 +368,7 @@ void Panel::drawBrowser(cairo_t* cr, const Shared& shared,
        by + 86, 8.5, 1, kDim.r, kDim.g, kDim.b);
   const double tx = bx + 24, ty = by + 46;
   cairo_set_source_rgba(cr, 0.20, 0.17, 0.14, 0.7);
-  cairo_rectangle(cr, tx, ty, 330, 24);
+  cairo_rectangle(cr, tx, ty, 430, 24);
   cairo_fill(cr);
 }
 

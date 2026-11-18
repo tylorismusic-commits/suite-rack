@@ -81,6 +81,19 @@ int main() {
   check(s.get(P_SLOT1_TYPE) == static_cast<double>(ModuleId::CompVCA),
         "VCA module selects into the slot");
 
+  // Slot 3: COLOUR category and the Valve module.
+  panel.draw(cr, s, state);
+  panel.pointerDown(s, state, 441, 134, false);
+  panel.pointerUp();
+  panel.draw(cr, s, state);
+  check(clickLabel(panel, s, state, "COLOUR"),
+        "COLOUR category tab is clickable");
+  check(state.browserCategory == 3, "COLOUR tab filters the browser");
+  panel.draw(cr, s, state);
+  check(clickLabel(panel, s, state, "Valve"), "filtered browser offers Valve");
+  check(s.get(P_SLOT2_TYPE) == static_cast<double>(ModuleId::ColourValve),
+        "Valve module selects into slot 3");
+
   // Bypass pill for slot 2.
   panel.draw(cr, s, state);
   check(clickParam(panel, s, state, P_SLOT1_BYPASS),

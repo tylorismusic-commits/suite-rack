@@ -105,6 +105,13 @@ inline constexpr ControlDesc kCompVcaControls[] = {
     {kCtlScHpf, "SC", "Sidechain HPF", ControlFormat::ScHpfHz},
 };
 
+inline constexpr ControlDesc kColourControls[] = {
+    {0, "DRIVE", "Drive", ControlFormat::Percent},
+    {1, "CHAR", "Character", ControlFormat::Percent},
+    {2, "TONE", "Tone", ControlFormat::Percent},
+    {3, "MIX", "Mix", ControlFormat::Percent},
+};
+
 inline constexpr ModuleDesc kModules[] = {
     {ModuleId::Off, "Off", "Off", "Empty slot", false, false, 0, 0, nullptr},
     {ModuleId::Eq4K, "4K EQ", "EQ", "Four-band console EQ", true, false, 0,
@@ -140,6 +147,23 @@ inline constexpr ModuleDesc kModules[] = {
      4, static_cast<int>(sizeof(kCompVcaControls) /
                          sizeof(kCompVcaControls[0])),
      kCompVcaControls},
+    {ModuleId::ColourValve, "Valve", "Colour", "Valve saturation", false, false,
+     0, static_cast<int>(sizeof(kColourControls) / sizeof(kColourControls[0])),
+     kColourControls},
+    {ModuleId::ColourConsole, "Console", "Colour", "Console saturation", false,
+     false, 0,
+     static_cast<int>(sizeof(kColourControls) / sizeof(kColourControls[0])),
+     kColourControls},
+    {ModuleId::ColourBus, "Bus", "Colour", "Bus saturation", false, false, 0,
+     static_cast<int>(sizeof(kColourControls) / sizeof(kColourControls[0])),
+     kColourControls},
+    {ModuleId::ColourTape, "Tape", "Colour", "Tape saturation", false, false, 0,
+     static_cast<int>(sizeof(kColourControls) / sizeof(kColourControls[0])),
+     kColourControls},
+    {ModuleId::ColourTransformer, "Transformer", "Colour",
+     "Transformer saturation", false, false, 0,
+     static_cast<int>(sizeof(kColourControls) / sizeof(kColourControls[0])),
+     kColourControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,

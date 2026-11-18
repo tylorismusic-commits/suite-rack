@@ -128,6 +128,11 @@ int main() {
         static_cast<int>(ModuleId::Comp2A),
         static_cast<int>(ModuleId::Comp3A),
         static_cast<int>(ModuleId::CompVCA),
+        static_cast<int>(ModuleId::ColourValve),
+        static_cast<int>(ModuleId::ColourConsole),
+        static_cast<int>(ModuleId::ColourBus),
+        static_cast<int>(ModuleId::ColourTape),
+        static_cast<int>(ModuleId::ColourTransformer),
     };
     for (int id : ids) {
       Engine e;
