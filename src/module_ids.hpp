@@ -524,7 +524,12 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         default: return 0.50;
       }
     case ModuleId::Ember:
-      return control == 0 ? 0.00 : 0.50;
+      switch (control) {
+        case 0: return 0.00;  // Amount
+        case 1: return 0.50;  // Tone neutral
+        case 2: return 1.00;  // Mix
+        default: return 0.50;
+      }
     case ModuleId::Tame:
       switch (control) {
         case 0: return 0.00;  // Amount

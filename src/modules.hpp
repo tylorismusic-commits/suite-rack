@@ -398,6 +398,8 @@ inline constexpr ControlDesc kTameControls[] = {
 
 inline constexpr ControlDesc kEmberControls[] = {
     {0, "AMOUNT", "Amount", ControlFormat::Percent},
+    {1, "TONE", "Tone", ControlFormat::TiltDb},
+    {2, "MIX", "Mix", ControlFormat::Percent},
 };
 
 inline constexpr ControlDesc kReelControls[] = {

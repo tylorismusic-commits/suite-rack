@@ -14,6 +14,7 @@
 #include "presets.hpp"
 #include "ui/panel.hpp"
 #include "user_presets.hpp"
+#include "value_text.hpp"
 
 using namespace rack;
 
@@ -376,6 +377,51 @@ int main() {
   check(clickLabel(panel, s, state, "76 Vocal Push"),
         "filtered module preset can still be chosen");
 
+  // Typed values understand units and snap stepped controls.
+  {
+    Shared typed;
+    initializeRack(typed);
+    double v = 0.0;
+    typed.set(P_SLOT0_TYPE, static_cast<double>(ModuleId::Comp76Blue));
+    check(parseParamValue(typed,
+                          slotParam(0, kSlotOffsetC0 + kCtlRatio), "4:1",
+                          &v) &&
+              std::fabs(v - 0.375) < 1e-6,
+          "typed ratio snaps to the nearest ratio step");
+    typed.set(P_SLOT0_TYPE, static_cast<double>(ModuleId::SpacePlate));
+    check(parseParamValue(typed, slotParam(0, kSlotOffsetC0 + 2), "0.1s",
+                          &v) &&
+              std::fabs(v - 0.5) < 1e-6,
+          "typed pre-delay converts seconds to milliseconds");
+    check(parseParamValue(typed, slotParam(0, kSlotOffsetC0 + 1), "2200ms",
+                          &v) &&
+              std::fabs(v - (2.2 - 0.3) / 11.7) < 1e-3,
+          "typed decay converts milliseconds to seconds");
+    typed.set(P_SLOT0_TYPE, static_cast<double>(ModuleId::JcL2));
+    check(parseParamValue(typed, slotParam(0, kSlotOffsetC0 + 4), "23.9",
+                          &v) &&
+              std::fabs(v - 1.0) < 1e-6,
+          "typed quantize snaps to the nearest bit depth");
+    check(parseParamValue(typed, slotParam(0, kSlotOffsetC0 + 5), "type2",
+                          &v) &&
+              std::fabs(v - 1.0) < 1e-6,
+          "typed dither fuzzily snaps to the closest mode");
+    typed.set(P_SLOT0_TYPE, static_cast<double>(ModuleId::JcRS124));
+    check(parseParamValue(typed, slotParam(0, kSlotOffsetC0 + 0), "610",
+                          &v) &&
+              std::fabs(v - 0.5) < 1e-6,
+          "typed model prefix snaps to the matching model");
+    typed.set(P_SLOT0_TYPE, static_cast<double>(ModuleId::HybridEq));
+    check(parseParamValue(typed, slotParam(0, kSlotOffsetC0 + 5), "12k",
+                          &v) &&
+              std::fabs(v - std::log(12000.0 / 2500.0) / std::log(6.4)) <
+                  1e-3,
+          "typed high frequency accepts k suffix");
+    check(!parseParamValue(typed, slotParam(0, kSlotOffsetC0 + 5), "banana",
+                           &v),
+          "invalid typed value is rejected");
+  }
+
   check(!panel.widgetRects().empty(), "panel reports widget geometry");
   bool sourcesOk = true;
   for (int id = 0; id < kModuleCount; ++id) {
@@ -388,6 +434,55 @@ int main() {
   check(std::string(moduleSource(static_cast<int>(ModuleId::Cleanup))) ==
             "Repair Suite",
         "Cleanup reports Repair Suite");
+
+  bool descriptorsOk = true;
+  for (int id = 1; id < kModuleCount; ++id) {
+    const ModuleDesc* d = moduleDesc(id);
+    if (!d->name || !*d->name || !d->description || !*d->description) {
+      descriptorsOk = false;
+    }
+    if (d->controlCount < 3 || d->controlCount > 8) descriptorsOk = false;
+    bool seen[12] = {};
+    for (int k = 0; k < d->controlCount; ++k) {
+      const ControlDesc& c = d->controls[k];
+      if (c.param < 0 || c.param >= 12 || seen[c.param]) descriptorsOk = false;
+      if (c.param >= 0 && c.param < 12) seen[c.param] = true;
+      if (!c.label || !*c.label || !c.name || !*c.name) descriptorsOk = false;
+      const double def = defaultControlValue(d->id, k);
+      if (def < 0.0 || def > 1.0) descriptorsOk = false;
+    }
+  }
+  check(descriptorsOk,
+        "every module has 3-8 valid controls, labels and defaults");
+
+  bool factoryPresetsOk = true;
+  for (const auto& f : kFactoryModulePresets) {
+    if (!validModule(static_cast<int>(f.type)) ||
+        f.type == ModuleId::Off) {
+      factoryPresetsOk = false;
+    }
+    for (float v : f.controls) {
+      if (v < 0.0f || v > 1.0f) factoryPresetsOk = false;
+    }
+  }
+  check(factoryPresetsOk, "factory module presets reference valid modules and values");
+
+  bool rackPresetsOk = true;
+  for (const auto& p : kPresets) {
+    for (int i = 0; i < p.count; ++i) {
+      const int param = p.values[i].param;
+      if (param < 0 || param >= static_cast<int>(P_COUNT)) {
+        rackPresetsOk = false;
+        continue;
+      }
+      const ParamSpec& spec = kParamSpecs[param];
+      if (p.values[i].value < spec.min - 1e-6 ||
+          p.values[i].value > spec.max + 1e-6) {
+        rackPresetsOk = false;
+      }
+    }
+  }
+  check(rackPresetsOk, "factory rack presets reference valid parameters");
 
   // Drag slot 1 onto slot 2 and check the rack reorders.
   Shared dragS;

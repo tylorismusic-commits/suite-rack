@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.47.0-m2 — 2026-11-18
+
+- Typed knob values now recognise units (`12k`, `250ms`, `1.5s`, `7.5dB`,
+  `50%`, `4:1`) and snap stepped controls, ratios and model selectors to the
+  closest available option.
+- Typed labels and model names accept unique prefixes and fuzzy matches.
+
+## 0.46.0-m2 — 2026-11-18
+
+- Public alpha readiness pass.
+- Ember now has tone and mix controls, bringing every active module into the
+  3-8 primary-control rule.
+- Replaced Hyrax's per-sample deque with a preallocated sliding window for
+  real-time-safe audio processing.
+- Added descriptor and factory-preset validation tests, plus a 96 kHz sweep.
+- Rack presets now reset slot bypass, mix and gain before loading.
+- Preset browser scrolls to the current preset and clears search when changing
+  category.
+- Updated JClones attribution for the complete port set, installed the licence
+  files, and documented public-alpha limitations.
+
 ## 0.45.0-m2 — 2026-11-18
 
 - Added Custom EQ: a four-band broad-stroke EQ inspired by the Slate Custom

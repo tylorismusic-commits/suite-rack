@@ -4,7 +4,10 @@ Suite Rack is GPL-3.0-or-later. It contains or derives from the following work.
 
 ## JClones JSFX
 
-`src/dsp/molot.hpp` is a C++ translation of the Molot-family JSFX from
+The JClones-derived modules live in the shared `hearth-dsp` repository:
+Molot, Classic Limiter, Tape Head, Tube Driver, DaTube, Fattener, AC-1,
+LMC-1, Modern Limiter, Hyrax, Bloom, RS-124, CL-1B, DuTape, VBL, L2 and O3.
+They are C++ translations of MIT-licensed JSFX from
 [JClones/JSFXClones](https://github.com/JClones/JSFXClones).
 
 ```
@@ -35,8 +38,11 @@ The 2A/3A optical side-chain structure was informed by the same project's
 `JClones_CA2A.jsfx` (MIT), with the DSP reimplemented against the published
 behaviour.
 
-Additional JClones ports are planned for Suite Rack using neutral module names
-and no original vendor trade dress. The MIT notice above applies to those ports.
+These ports use neutral module names and no original vendor trade dress. The
+MIT notice above applies to all of them.
+
+Hybrid EQ and Custom EQ are original implementations inspired by well-known
+EQ layouts; no code was copied from those products.
 
 ## Fonts
 

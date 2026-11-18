@@ -452,6 +452,8 @@ inline hdsp::modules::EmberControls emberControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::EmberControls out;
   out.amount = c.c[0];
+  out.tone = c.c[1];
+  out.mix = c.c[2];
   return out;
 }
 

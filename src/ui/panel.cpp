@@ -1449,8 +1449,15 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
   }
   if (x >= 706 && x <= 802 && y >= 20 && y <= 48) {
     state.presetOpen = state.presetOpen ? 0 : 1;
-    state.presetScroll = 0;
     state.browserSlot = -1;
+    if (state.presetOpen) {
+      const int rows = presetRowsFor(presetCount());
+      const int maxScroll = std::max(0, presetCount() - rows);
+      state.presetScroll = state.presetIndex >= 0
+                               ? std::clamp(state.presetIndex - rows + 1, 0,
+                                            maxScroll)
+                               : 0;
+    }
     return true;
   }
   if (state.presetOpen) {
@@ -1510,6 +1517,8 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
         state.browserCategory = static_cast<int>(w.value);
         state.browserScroll = 0;
         state.browserPresetFilter = false;
+        state.browserQuery.clear();
+        state.browserSearch = false;
         return true;
       }
       if (w.kind == Kind::BrowserSearch && hitWidget(w, x, y)) {
@@ -1771,8 +1780,15 @@ bool Panel::handlePresetClick(Shared& shared, PanelState& state, double x,
   }
   if (x >= 110 && x <= 365) {
     state.presetOpen = state.presetOpen ? 0 : 1;
-    state.presetScroll = 0;
     state.browserSlot = -1;
+    if (state.presetOpen) {
+      const int rows = presetRowsFor(presetCount());
+      const int maxScroll = std::max(0, presetCount() - rows);
+      state.presetScroll = state.presetIndex >= 0
+                               ? std::clamp(state.presetIndex - rows + 1, 0,
+                                            maxScroll)
+                               : 0;
+    }
     return true;
   }
   return x >= 72 && x <= 402;
@@ -1794,6 +1810,11 @@ const char* Panel::presetName(int index) const {
 void Panel::applyPreset(Shared& shared, PanelState& state, int index) const {
   if (index < 0 || index >= presetCount()) return;
   if (index < kPresetCount) {
+    for (int slot = 0; slot < kSlotCount; ++slot) {
+      shared.set(slotParam(slot, kSlotOffsetBypass), 0.0);
+      shared.set(slotParam(slot, kSlotOffsetMix), 100.0);
+      shared.set(slotParam(slot, kSlotOffsetGain), 0.0);
+    }
     const Preset& p = kPresets[index];
     for (int i = 0; i < p.count; ++i) {
       const PresetValue& v = p.values[i];

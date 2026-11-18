@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <vector>
 
 #include "modules.hpp"
 #include "params.hpp"
@@ -391,17 +392,194 @@ inline std::string formatParamValue(const Shared& shared, uint32_t id,
   return buf;
 }
 
+inline bool parseNumberText(const std::string& text, double* value,
+                            std::string* suffix) {
+  const char* start = text.c_str();
+  char* end = nullptr;
+  const double v = std::strtod(start, &end);
+  if (end == start) return false;
+  *value = v;
+  if (suffix) {
+    *suffix = lowerText(trimText(text.substr(static_cast<size_t>(end - start))));
+  }
+  return true;
+}
+
+inline bool labelNumericValue(const char* label, double* value) {
+  const char* start = label;
+  char* end = nullptr;
+  double v = std::strtod(start, &end);
+  if (end == start) return false;
+  const std::string suffix = lowerText(trimText(std::string(end)));
+  if (!suffix.empty() && suffix[0] == 'k') v *= 1000.0;
+  *value = v;
+  return true;
+}
+
+inline size_t editDistance(const std::string& a, const std::string& b) {
+  std::vector<size_t> row(b.size() + 1);
+  for (size_t j = 0; j <= b.size(); ++j) row[j] = j;
+  for (size_t i = 1; i <= a.size(); ++i) {
+    size_t prev = row[0];
+    row[0] = i;
+    for (size_t j = 1; j <= b.size(); ++j) {
+      const size_t saved = row[j];
+      const size_t cost = a[i - 1] == b[j - 1] ? 0 : 1;
+      row[j] = std::min({row[j] + 1, row[j - 1] + 1, prev + cost});
+      prev = saved;
+    }
+  }
+  return row[b.size()];
+}
+
+inline int closestLabelIndex(const char* const* names, int count,
+                             const std::string& text) {
+  int best = -1;
+  size_t bestScore = static_cast<size_t>(-1);
+  for (int i = 0; i < count; ++i) {
+    const std::string name = lowerText(names[i]);
+    size_t score = 0;
+    if (name == text) {
+      score = 0;
+    } else if (name.rfind(text, 0) == 0) {
+      score = 10 + (name.size() - text.size());
+    } else if (name.find(text) != std::string::npos) {
+      score = 40 + (name.size() - text.size());
+    } else {
+      score = 100 + editDistance(name, text);
+    }
+    if (score < bestScore) {
+      bestScore = score;
+      best = i;
+    }
+  }
+  return best;
+}
+
+inline int choiceIndexForText(const char* const* names, int count,
+                              const std::string& text, bool toggled) {
+  if (!names || count <= 0) return -1;
+  for (int i = 0; i < count; ++i) {
+    if (text == lowerText(names[i])) return i;
+  }
+
+  double typed = 0.0;
+  const bool numeric = parseNumberText(text, &typed, nullptr);
+  if (numeric && toggled) return typed != 0.0 ? 1 : 0;
+
+  bool hasAlpha = false;
+  for (int i = 0; i < count; ++i) {
+    for (const char* c = names[i]; *c; ++c) {
+      if (std::isalpha(static_cast<unsigned char>(*c))) hasAlpha = true;
+    }
+  }
+  if (numeric && hasAlpha && text.size() > 1) {
+    for (int i = 0; i < count; ++i) {
+      const std::string name = lowerText(names[i]);
+      if (name.rfind(text, 0) == 0) return i;
+    }
+  }
+  if (numeric) {
+    int best = -1;
+    double bestDelta = 1.0e300;
+    for (int i = 0; i < count; ++i) {
+      double labelled = 0.0;
+      if (!labelNumericValue(names[i], &labelled)) continue;
+      const double delta = std::fabs(labelled - typed);
+      if (delta < bestDelta) {
+        bestDelta = delta;
+        best = i;
+      }
+    }
+    if (best >= 0) return best;
+    if (typed >= 1.0 && typed <= static_cast<double>(count) &&
+        std::fabs(typed - std::round(typed)) < 1.0e-6) {
+      return static_cast<int>(std::lround(typed)) - 1;
+    }
+  }
+  return closestLabelIndex(names, count, text);
+}
+
+inline bool isFrequencyFormat(ControlFormat format) {
+  switch (format) {
+    case ControlFormat::ScHpfHz:
+    case ControlFormat::EqHpfHz:
+    case ControlFormat::EqLpfHz:
+    case ControlFormat::AirFreqHz:
+    case ControlFormat::DeEssFreqHz:
+    case ControlFormat::MonoHz:
+    case ControlFormat::CrushToneHz:
+    case ControlFormat::FilterCutoffHz:
+    case ControlFormat::LfoRateHz:
+    case ControlFormat::SubFreqHz:
+    case ControlFormat::HybridLowCut:
+    case ControlFormat::HybridLowFreq:
+    case ControlFormat::HybridMidFreq:
+    case ControlFormat::HybridHighFreq:
+      return true;
+    default:
+      return false;
+  }
+}
+
+inline bool isMillisecondFormat(ControlFormat format) {
+  switch (format) {
+    case ControlFormat::GateAttackMs:
+    case ControlFormat::GateReleaseMs:
+    case ControlFormat::HoldMs:
+    case ControlFormat::LimiterReleaseMs:
+    case ControlFormat::RiderSpeedMs:
+    case ControlFormat::SpacePreDelayMs:
+    case ControlFormat::SpaceDelayMs:
+    case ControlFormat::DelayMs:
+    case ControlFormat::DetuneMs:
+    case ControlFormat::AttackMs:
+    case ControlFormat::ReleaseMs:
+    case ControlFormat::L2ReleaseMs:
+    case ControlFormat::AttackShortMs:
+      return true;
+    default:
+      return false;
+  }
+}
+
+inline void applyTypedUnit(ControlFormat format, const std::string& suffix,
+                           double* value) {
+  if (suffix.empty() || !value) return;
+  const bool kilo = suffix[0] == 'k';
+  if (isFrequencyFormat(format)) {
+    if (kilo) *value *= 1000.0;
+    return;
+  }
+  if (isMillisecondFormat(format)) {
+    if (suffix.rfind("ms", 0) == 0) return;
+    if (suffix.rfind("us", 0) == 0) {
+      *value *= 0.001;
+    } else if (suffix[0] == 's') {
+      *value *= 1000.0;
+    }
+    return;
+  }
+  if (format == ControlFormat::SpaceDecayS) {
+    if (suffix.rfind("ms", 0) == 0) {
+      *value *= 0.001;
+    }
+  }
+}
+
 inline bool parseParamValue(const Shared& shared, uint32_t id,
                             const std::string& raw, double* out) {
   if (id >= P_COUNT || !out) return false;
-  const ParamSpec& s = kParamSpecs[id];
+  const ParamSpec& specSpec = kParamSpecs[id];
   const std::string text = lowerText(trimText(raw));
   if (text.empty()) return false;
-  for (int i = 0; i < s.labels.count; ++i) {
-    if (text == lowerText(s.labels.names[i])) {
-      *out = s.min + i;
-      return true;
-    }
+
+  if (specSpec.labels.count > 0) {
+    const int choice = choiceIndexForText(specSpec.labels.names,
+                                          specSpec.labels.count, text, false);
+    if (choice < 0) return false;
+    *out = specSpec.min + choice;
+    return true;
   }
   if (text == "on" || text == "true" || text == "yes") {
     *out = 1.0;
@@ -411,12 +589,9 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
     *out = 0.0;
     return true;
   }
-  char* end = nullptr;
-  double v = std::strtod(text.c_str(), &end);
-  if (end == text.c_str()) return false;
 
-  // Map the visible value back to the normalised control where the format is
-  // unambiguous. Ratio and ms values fall back to a normalised number.
+  const ModuleDesc* module = nullptr;
+  const ControlDesc* desc = nullptr;
   if (id >= P_SLOT0_TYPE) {
     const int slot = static_cast<int>((id - P_SLOT0_TYPE) / kSlotStride);
     const int offset = static_cast<int>((id - P_SLOT0_TYPE) % kSlotStride);
@@ -424,137 +599,199 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
       const int control = offset - kSlotOffsetC0;
       const int type = static_cast<int>(
           shared.get(slotParam(slot, kSlotOffsetType)) + 0.5);
-      const ModuleDesc* module = moduleDesc(type);
-      const ControlDesc* desc = controlFor(*module, control);
-      if (desc) {
-        if (desc->labels.count > 0) {
-          for (int i = 0; i < desc->labels.count; ++i) {
-            if (text == lowerText(desc->labels.names[i])) {
-              *out = desc->labels.count > 1
-                         ? static_cast<double>(i) / (desc->labels.count - 1)
-                         : 0.0;
-              return true;
-            }
-          }
-        }
-        switch (desc->format) {
-          case ControlFormat::ThresholdDb: v = (v + 40.0) / 40.0; break;
-          case ControlFormat::GainDb: v = v / 20.0 + 0.5; break;
-          case ControlFormat::Percent: v = v / 100.0; break;
-          case ControlFormat::EqHpfHz:
-            v = std::log(std::max(v, 20.0) / 20.0) / std::log(25.0);
-            break;
-          case ControlFormat::EqLpfHz:
-            v = std::log(std::max(v, 500.0) / 500.0) / std::log(40.0);
-            break;
-          case ControlFormat::AirFreqHz:
-            v = std::log(std::max(v, 2000.0) / 2000.0) / std::log(8.0);
-            break;
-          case ControlFormat::TiltDb:
-          case ControlFormat::AirDb: v = v / 24.0 + 0.5; break;
-          case ControlFormat::GateThresholdDb: v = (v + 60.0) / 60.0; break;
-          case ControlFormat::RangeDb: v = v / 80.0; break;
-          case ControlFormat::GateAttackMs:
-            v = std::log(std::max(v, 0.1) / 0.1) / std::log(500.0);
-            break;
-          case ControlFormat::GateReleaseMs:
-            v = std::log(std::max(v, 10.0) / 10.0) / std::log(100.0);
-            break;
-          case ControlFormat::HoldMs: v = v / 500.0; break;
-          case ControlFormat::BipolarPercent: v = v / 200.0 + 0.5; break;
-          case ControlFormat::ClipDriveDb: v = v / 24.0; break;
-          case ControlFormat::ClipCeilingDb: v = (v + 12.0) / 12.0; break;
-          case ControlFormat::DeEssFreqHz:
-            v = std::log(std::max(v, 4.0) / 4.0) / std::log(3.0);
-            break;
-          case ControlFormat::DeEssRangeDb: v = v / 24.0; break;
-          case ControlFormat::LimiterCeilingDb: v = (v + 6.0) / 6.0; break;
-          case ControlFormat::LimiterReleaseMs:
-            v = std::log(std::max(v, 20.0) / 20.0) / std::log(50.0);
-            break;
-          case ControlFormat::WidthPercent: v = v / 200.0; break;
-          case ControlFormat::MonoHz:
-            v = std::log(std::max(v, 20.0) / 20.0) / std::log(25.0);
-            break;
-          case ControlFormat::CrushBits: v = (v - 1.0) / 15.0; break;
-          case ControlFormat::CrushToneHz:
-            v = std::log(std::max(v, 1.0) / 1.0) / std::log(20.0);
-            break;
-          case ControlFormat::FilterCutoffHz:
-            v = std::log(std::max(v, 20.0) / 20.0) / std::log(1000.0);
-            break;
-          case ControlFormat::LfoRateHz:
-            v = std::log(std::max(v, 0.05) / 0.05) / std::log(200.0);
-            break;
-          case ControlFormat::SubFreqHz:
-            v = std::log(std::max(v, 30.0) / 30.0) / std::log(5.0);
-            break;
-          case ControlFormat::DelayMs: v = (v - 10.0) / 30.0; break;
-          case ControlFormat::DetuneMs: v = v / 3.0; break;
-          case ControlFormat::QValue:
-            v = std::log(std::max(v, 0.3) / 0.3) / std::log(20.0);
-            break;
-          case ControlFormat::DynRangeDb: v = v / 24.0; break;
-          case ControlFormat::DynRatio: v = (v - 1.0) / 9.0; break;
-          case ControlFormat::MakeupDb: v = v / 24.0; break;
-          case ControlFormat::RiderTargetDb: v = (v + 40.0) / 40.0; break;
-          case ControlFormat::RiderSpeedMs:
-            v = std::log(std::max(v, 20.0) / 20.0) / std::log(50.0);
-            break;
-          case ControlFormat::SpaceDecayS: v = (v - 0.3) / 11.7; break;
-          case ControlFormat::SpacePreDelayMs: v = v / 200.0; break;
-          case ControlFormat::SpaceDelayMs: v = (v - 1.0) / 1999.0; break;
-          case ControlFormat::BoostDb: v = v / 12.0; break;
-          case ControlFormat::ClassicThresholdDb: v = (v + 20.0) / 20.0; break;
-          case ControlFormat::TrimDb: v = (v + 21.0) / 21.0; break;
-          case ControlFormat::DaTubeOutputDb: v = (v + 24.0) / 24.0; break;
-          case ControlFormat::FattenerGainDb: v = (v + 24.0) / 48.0; break;
-          case ControlFormat::WideGainDb: v = (v + 24.0) / 48.0; break;
-          case ControlFormat::CompAmount: v = (v - 1.0) / 9.0; break;
-          case ControlFormat::AttackShortMs: v = (v - 0.1) / 9.9; break;
-          case ControlFormat::Threshold48Db: v = (v + 48.0) / 48.0; break;
-          case ControlFormat::Threshold18Db: v = (v + 18.0) / 18.0; break;
-          case ControlFormat::CurveBipolar: v = (v + 50.0) / 100.0; break;
-          case ControlFormat::BloomInputDb: v = (v + 6.0) / 18.0; break;
-          case ControlFormat::BloomOutputDb: v = (v + 12.0) / 12.0; break;
-          case ControlFormat::RsInputDb: v = (v + 24.0) / 48.0; break;
-          case ControlFormat::RsOutputDb: v = (v + 30.0) / 30.0; break;
-          case ControlFormat::Ratio2To10: v = (v - 2.0) / 8.0; break;
-          case ControlFormat::ThresholdM40P10Db: v = (v + 40.0) / 50.0; break;
-          case ControlFormat::Unit10: v = v / 10.0; break;
-          case ControlFormat::Output24Db: v = (v + 24.0) / 48.0; break;
-          case ControlFormat::TapeGainDb: v = (v + 12.0) / 18.0; break;
-          case ControlFormat::Comp48Db: v = v / 48.0; break;
-          case ControlFormat::Threshold30Db: v = (v + 30.0) / 30.0; break;
-          case ControlFormat::L2ReleaseMs: {
-            if (v > 0.0) v = (std::log10(v / 1000.0) + 5.0) / 5.0;
-            break;
-          }
-          case ControlFormat::Threshold20Db: v = (v + 20.0) / 20.0; break;
-          case ControlFormat::Margin6Db: v = (v + 6.0) / 6.0; break;
-          case ControlFormat::HybridLowCut:
-            v = std::log(std::max(v, 20.0) / 20.0) / std::log(40.0);
-            break;
-          case ControlFormat::HybridLowFreq:
-            v = std::log(std::max(v, 30.0) / 30.0) / std::log(13.3333);
-            break;
-          case ControlFormat::HybridBoost15: v = v / 15.0; break;
-          case ControlFormat::HybridMidFreq:
-            v = std::log(std::max(v, 200.0) / 200.0) / std::log(25.0);
-            break;
-          case ControlFormat::HybridGain15: v = (v + 15.0) / 30.0; break;
-          case ControlFormat::HybridHighFreq:
-            v = std::log(std::max(v, 2500.0) / 2500.0) / std::log(6.4);
-            break;
-          case ControlFormat::HybridHighBoost: v = v / 18.0; break;
-          case ControlFormat::HybridHighAtten: v = -v / 18.0; break;
-          default: break;
-        }
-      }
+      module = moduleDesc(type);
+      desc = controlFor(*module, control);
     }
   }
 
-  v = std::min(std::max(v, s.min), s.max);
+  double v = 0.0;
+  std::string suffix;
+  if (!parseNumberText(text, &v, &suffix)) {
+    if (desc && desc->labels.count > 0) {
+      const int choice =
+          closestLabelIndex(desc->labels.names, desc->labels.count, text);
+      if (choice < 0) return false;
+      *out = desc->labels.count > 1
+                 ? static_cast<double>(choice) / (desc->labels.count - 1)
+                 : 0.0;
+      return true;
+    }
+    return false;
+  }
+
+  if (desc) {
+    if (desc->labels.count > 0) {
+      const int choice = choiceIndexForText(
+          desc->labels.names, desc->labels.count, text, desc->toggled);
+      if (choice < 0) return false;
+      if (desc->toggled) {
+        *out = choice != 0 ? 1.0 : 0.0;
+      } else {
+        *out = desc->labels.count > 1
+                   ? static_cast<double>(choice) / (desc->labels.count - 1)
+                   : 0.0;
+      }
+      return true;
+    }
+    applyTypedUnit(desc->format, suffix, &v);
+    switch (desc->format) {
+      case ControlFormat::ThresholdDb: v = (v + 40.0) / 40.0; break;
+      case ControlFormat::GainDb: v = v / 20.0 + 0.5; break;
+      case ControlFormat::Ratio: {
+        static constexpr double ratios[9] = {1.5, 2.0, 3.0, 4.0, 6.0,
+                                             8.0, 12.0, 20.0, 20.0};
+        int best = 0;
+        double bestDelta = 1.0e300;
+        for (int i = 0; i < 9; ++i) {
+          const double delta = std::fabs(ratios[i] - v);
+          if (delta < bestDelta) {
+            bestDelta = delta;
+            best = i;
+          }
+        }
+        v = static_cast<double>(best) / 8.0;
+        break;
+      }
+      case ControlFormat::AttackMs: {
+        if (module && (module->model == 0 || module->model == 1)) {
+          const double step =
+              std::log(std::max(v, 0.04) / 0.04) / std::log(40.0);
+          v = std::round(step * 6.0) / 6.0;
+        } else {
+          v = std::log(std::max(v, 0.1) / 0.1) / std::log(300.0);
+        }
+        break;
+      }
+      case ControlFormat::ReleaseMs: {
+        if (module && (module->model == 0 || module->model == 1)) {
+          const double step =
+              std::log(std::max(v, 50.0) / 50.0) / std::log(22.0);
+          v = std::round(step * 6.0) / 6.0;
+        } else {
+          v = std::log(std::max(v, 100.0) / 100.0) / std::log(12.0);
+        }
+        break;
+      }
+      case ControlFormat::Percent: v = v / 100.0; break;
+      case ControlFormat::ScHpfHz:
+        v = std::log(std::max(v, 20.0) / 20.0) / std::log(20.0);
+        break;
+      case ControlFormat::EqHpfHz:
+        v = std::log(std::max(v, 20.0) / 20.0) / std::log(25.0);
+        break;
+      case ControlFormat::EqLpfHz:
+        v = std::log(std::max(v, 500.0) / 500.0) / std::log(40.0);
+        break;
+      case ControlFormat::AirFreqHz:
+        v = std::log(std::max(v, 2000.0) / 2000.0) / std::log(8.0);
+        break;
+      case ControlFormat::TiltDb:
+      case ControlFormat::AirDb: v = v / 24.0 + 0.5; break;
+      case ControlFormat::GateThresholdDb: v = (v + 60.0) / 60.0; break;
+      case ControlFormat::RangeDb: v = v / 80.0; break;
+      case ControlFormat::GateAttackMs:
+        v = std::log(std::max(v, 0.1) / 0.1) / std::log(500.0);
+        break;
+      case ControlFormat::GateReleaseMs:
+        v = std::log(std::max(v, 10.0) / 10.0) / std::log(100.0);
+        break;
+      case ControlFormat::HoldMs: v = v / 500.0; break;
+      case ControlFormat::BipolarPercent: v = v / 200.0 + 0.5; break;
+      case ControlFormat::ClipDriveDb: v = v / 24.0; break;
+      case ControlFormat::ClipCeilingDb: v = (v + 12.0) / 12.0; break;
+      case ControlFormat::DeEssFreqHz:
+        v = std::log(std::max(v, 4.0) / 4.0) / std::log(3.0);
+        break;
+      case ControlFormat::DeEssRangeDb: v = v / 24.0; break;
+      case ControlFormat::LimiterCeilingDb: v = (v + 6.0) / 6.0; break;
+      case ControlFormat::LimiterReleaseMs:
+        v = std::log(std::max(v, 20.0) / 20.0) / std::log(50.0);
+        break;
+      case ControlFormat::WidthPercent: v = v / 200.0; break;
+      case ControlFormat::MonoHz:
+        v = std::log(std::max(v, 20.0) / 20.0) / std::log(25.0);
+        break;
+      case ControlFormat::CrushBits: v = (v - 1.0) / 15.0; break;
+      case ControlFormat::CrushToneHz:
+        v = std::log(std::max(v, 1.0) / 1.0) / std::log(20.0);
+        break;
+      case ControlFormat::FilterCutoffHz:
+        v = std::log(std::max(v, 20.0) / 20.0) / std::log(1000.0);
+        break;
+      case ControlFormat::LfoRateHz:
+        v = std::log(std::max(v, 0.05) / 0.05) / std::log(200.0);
+        break;
+      case ControlFormat::SubFreqHz:
+        v = std::log(std::max(v, 30.0) / 30.0) / std::log(5.0);
+        break;
+      case ControlFormat::DelayMs: v = (v - 10.0) / 30.0; break;
+      case ControlFormat::DetuneMs: v = v / 3.0; break;
+      case ControlFormat::QValue:
+        v = std::log(std::max(v, 0.3) / 0.3) / std::log(20.0);
+        break;
+      case ControlFormat::DynRangeDb: v = v / 24.0; break;
+      case ControlFormat::DynRatio: v = (v - 1.0) / 9.0; break;
+      case ControlFormat::MakeupDb: v = v / 24.0; break;
+      case ControlFormat::RiderTargetDb: v = (v + 40.0) / 40.0; break;
+      case ControlFormat::RiderSpeedMs:
+        v = std::log(std::max(v, 20.0) / 20.0) / std::log(50.0);
+        break;
+      case ControlFormat::SpaceDecayS: v = (v - 0.3) / 11.7; break;
+      case ControlFormat::SpacePreDelayMs: v = v / 200.0; break;
+      case ControlFormat::SpaceDelayMs: v = (v - 1.0) / 1999.0; break;
+      case ControlFormat::BoostDb: v = v / 12.0; break;
+      case ControlFormat::ClassicThresholdDb: v = (v + 20.0) / 20.0; break;
+      case ControlFormat::TrimDb: v = (v + 21.0) / 21.0; break;
+      case ControlFormat::DaTubeOutputDb: v = (v + 24.0) / 24.0; break;
+      case ControlFormat::FattenerGainDb: v = (v + 24.0) / 48.0; break;
+      case ControlFormat::WideGainDb: v = (v + 24.0) / 48.0; break;
+      case ControlFormat::CompAmount: v = (v - 1.0) / 9.0; break;
+      case ControlFormat::AttackShortMs: v = (v - 0.1) / 9.9; break;
+      case ControlFormat::Threshold48Db: v = (v + 48.0) / 48.0; break;
+      case ControlFormat::Threshold18Db: v = (v + 18.0) / 18.0; break;
+      case ControlFormat::CurveBipolar: v = (v + 50.0) / 100.0; break;
+      case ControlFormat::BloomInputDb: v = (v + 6.0) / 18.0; break;
+      case ControlFormat::BloomOutputDb: v = (v + 12.0) / 12.0; break;
+      case ControlFormat::RsInputDb: v = (v + 24.0) / 48.0; break;
+      case ControlFormat::RsOutputDb: v = (v + 30.0) / 30.0; break;
+      case ControlFormat::Ratio2To10: v = (v - 2.0) / 8.0; break;
+      case ControlFormat::ThresholdM40P10Db: v = (v + 40.0) / 50.0; break;
+      case ControlFormat::Unit10: v = v / 10.0; break;
+      case ControlFormat::Output24Db: v = (v + 24.0) / 48.0; break;
+      case ControlFormat::TapeGainDb: v = (v + 12.0) / 18.0; break;
+      case ControlFormat::Comp48Db: v = v / 48.0; break;
+      case ControlFormat::Threshold30Db: v = (v + 30.0) / 30.0; break;
+      case ControlFormat::L2ReleaseMs:
+        if (v > 0.0) v = (std::log10(v / 1000.0) + 5.0) / 5.0;
+        break;
+      case ControlFormat::Threshold20Db: v = (v + 20.0) / 20.0; break;
+      case ControlFormat::Margin6Db: v = (v + 6.0) / 6.0; break;
+      case ControlFormat::HybridLowCut:
+        v = std::log(std::max(v, 20.0) / 20.0) / std::log(40.0);
+        break;
+      case ControlFormat::HybridLowFreq:
+        v = std::log(std::max(v, 30.0) / 30.0) / std::log(13.3333);
+        break;
+      case ControlFormat::HybridBoost15: v = v / 15.0; break;
+      case ControlFormat::HybridMidFreq:
+        v = std::log(std::max(v, 200.0) / 200.0) / std::log(25.0);
+        break;
+      case ControlFormat::HybridGain15: v = (v + 15.0) / 30.0; break;
+      case ControlFormat::HybridHighFreq:
+        v = std::log(std::max(v, 2500.0) / 2500.0) / std::log(6.4);
+        break;
+      case ControlFormat::HybridHighBoost: v = v / 18.0; break;
+      case ControlFormat::HybridHighAtten: v = -v / 18.0; break;
+      default: break;
+    }
+    if (desc->toggled) v = v > 0.5 ? 1.0 : 0.0;
+    v = std::min(std::max(v, 0.0), 1.0);
+    *out = v;
+    return true;
+  }
+
+  if (specSpec.stepped) v = std::round(v - specSpec.min) + specSpec.min;
+  v = std::min(std::max(v, specSpec.min), specSpec.max);
   *out = v;
   return true;
 }

@@ -154,11 +154,11 @@ inline constexpr FactoryModulePreset kFactoryModulePresets[] = {
      {1.00f, 0.50f, 0.80f, 0.80f, 1.0f}},
 
     // Ember
-    {"Touch of Glow", "Ember", ModuleId::Ember, {0.18f}},
-    {"Vocal Bus", "Ember", ModuleId::Ember, {0.35f}},
-    {"Mix Bus Finish", "Ember", ModuleId::Ember, {0.48f}},
-    {"Drum Bus Glue", "Ember", ModuleId::Ember, {0.58f}},
-    {"Mastering Glow", "Ember", ModuleId::Ember, {0.72f}},
+    {"Touch of Glow", "Ember", ModuleId::Ember, {0.18f, 0.5f, 1.0f}},
+    {"Vocal Bus", "Ember", ModuleId::Ember, {0.35f, 0.5f, 1.0f}},
+    {"Mix Bus Finish", "Ember", ModuleId::Ember, {0.48f, 0.5f, 1.0f}},
+    {"Drum Bus Glue", "Ember", ModuleId::Ember, {0.58f, 0.5f, 1.0f}},
+    {"Mastering Glow", "Ember", ModuleId::Ember, {0.72f, 0.5f, 1.0f}},
 };
 
 inline constexpr int kFactoryModulePresetCount =

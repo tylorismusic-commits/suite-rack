@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(suite_rack VERSION 0.45.0 LANGUAGES CXX)
+project(suite_rack VERSION 0.47.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -142,9 +142,15 @@ add_custom_target(suite_rack_lv2_bundle ALL
 
 add_custom_target(dist
   COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/dist"
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+          "${CMAKE_SOURCE_DIR}/LICENSE" "${CMAKE_BINARY_DIR}/LICENSE"
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+          "${CMAKE_SOURCE_DIR}/THIRD_PARTY_NOTICES.md"
+          "${CMAKE_BINARY_DIR}/THIRD_PARTY_NOTICES.md"
   COMMAND ${CMAKE_COMMAND} -E tar czf
           "${CMAKE_BINARY_DIR}/dist/suite-rack-${PROJECT_VERSION}-linux-x86_64.tar.gz"
           lv2/suite-rack.lv2 clap/SuiteRack.clap clap/SuiteRack.resources
+          LICENSE THIRD_PARTY_NOTICES.md
   WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
   DEPENDS suite_rack_lv2_bundle suite_rack_bundle
   COMMENT "Packing suite-rack-${PROJECT_VERSION}")
@@ -158,3 +164,6 @@ install(FILES
   assets/fonts/Jost-ExtraBold.ttf
   assets/fonts/OFL.txt
   DESTINATION "${LV2_DIR}/suite-rack.lv2")
+
+install(FILES LICENSE THIRD_PARTY_NOTICES.md
+        DESTINATION share/licenses/suite-rack)

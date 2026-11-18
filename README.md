@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.45.0-m2 — CLAP + LV2, seventy-one modules, full preset browsers, drag reorder, browser search and typed values.**
+**Status: 0.47.0-m2 — public alpha: CLAP + LV2, seventy-two modules, full preset browsers, drag reorder, browser search and typed values.**
 More factory module presets are next.
 
 A virtual 500 series mix rack in the Suite visual language: six serial slots, each
@@ -131,11 +131,30 @@ standalone plugins remain the full versions.
 - **Motion** — tremolo / auto-pan / rotary
 - **Rider** — auto-level / vocal rider
 
+## Public alpha notes
+
+This is an early public alpha. The rack is usable and saves/recalls correctly,
+but a few areas are still intentionally limited:
+
+- Most module families have factory presets; some modules still start from
+  their default/Init setting only.
+- User rack presets are stored in `$XDG_CONFIG_HOME/SuiteRack/presets` or
+  `~/.config/SuiteRack/presets`. User module presets use the sibling
+  `module-presets` directory. Saving the same name replaces the file; rename
+  and delete are done in the file manager for now.
+- Automation is per slot: type, bypass, mix, gain and twelve generic module
+  controls. Host automation does not expose per-module control names.
+- Trowel smoothing is represented by **Tame** inside the rack. The standalone
+  Trowel remains the full version.
+- Linux CLAP and LV2 builds are tested in REAPER. macOS and Windows packaging
+  are not available yet.
+- There is no undo, A/B compare, or in-plugin preset rename/delete UI yet.
+
 **Not in the rack:** Common Sense EQ, Amp Suite, Bass Suite, and the deep Repair
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.45.0-m2 slice
+## Current 0.47.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
