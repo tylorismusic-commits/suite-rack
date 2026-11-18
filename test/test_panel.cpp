@@ -137,6 +137,26 @@ int main() {
         "ghost toggle is clickable");
   check(s.get(ghostOnParam) == 0.0, "ghost toggle turns ghost off");
 
+  // Slot 6: Peak Limiter.
+  panel.draw(cr, s, state);
+  panel.pointerDown(s, state, 906, 134, false);
+  panel.pointerUp();
+  panel.draw(cr, s, state);
+  check(clickLabel(panel, s, state, "Peak Limiter"),
+        "filtered browser offers Peak Limiter");
+  check(s.get(P_SLOT5_TYPE) == static_cast<double>(ModuleId::Limiter),
+        "Peak Limiter selects into slot 6");
+  panel.draw(cr, s, state);
+  bool limiterControls = true;
+  for (int k = 0; k < 4; ++k) {
+    bool found = false;
+    for (const auto& r : panel.widgetRects()) {
+      if (r.param == slotParam(5, kSlotOffsetC0 + k)) found = true;
+    }
+    limiterControls = limiterControls && found;
+  }
+  check(limiterControls, "Peak Limiter exposes all four controls");
+
   // Bypass pill for slot 2.
   panel.draw(cr, s, state);
   check(clickParam(panel, s, state, P_SLOT1_BYPASS),

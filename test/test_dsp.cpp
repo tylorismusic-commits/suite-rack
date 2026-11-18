@@ -194,6 +194,18 @@ int main() {
     e.setControls(c);
     check(e.latencySamples() > 0,
           "Peak Limiter contributes lookahead latency");
+
+    std::vector<float> loud(n);
+    for (int i = 0; i < n; ++i)
+      loud[i] = 1.5f * std::sin(2.0f * 3.14159265f * 1000.0f * i / sr);
+    auto wet = loud;
+    Meters m;
+    e.process(wet.data(), wet.data(), n, m);
+    double peak = 0.0;
+    for (int i = 4000; i < n; ++i)
+      peak = std::max(peak, static_cast<double>(std::fabs(wet[i])));
+    check(m.slotGrDb[0] > 1.0f, "Peak Limiter reports gain reduction");
+    check(peak < 0.95, "Peak Limiter holds the output below the ceiling");
   }
 
   std::printf("%d failure(s)\n", fails);

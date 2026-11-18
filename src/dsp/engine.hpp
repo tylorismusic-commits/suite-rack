@@ -96,12 +96,12 @@ public:
           } else if (type == static_cast<int>(ModuleId::BleedOut)) {
             bleedOut_[s].process(l, r);
             gr = bleedOut_[s].lastGrDb();
+          } else if (type == static_cast<int>(ModuleId::Limiter)) {
+            limiter_[s].process(l, r);
+            gr = limiter_[s].lastGrDb();
           }
         } else if (type == static_cast<int>(ModuleId::Density)) {
           density_[s].process(l, r);
-        } else if (type == static_cast<int>(ModuleId::Limiter)) {
-          limiter_[s].process(l, r);
-          gr = limiter_[s].lastGrDb();
         } else {
           continue;
         }

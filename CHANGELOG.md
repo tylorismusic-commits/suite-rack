@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.8.1-m2 — 2026-11-17
+
+- Fixed the Peak Limiter being skipped by the rack engine dispatch.
+- Added engine and panel regression tests for Peak Limiter gain reduction,
+  ceiling behaviour, latency and module selection.
+- Bleed Out and Peak Limiter now both run through the dynamics dispatch.
+
 ## 0.8.0-m2 — 2026-11-17
 
 - Added the Peak Limiter module with Input, Ceiling, Release and Link.
