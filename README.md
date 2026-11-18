@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: M0 scaffold / UI preview.** Not yet an installable CLAP or LV2 plugin.
+**Status: M0 scaffold with a working CLAP build.** LV2 wrapper, rack state recall and host automation are next.
 
 A virtual mix rack in the Suite visual language: six serial slots, each hosting
 an EQ or Comp module. Slot 1 starts as EQ, slot 2 as Comp, slots 3–6 are empty.
@@ -23,7 +23,8 @@ Modules are chosen from an in-panel browser.
 - Comp module: 76 / 2A / VCA with threshold, ratio, attack, release, makeup,
   mix and sidechain HPF.
 - Serial engine and per-slot meters in place; DSP and panel tests pass.
-- No CLAP/LV2 wrapper yet; that is the next slice.
+- **CLAP build loads in REAPER**, opens the six-column editor and processes audio.
+- LV2 wrapper and full rack state recall are next.
 
 ## Architecture
 
@@ -44,9 +45,16 @@ ctest --test-dir build --output-on-failure
 ./build/rack_ui_preview assets/fonts /tmp/suite-rack-preview
 ```
 
+## Install CLAP
+
+```sh
+cp build/clap/SuiteRack.clap ~/.clap/
+cp -r build/clap/SuiteRack.resources ~/.clap/
+```
+
 ## Next
 
-1. CLAP + LV2 wrappers and state recall.
+1. LV2 wrapper and state recall.
 2. Six-slot parameter serialization and host automation tests.
 3. Module registry for Patina, Space, Bleed Out, Limiter.
 4. Drag/reorder, per-slot gain, module presets.

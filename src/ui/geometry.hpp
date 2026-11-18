@@ -1,4 +1,4 @@
-// Drum Suite — geometry.hpp
+// Suite Rack — geometry.hpp
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
@@ -8,7 +8,7 @@
 
 #include "ui/panel.hpp"
 
-namespace drum {
+namespace rack {
 
 // The editor is laid out once in logical units (kPanelWidth x kPanelHeight)
 // and scaled uniformly.  Scales move in steps of 1/80, because 1040 = 13 * 80
@@ -55,4 +55,4 @@ inline UiSize snapSize(uint32_t width, uint32_t height) {
   return sizeForScale(scaleForRequest(width, height));
 }
 
-} // namespace drum
+} // namespace rack

@@ -41,3 +41,41 @@ add_executable(rack_ui_preview test/ui_preview.cpp ${RACK_UI_SOURCES})
 target_include_directories(rack_ui_preview PRIVATE "${CMAKE_SOURCE_DIR}/src")
 target_link_libraries(rack_ui_preview PRIVATE PkgConfig::CAIRO PkgConfig::FREETYPE)
 target_compile_features(rack_ui_preview PRIVATE cxx_std_17)
+
+# ---------------------------------------------------------------------------
+# CLAP plugin
+# ---------------------------------------------------------------------------
+set(CLAP_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/clap"
+    CACHE PATH "Directory where CLAP bundles are installed")
+set(LV2_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/lv2"
+    CACHE PATH "Directory where LV2 bundles are installed")
+
+pkg_check_modules(LV2 REQUIRED IMPORTED_TARGET lv2)
+
+add_library(suite_rack MODULE src/clap/rack_clap.cpp ${RACK_UI_SOURCES})
+target_include_directories(suite_rack PRIVATE
+  "${CMAKE_SOURCE_DIR}/src" "${CMAKE_SOURCE_DIR}/third_party/clap/include")
+target_link_libraries(suite_rack PRIVATE
+  PkgConfig::CAIRO PkgConfig::FREETYPE PkgConfig::X11 Threads::Threads
+  ${CMAKE_DL_LIBS})
+target_compile_features(suite_rack PRIVATE cxx_std_17)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(suite_rack PRIVATE -Wall -Wextra -fvisibility=hidden)
+endif()
+set_target_properties(suite_rack PROPERTIES
+  PREFIX "" OUTPUT_NAME "SuiteRack" SUFFIX ".clap"
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/clap")
+
+set(RACK_RESOURCE_FILES
+  "${CMAKE_SOURCE_DIR}/assets/fonts/Jost-ExtraBold.ttf"
+  "${CMAKE_SOURCE_DIR}/assets/fonts/OFL.txt")
+
+add_custom_target(suite_rack_bundle ALL
+  COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/clap/SuiteRack.resources"
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RACK_RESOURCE_FILES}
+          "${CMAKE_BINARY_DIR}/clap/SuiteRack.resources/"
+  DEPENDS suite_rack ${RACK_RESOURCE_FILES})
+
+install(TARGETS suite_rack LIBRARY DESTINATION "${CLAP_DIR}")
+install(FILES ${RACK_RESOURCE_FILES}
+        DESTINATION "${CLAP_DIR}/SuiteRack.resources")

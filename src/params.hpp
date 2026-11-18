@@ -253,6 +253,12 @@ public:
     return dirty_[p].load(std::memory_order_acquire);
   }
 
+  bool anyDirty() const noexcept {
+    for (uint32_t p = 0; p < P_COUNT; ++p)
+      if (dirty_[p].load(std::memory_order_acquire)) return true;
+    return false;
+  }
+
   std::atomic<float> inPeakDb, outPeakDb;
   std::atomic<float> inPeakLDb, inPeakRDb;
   std::atomic<float> outPeakLDb, outPeakRDb;

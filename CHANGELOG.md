@@ -9,4 +9,5 @@
 - Module browser with Off / EQ / Comp.
 - Slot bypass, slot mix, per-slot compressor GR.
 - EQ and Comp DSP modules with serial engine tests and panel tests.
+- CLAP wrapper loads and processes in REAPER.
 - UI preview renders the rack, compressor row and module browser.
