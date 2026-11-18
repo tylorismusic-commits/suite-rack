@@ -29,6 +29,8 @@ public:
     for (auto& density : density_) density.prepare(sr_);
     for (auto& bleed : bleedOut_) bleed.prepare(sr_);
     for (auto& limiter : limiter_) limiter.prepare(sr_);
+    for (auto& image : image_) image.prepare(sr_);
+    for (auto& crush : crush_) crush.prepare(sr_);
     input_.setTime(15.0f, sr_);
     output_.setTime(15.0f, sr_);
     power_.setTime(20.0f, sr_);
@@ -53,6 +55,8 @@ public:
       density_[i].setControls(densityControlsFrom(c.slot[i]));
       bleedOut_[i].setControls(bleedOutControlsFrom(c.slot[i]));
       limiter_[i].setControls(limiterControlsFrom(c.slot[i]));
+      image_[i].setControls(imageControlsFrom(c.slot[i]));
+      crush_[i].setControls(crushControlsFrom(c.slot[i]));
       slotGain_[i].setTarget(hdsp::dbToGain(c.slot[i].gainDb));
     }
     input_.setTarget(hdsp::dbToGain(c.inputDb));
@@ -126,6 +130,12 @@ public:
             limiter_[s].process(l, r);
             gr = limiter_[s].lastGrDb();
             break;
+          case ModuleId::Image:
+            image_[s].process(l, r);
+            break;
+          case ModuleId::Crush:
+            crush_[s].process(l, r);
+            break;
           case ModuleId::Count:
             continue;
         }
@@ -170,6 +180,8 @@ public:
     for (auto& density : density_) density.reset();
     for (auto& bleed : bleedOut_) bleed.reset();
     for (auto& limiter : limiter_) limiter.reset();
+    for (auto& image : image_) image.reset();
+    for (auto& crush : crush_) crush.reset();
     input_.snap();
     output_.snap();
     power_.snap();
@@ -203,6 +215,8 @@ private:
   hdsp::modules::Density density_[kSlotCount];
   hdsp::modules::BleedOut bleedOut_[kSlotCount];
   hdsp::modules::Limiter limiter_[kSlotCount];
+  hdsp::modules::Image image_[kSlotCount];
+  hdsp::modules::Crush crush_[kSlotCount];
   hdsp::Smoothed input_, output_, power_;
   hdsp::Smoothed slotGain_[kSlotCount];
 };

@@ -29,6 +29,8 @@ enum class ModuleId : int {
   Density,
   BleedOut,
   Limiter,
+  Image,
+  Crush,
   Count
 };
 
@@ -39,7 +41,7 @@ inline constexpr const char* kModuleLabels[] = {
     "76 Blue",   "76 Black", "2A",        "3A",        "VCA",
     "Valve",     "Console",  "Bus",       "Tape",      "Transformer",
     "Gate",      "Transient", "Clip",     "De-Ess",   "Density",
-    "Bleed Out", "Peak Limiter",
+    "Bleed Out", "Peak Limiter", "Image", "Crush",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -243,6 +245,22 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 1: return 0.90;  // Ceiling
         case 2: return 0.50;  // Release
         case 3: return 1.00;  // Link
+        default: return 0.50;
+      }
+    case ModuleId::Image:
+      switch (control) {
+        case 0: return 0.50;  // Width
+        case 1: return 0.00;  // Mono
+        case 2: return 0.50;  // Balance
+        case 3: return 0.00;  // M/S off
+        default: return 0.50;
+      }
+    case ModuleId::Crush:
+      switch (control) {
+        case 0: return 1.00;  // Bits: 16
+        case 1: return 1.00;  // Rate: full
+        case 2: return 1.00;  // Tone: open
+        case 3: return 1.00;  // Mix
         default: return 0.50;
       }
     default:

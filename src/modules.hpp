@@ -39,6 +39,10 @@ enum class ControlFormat {
   DeEssRangeDb,
   LimiterCeilingDb,
   LimiterReleaseMs,
+  WidthPercent,
+  MonoHz,
+  CrushBits,
+  CrushToneHz,
 };
 
 struct ControlDesc {
@@ -162,6 +166,20 @@ inline constexpr ControlDesc kBleedOutControls[] = {
     {4, "GHOST ON", "Ghost On", ControlFormat::Percent, false, {}, true},
 };
 
+inline constexpr ControlDesc kImageControls[] = {
+    {0, "WIDTH", "Width", ControlFormat::WidthPercent},
+    {1, "MONO", "Mono Maker", ControlFormat::MonoHz},
+    {2, "BAL", "Balance", ControlFormat::BipolarPercent},
+    {3, "M/S", "M/S", ControlFormat::Percent, false, {}, true},
+};
+
+inline constexpr ControlDesc kCrushControls[] = {
+    {0, "BITS", "Bits", ControlFormat::CrushBits},
+    {1, "RATE", "Rate", ControlFormat::Percent},
+    {2, "TONE", "Tone", ControlFormat::CrushToneHz},
+    {3, "MIX", "Mix", ControlFormat::Percent},
+};
+
 inline constexpr ControlDesc kLimiterControls[] = {
     {0, "INPUT", "Input", ControlFormat::TiltDb},
     {1, "CEIL", "Ceiling", ControlFormat::LimiterCeilingDb},
@@ -263,6 +281,14 @@ inline constexpr ModuleDesc kModules[] = {
      static_cast<int>(sizeof(kLimiterControls) /
                       sizeof(kLimiterControls[0])),
      kLimiterControls},
+    {ModuleId::Image, "Image", "Dyn", "Width, mono-maker, balance and M/S",
+     false, false, 0,
+     static_cast<int>(sizeof(kImageControls) / sizeof(kImageControls[0])),
+     kImageControls},
+    {ModuleId::Crush, "Crush", "Colour", "Bitcrusher and sample-rate reducer",
+     false, false, 0,
+     static_cast<int>(sizeof(kCrushControls) / sizeof(kCrushControls[0])),
+     kCrushControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,

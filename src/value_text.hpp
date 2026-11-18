@@ -147,6 +147,18 @@ inline std::string formatControlValue(const ModuleDesc& module,
       std::snprintf(buf, sizeof(buf), "%.0f ms", ms);
       return buf;
     }
+    case ControlFormat::WidthPercent:
+      std::snprintf(buf, sizeof(buf), "%.0f%%", v * 200.0f);
+      return buf;
+    case ControlFormat::MonoHz:
+      std::snprintf(buf, sizeof(buf), "%.0f Hz", 20.0f * std::pow(25.0f, v));
+      return buf;
+    case ControlFormat::CrushBits:
+      std::snprintf(buf, sizeof(buf), "%.0f bit", 1.0f + 15.0f * v);
+      return buf;
+    case ControlFormat::CrushToneHz:
+      std::snprintf(buf, sizeof(buf), "%.1f kHz", 1.0f * std::pow(20.0f, v));
+      return buf;
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;
@@ -289,6 +301,14 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
           case ControlFormat::LimiterCeilingDb: v = (v + 6.0) / 6.0; break;
           case ControlFormat::LimiterReleaseMs:
             v = std::log(std::max(v, 20.0) / 20.0) / std::log(50.0);
+            break;
+          case ControlFormat::WidthPercent: v = v / 200.0; break;
+          case ControlFormat::MonoHz:
+            v = std::log(std::max(v, 20.0) / 20.0) / std::log(25.0);
+            break;
+          case ControlFormat::CrushBits: v = (v - 1.0) / 15.0; break;
+          case ControlFormat::CrushToneHz:
+            v = std::log(std::max(v, 1.0) / 1.0) / std::log(20.0);
             break;
           default: break;
         }

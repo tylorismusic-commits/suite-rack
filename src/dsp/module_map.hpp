@@ -105,6 +105,26 @@ inline hdsp::modules::ClipControls clipControlsFrom(
   return out;
 }
 
+inline hdsp::modules::ImageControls imageControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::ImageControls out;
+  out.width = c.c[0];
+  out.mono = c.c[1];
+  out.balance = c.c[2];
+  out.ms = c.c[3] > 0.5f;
+  return out;
+}
+
+inline hdsp::modules::CrushControls crushControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::CrushControls out;
+  out.bits = c.c[0];
+  out.rate = c.c[1];
+  out.tone = c.c[2];
+  out.mix = c.c[3];
+  return out;
+}
+
 inline hdsp::modules::LimiterControls limiterControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::LimiterControls out;

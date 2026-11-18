@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.0-m2 — 2026-11-17
+
+- Added Image: width, mono-maker, balance and an M/S monitor toggle.
+- Added Crush: bit depth, sample-rate reduction, tone and mix.
+- Image and Crush live in hearth-dsp and are consumed through the submodule.
+
 ## 0.8.2-m2 — 2026-11-17
 
 - Replaced the category-based module dispatch with an explicit ModuleId switch.

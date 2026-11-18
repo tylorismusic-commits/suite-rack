@@ -140,6 +140,8 @@ int main() {
         static_cast<int>(ModuleId::Density),
         static_cast<int>(ModuleId::BleedOut),
         static_cast<int>(ModuleId::Limiter),
+        static_cast<int>(ModuleId::Image),
+        static_cast<int>(ModuleId::Crush),
     };
     for (int id : ids) {
       Engine e;
