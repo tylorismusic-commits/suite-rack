@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.33.0-m2 — 2026-11-18
+
+- Added JClones VBL tube broadcast limiter with input, comp, emphasis, bias,
+  amp, brilliance, dry mix and output.
+- VBL runs its two-band feedback compressor and tube saturator with stereo
+  link and transformer always on, and reports gain reduction.
+
 ## 0.32.0-m2 — 2026-11-18
 
 - Added JClones DuTape tape saturator with input, output, six machine

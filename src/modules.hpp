@@ -82,6 +82,7 @@ enum class ControlFormat {
   Unit10,
   Output24Db,
   TapeGainDb,
+  Comp48Db,
 };
 
 struct ControlDesc {
@@ -182,6 +183,17 @@ inline constexpr const char* kRs124ModelLabels[] = {"60050A", "61010B",
                                                     "60070B"};
 inline constexpr const char* kRs124ReleaseLabels[] = {"1", "2", "3",
                                                       "4", "5", "6"};
+
+inline constexpr ControlDesc kJcVBLControls[] = {
+    {0, "INPUT", "Input", ControlFormat::Output24Db},
+    {1, "COMP", "Comp", ControlFormat::Comp48Db},
+    {2, "EMPHASIS", "Emphasis", ControlFormat::Percent},
+    {3, "BIAS", "Bias", ControlFormat::Percent},
+    {4, "AMP", "Amp", ControlFormat::Percent},
+    {5, "BRILL", "Brilliance", ControlFormat::Percent},
+    {6, "DRY MIX", "Dry Mix", ControlFormat::Percent},
+    {7, "OUTPUT", "Output", ControlFormat::Output24Db},
+};
 
 inline constexpr ControlDesc kJcDuTapeControls[] = {
     {0, "INPUT", "Input", ControlFormat::TapeGainDb},
@@ -790,6 +802,10 @@ inline constexpr ModuleDesc kModules[] = {
      false, 0,
      static_cast<int>(sizeof(kJcDuTapeControls) / sizeof(kJcDuTapeControls[0])),
      kJcDuTapeControls},
+    {ModuleId::JcVBL, "VBL", "Comp", "JClones tube broadcast limiter", false,
+     true, 0,
+     static_cast<int>(sizeof(kJcVBLControls) / sizeof(kJcVBLControls[0])),
+     kJcVBLControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -851,6 +867,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Trowel",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
+    "JClones",
     "JClones",
     "JClones",
     "JClones",

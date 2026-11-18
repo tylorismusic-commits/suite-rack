@@ -205,6 +205,20 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::VBLControls vblControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::VBLControls out;
+  out.input = c.c[0];
+  out.comp = c.c[1];
+  out.emphasis = c.c[2];
+  out.bias = c.c[3];
+  out.amp = c.c[4];
+  out.brilliance = c.c[5];
+  out.dryMix = c.c[6];
+  out.output = c.c[7];
+  return out;
+}
+
 inline hdsp::modules::DuTapeControls duTapeControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::DuTapeControls out;

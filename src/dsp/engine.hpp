@@ -56,6 +56,7 @@ public:
     for (auto& rs : rs124_) rs.prepare(sr_);
     for (auto& cl : cl1b_) cl.prepare(sr_);
     for (auto& tape : duTape_) tape.prepare(sr_);
+    for (auto& vbl : vbl_) vbl.prepare(sr_);
     for (auto& cleanup : cleanup_) cleanup.prepare(sr_);
     for (auto& reverb : spaceReverb_) reverb.prepare(sr_);
     for (auto& delay : spaceDelay_) delay.prepare(sr_);
@@ -111,6 +112,7 @@ public:
       rs124_[i].setControls(rs124ControlsFrom(c.slot[i]));
       cl1b_[i].setControls(cl1bControlsFrom(c.slot[i]));
       duTape_[i].setControls(duTapeControlsFrom(c.slot[i]));
+      vbl_[i].setControls(vblControlsFrom(c.slot[i]));
       cleanup_[i].setControls(cleanupControlsFrom(c.slot[i]));
       spaceReverb_[i].setControls(
           spaceReverbControlsFrom(c.slot[i], spaceReverbMode(c.slot[i].type)));
@@ -226,6 +228,10 @@ public:
             break;
           case ModuleId::JcDuTape:
             duTape_[s].process(l, r);
+            break;
+          case ModuleId::JcVBL:
+            vbl_[s].process(l, r);
+            gr = vbl_[s].lastGrDb();
             break;
           case ModuleId::ColourValve:
           case ModuleId::ColourConsole:
@@ -381,6 +387,7 @@ public:
     for (auto& rs : rs124_) rs.reset();
     for (auto& cl : cl1b_) cl.reset();
     for (auto& tape : duTape_) tape.reset();
+    for (auto& vbl : vbl_) vbl.reset();
     for (auto& cleanup : cleanup_) cleanup.reset();
     for (auto& reverb : spaceReverb_) reverb.reset();
     for (auto& delay : spaceDelay_) delay.reset();
@@ -453,6 +460,7 @@ private:
   hdsp::modules::RS124 rs124_[kSlotCount];
   hdsp::modules::CL1B cl1b_[kSlotCount];
   hdsp::modules::DuTape duTape_[kSlotCount];
+  hdsp::modules::VBL vbl_[kSlotCount];
   hdsp::modules::Cleanup cleanup_[kSlotCount];
   hdsp::modules::SpaceReverb spaceReverb_[kSlotCount];
   hdsp::modules::SpaceDelay spaceDelay_[kSlotCount];

@@ -75,6 +75,7 @@ enum class ModuleId : int {
   JcRS124,
   JcCL1B,
   JcDuTape,
+  JcVBL,
   Count
 };
 
@@ -94,7 +95,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Reel",      "Ember",    "Tame",     "510 EQ",   "Pultec",
     "Classic Limiter", "Tape Head", "Tube Driver", "DaTube", "Fattener",
     "AC-1",      "LMC-1",    "Modern Limiter", "Hyrax",
-    "Bloom",     "RS-124",   "CL-1B",   "DuTape",
+    "Bloom",     "RS-124",   "CL-1B",   "DuTape",   "VBL",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -174,7 +175,8 @@ inline constexpr bool moduleHasGr(int id) noexcept {
          id == static_cast<int>(ModuleId::JcModernLimiter) ||
          id == static_cast<int>(ModuleId::JcHyrax) ||
          id == static_cast<int>(ModuleId::JcRS124) ||
-         id == static_cast<int>(ModuleId::JcCL1B);
+         id == static_cast<int>(ModuleId::JcCL1B) ||
+         id == static_cast<int>(ModuleId::JcVBL);
 }
 
 // All controls are normalised to 0..1. The module descriptor maps them to
@@ -656,6 +658,18 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 3: return 0.00;   // 30 ips
         case 4: return 1.00;   // Noiseless
         case 5: return 1.00;   // Dithering on
+        default: return 0.50;
+      }
+    case ModuleId::JcVBL:
+      switch (control) {
+        case 0: return 0.50;  // Input
+        case 1: return 0.00;  // Comp
+        case 2: return 0.50;  // Emphasis
+        case 3: return 0.50;  // Bias
+        case 4: return 0.00;  // Amp
+        case 5: return 0.00;  // Brilliance
+        case 6: return 0.00;  // Dry Mix
+        case 7: return 0.50;  // Output
         default: return 0.50;
       }
     default:
