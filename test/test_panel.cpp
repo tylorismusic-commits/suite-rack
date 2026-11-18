@@ -214,6 +214,32 @@ int main() {
   panel.textKey(s, state, Panel::kTextEscape, 0);
   check(state.textParam < 0, "Escape cancels text entry");
 
+  // Browser search filters the module list.
+  panel.draw(cr, s, state);
+  panel.pointerDown(s, state, 262, 134, false);
+  panel.pointerUp(s, state);
+  panel.draw(cr, s, state);
+  check(clickLabel(panel, s, state, "ALL"), "ALL tab reopens the full catalog");
+  panel.draw(cr, s, state);
+  bool searchHit = false;
+  for (const auto& r : panel.widgetRects()) {
+    if (std::string(r.label) != "SEARCH") continue;
+    panel.pointerDown(s, state, r.x + r.w * 0.5, r.y + r.h * 0.5, false);
+    searchHit = true;
+    break;
+  }
+  check(searchHit && state.browserSearch, "browser search field starts editing");
+  for (const char* c = "cl-1b"; *c; ++c) panel.textKey(s, state, 0, *c);
+  panel.textKey(s, state, Panel::kTextEnter, 0);
+  check(state.browserQuery == "cl-1b", "browser search records the query");
+  panel.draw(cr, s, state);
+  check(!clickLabel(panel, s, state, "Pultec"),
+        "browser search hides non-matching modules");
+  check(clickLabel(panel, s, state, "CL-1B"),
+        "search result can be chosen");
+  check(state.browserSlot < 0 && state.browserQuery.empty(),
+        "choosing a result closes the browser and clears the query");
+
   check(!panel.widgetRects().empty(), "panel reports widget geometry");
   bool sourcesOk = true;
   for (int id = 0; id < kModuleCount; ++id) {

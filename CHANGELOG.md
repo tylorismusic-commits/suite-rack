@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.37.0-m2 — 2026-11-18
+
+- Added a live search field to the module browser. It matches module names and
+  categories and keeps a stable eight-row result panel.
+- Choosing a result or cancelling clears the query.
+
 ## 0.36.0-m2 — 2026-11-18
 
 - Right-click a knob to type an exact value, with Enter to apply and Escape to

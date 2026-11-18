@@ -25,6 +25,9 @@ struct PanelState {
   int presetScroll = 0;
   int browserCategory = 0;
   int browserScroll = 0;
+  std::string browserQuery;
+  bool browserSearch = false;
+  bool browserFresh = true;
   bool aboutOpen = false;
   int aboutScroll = 0;
   int textParam = -1;
@@ -81,7 +84,7 @@ public:
   std::vector<WidgetRect> widgetRects() const;
 
 private:
-  enum class Kind { Knob, Pill, Button, SlotCard, ModuleButton, ModelButton, ModuleToggle, Power, ModuleName, ModuleDragHandle, BrowserOption, BrowserTab, BrowserScroll };
+  enum class Kind { Knob, Pill, Button, SlotCard, ModuleButton, ModelButton, ModuleToggle, Power, ModuleName, ModuleDragHandle, BrowserOption, BrowserTab, BrowserScroll, BrowserSearch };
   struct Widget {
     Kind kind = Kind::Knob;
     uint32_t param = 0;
@@ -114,8 +117,8 @@ private:
   void drawAbout(cairo_t* cr, const Shared& shared,
                  const PanelState& state) const;
   void drawTextEntry(cairo_t* cr, const PanelState& state) const;
-  double browserHeight(int category) const;
-  double browserY(int category) const;
+  double browserHeight(int category, const std::string& query) const;
+  double browserY(int category, const std::string& query) const;
   int aboutMaxScroll() const;
   int slotAtX(double x) const;
   void moveSlot(Shared& shared, int from, int to);

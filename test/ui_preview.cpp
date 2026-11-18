@@ -26,6 +26,13 @@ int main(int argc, char** argv) {
   state.browserSlot = 1;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-browser.png").c_str());
+  state.browserQuery = "cl";
+  state.browserSearch = true;
+  state.browserFresh = false;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-browser-search.png").c_str());
+  state.browserQuery.clear();
+  state.browserSearch = false;
   state.browserCategory = 1;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-browser-eq.png").c_str());

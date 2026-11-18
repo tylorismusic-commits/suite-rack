@@ -1,8 +1,7 @@
 # Suite Rack
 
-**Status: 0.36.0-m2 — CLAP + LV2, module registry, seventy modules, drag reorder and typed values.**
-The rest of the catalog, drag/reorder, module presets, browser search and user
-presets are next.
+**Status: 0.37.0-m2 — CLAP + LV2, seventy modules, drag reorder, browser search and typed values.**
+Module presets and user presets are next.
 
 A virtual 500 series mix rack in the Suite visual language: six serial slots, each
 hosting one compact module. Slot 1 starts as EQ, slot 2 as Comp, slots 3–6 are
@@ -83,6 +82,8 @@ standalone plugins remain the full versions.
 
 ![Suite Rack — right-click typed value](docs/rack-text-entry.png)
 
+![Suite Rack — browser search](docs/rack-browser-search.png)
+
 ![Suite Rack — About](docs/rack-about.png)
 
 ## What goes in the rack
@@ -122,7 +123,7 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.36.0-m2 slice
+## Current 0.37.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
@@ -130,12 +131,14 @@ the 500-series format; Cleanup is the lightweight repair representative.
   knob colour.
 - Per-slot bypass, mix and gain.
 - Drag a module name or empty card area to another slot to reorder the rack; modules shift live to fill the gap.
-- Double-click a knob to reset it to the active module's default.
+- Double-click a knob to reset it to the active module's default. Right-click a
+  knob to type an exact value; Enter applies and Escape cancels.
 - Stepped controls, used by the Bleed Out profile selector.
 - Bleed Out has a separate automated **GHOST ON** button.
 - Filled slots hide the **CHOOSE** hint so longer module names have room.
 - **ABOUT** opens a reference table with each module's source, controls and attributions.
-- Module browser with **ALL / EQ / COMP / COLOUR / DYN / SPACE** categories and scrolling.
+- Module browser with **ALL / EQ / COMP / COLOUR / DYN / SPACE** categories,
+  scrolling and a live name/category search field.
 - Every browser option shows its source Suite or "Suite Rack exclusive".
 - The **SPACE** category includes reverbs, delays, modulation, Image and Double.
 - Generic per-slot controls: twelve control slots plus type, bypass, mix and
@@ -155,8 +158,7 @@ the 500-series format; Cleanup is the lightweight repair representative.
   rack settings in both formats.
 - **State and automation mapping tests** cover round-trip recall, dirty-flag
   reporting and slot/global parameter mapping.
-- The rest of the catalog, browser search, drag/reorder and module presets are
-  next.
+- Module presets and user presets are next.
 
 ## Architecture
 
@@ -204,13 +206,8 @@ cp -r build/lv2/suite-rack.lv2 ~/.lv2/
 
 ## Next
 
-1. Browser search and module descriptions.
-2. Drag/reorder and module presets.
-3. Suite core modules: Hearth Comp, Glue, Space, Bleed Out, Trowel
-   Smoothing/Tame, Peak Limiter, Ember, Reel, Cleanup, Density.
-4. New extras: Image, Dynamic EQ, Multiband, Sub, Double, Filter, Crush, Motion,
-   Rider.
-5. JClones ports, 510 and Pultec.
-6. User preset saving across the Suite.
+1. Module presets in the browser.
+2. User preset saving and recall across the Suite.
+3. A final Trowel Smoothing decision; Tame is the current Trowel-derived module.
 
 GPL-3.0-or-later.
