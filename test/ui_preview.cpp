@@ -81,6 +81,15 @@ int main(int argc, char** argv) {
   state.selectedSlot = 2;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-comp-family.png").c_str());
+  applyModuleDefaults(s, 0, static_cast<int>(ModuleId::Comp76Blue));
+  applyModuleDefaults(s, 1, static_cast<int>(ModuleId::CompXpress));
+  applyModuleDefaults(s, 2, static_cast<int>(ModuleId::CompDigital));
+  applyModuleDefaults(s, 3, static_cast<int>(ModuleId::Comp3A));
+  applyModuleDefaults(s, 4, static_cast<int>(ModuleId::Comp2A));
+  applyModuleDefaults(s, 5, static_cast<int>(ModuleId::CompVCA));
+  state.selectedSlot = 1;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-comp-suite.png").c_str());
   state.aboutOpen = true;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-about.png").c_str());

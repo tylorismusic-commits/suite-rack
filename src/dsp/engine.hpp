@@ -123,6 +123,8 @@ public:
           case ModuleId::CompVCA:
           case ModuleId::HearthComp:
           case ModuleId::Glue:
+          case ModuleId::CompXpress:
+          case ModuleId::CompDigital:
             gr = comp_[s].process(l, r);
             break;
           case ModuleId::ColourValve:

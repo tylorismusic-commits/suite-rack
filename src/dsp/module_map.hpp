@@ -34,6 +34,8 @@ inline int compModel(int type) noexcept {
     case static_cast<int>(ModuleId::CompVCA): return 4;
     case static_cast<int>(ModuleId::HearthComp): return 5;
     case static_cast<int>(ModuleId::Glue): return 6;
+    case static_cast<int>(ModuleId::CompXpress): return 7;
+    case static_cast<int>(ModuleId::CompDigital): return 8;
     default: return 0;
   }
 }
@@ -61,6 +63,7 @@ inline hdsp::modules::CompControls compControlsFrom(
   out.makeup = c.c[kCtlMakeup];
   out.mix = c.c[kCtlMix];
   out.scHpf = c.c[kCtlScHpf];
+  out.distortion = c.c[7];
   return out;
 }
 

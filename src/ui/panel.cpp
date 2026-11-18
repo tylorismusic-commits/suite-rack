@@ -186,6 +186,12 @@ ModuleStyle styleFor(int type) {
     case ModuleId::Glue:
       return {{0.08, 0.13, 0.22}, {0.18, 0.28, 0.46},
               {0.46, 0.70, 0.98}, {0.86, 0.90, 0.96}};
+    case ModuleId::CompXpress:
+      return {{0.24, 0.09, 0.07}, {0.52, 0.20, 0.14},
+              {0.98, 0.40, 0.26}, {0.95, 0.82, 0.74}};
+    case ModuleId::CompDigital:
+      return {{0.10, 0.13, 0.18}, {0.22, 0.28, 0.38},
+              {0.52, 0.72, 0.94}, {0.86, 0.90, 0.94}};
     default:
       return {{0.105, 0.10, 0.095}, {0.24, 0.22, 0.19},
               {0.55, 0.50, 0.44}, {0.72, 0.70, 0.66}};
@@ -407,7 +413,7 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
       b.kind = Kind::BrowserOption;
       b.param = slotParam(state.browserSlot, kSlotOffsetType);
       b.value = ids[k];
-      b.x = bx + 18 + static_cast<double>(pos % columns) * (ow + ox);
+      b.x = bx + 31 + static_cast<double>(pos % columns) * (ow + ox);
       b.y = by + 92 + static_cast<double>(pos / columns) * (oh + oy);
       b.w = ow;
       b.h = oh;
@@ -538,7 +544,7 @@ double Panel::browserHeight(int category) const {
 
 double Panel::browserY(int category) const {
   const double h = browserHeight(category);
-  return 92.0 + std::max(0.0, (556.0 - h) * 0.5);
+  return std::max(84.0, (720.0 - h) * 0.5);
 }
 
 void Panel::drawBrowser(cairo_t* cr, const Shared& shared,
@@ -775,10 +781,16 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
       cairo_fill(cr);
       setRgb(cr, bst.edge, 0.9); cairo_set_line_width(cr, 1.0);
       roundRect(cr, w.x + 0.5, w.y + 0.5, w.w - 1, w.h - 1, 4); cairo_stroke(cr);
-      text(cr, w.label, w.x + w.w * 0.5, w.y + w.h * 0.5 + 5,
-           cancel ? 9 : 14, 1,
+      text(cr, w.label, w.x + w.w * 0.5, w.y + w.h * 0.5 + 2,
+           cancel ? 9 : 13, 1,
            current ? 0.08 : bst.accent.r, current ? 0.06 : bst.accent.g,
            current ? 0.04 : bst.accent.b);
+      if (!cancel && w.value > 0) {
+        const char* src = moduleSource(static_cast<int>(w.value));
+        text(cr, src, w.x + w.w * 0.5, w.y + w.h - 7, 6.0, 1,
+             current ? 0.10 : kDim.r, current ? 0.08 : kDim.g,
+             current ? 0.06 : kDim.b);
+      }
       break;
     }
     case Kind::ModuleToggle: {

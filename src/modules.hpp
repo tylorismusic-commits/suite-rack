@@ -59,6 +59,7 @@ enum class ControlFormat {
   SpaceDecayS,
   SpacePreDelayMs,
   SpaceDelayMs,
+  CompDistortion,
 };
 
 struct ControlDesc {
@@ -129,6 +130,22 @@ inline constexpr ControlDesc kCompOptoControls[] = {
     {0, "PEAK", "Peak Reduction", ControlFormat::Percent},
     {kCtlMakeup, "GAIN", "Gain", ControlFormat::GainDb},
     {kCtlMix, "MIX", "Mix", ControlFormat::Percent},
+};
+
+inline constexpr const char* kDistortionLabels[] = {
+    "Off", "Dist 2", "Dist 3", "Clip",
+};
+
+inline constexpr ControlDesc kCompXpressControls[] = {
+    {0, "INPUT", "Input", ControlFormat::Percent},
+    {kCtlRatio, "RATIO", "Ratio", ControlFormat::Ratio},
+    {kCtlAttack, "ATK", "Attack", ControlFormat::AttackMs},
+    {kCtlRelease, "REL", "Release", ControlFormat::ReleaseMs},
+    {kCtlMakeup, "OUTPUT", "Output", ControlFormat::GainDb},
+    {kCtlMix, "MIX", "Mix", ControlFormat::Percent},
+    {kCtlScHpf, "SC", "Sidechain HPF", ControlFormat::ScHpfHz},
+    {7, "DIST", "Distortion", ControlFormat::CompDistortion, true,
+     labels(kDistortionLabels)},
 };
 
 inline constexpr ControlDesc kCompVcaControls[] = {
@@ -493,6 +510,16 @@ inline constexpr ModuleDesc kModules[] = {
      static_cast<int>(sizeof(kCompVcaControls) /
                       sizeof(kCompVcaControls[0])),
      kCompVcaControls},
+    {ModuleId::CompXpress, "Xpress", "Comp", "Diode-bridge compressor", false,
+     true, 7,
+     static_cast<int>(sizeof(kCompXpressControls) /
+                      sizeof(kCompXpressControls[0])),
+     kCompXpressControls},
+    {ModuleId::CompDigital, "Digital", "Comp", "Clean digital compressor", false,
+     true, 8,
+     static_cast<int>(sizeof(kCompVcaControls) /
+                      sizeof(kCompVcaControls[0])),
+     kCompVcaControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -527,7 +554,37 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Suite Rack exclusive",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
+    "Suite Rack exclusive",
+    "Suite Rack exclusive",
+    "Suite Rack exclusive",
+    "Repair Suite",
+    "Space Suite",
+    "Space Suite",
+    "Space Suite",
+    "Space Suite",
+    "Space Suite",
+    "Space Suite",
+    "Space Suite",
+    "Space Suite",
+    "Space Suite",
+    "Space Suite",
+    "Space Suite",
+    "Space Suite",
+    "Hearth Channel",
+    "Adhesive",
+    "Comp Suite",
+    "Comp Suite",
 };
+
+constexpr bool moduleSourcesComplete() noexcept {
+  for (int i = 0; i < kModuleCount; ++i) {
+    if (!kModuleSources[i]) return false;
+  }
+  return true;
+}
+
+static_assert(moduleSourcesComplete(),
+              "kModuleSources must fill every module id");
 
 static_assert(sizeof(kModuleSources) / sizeof(kModuleSources[0]) == kModuleCount,
               "kModuleSources must cover every module id");

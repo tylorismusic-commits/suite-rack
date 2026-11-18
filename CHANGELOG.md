@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.17.0-m2 — 2026-11-17
+
+- Added Comp Suite Xpress and Digital compressor modules.
+- Xpress exposes Input, Ratio, Attack, Release, Output, Mix, SC HPF and
+  distortion mode.
+- Digital exposes Threshold, Ratio, Attack, Release, Makeup, Mix and SC HPF.
+- Easy is intentionally omitted.
+- Added the two models to hearth-dsp.
+
+## 0.16.1-m2 — 2026-11-17
+
+- Every browser option now shows its source Suite.
+- Completed source labels for all modules, including Space Suite and Repair
+  Suite.
+- Added a compile-time guard against missing source labels.
+- Recentered the Choose Module popup and its option grid.
+
 ## 0.16.0-m2 — 2026-11-17
 
 - Added Hearth Comp and Glue compressor modules.

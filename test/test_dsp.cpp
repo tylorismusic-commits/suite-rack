@@ -162,6 +162,8 @@ int main() {
         static_cast<int>(ModuleId::SpaceDimension),
         static_cast<int>(ModuleId::HearthComp),
         static_cast<int>(ModuleId::Glue),
+        static_cast<int>(ModuleId::CompXpress),
+        static_cast<int>(ModuleId::CompDigital),
     };
     for (int id : ids) {
       Engine e;

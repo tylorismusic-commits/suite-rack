@@ -209,6 +209,10 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::SpaceDelayMs:
       std::snprintf(buf, sizeof(buf), "%.0f ms", 1.0f + 1999.0f * v);
       return buf;
+    case ControlFormat::CompDistortion: {
+      static const char* names[4] = {"Off", "Dist 2", "Dist 3", "Clip"};
+      return names[std::clamp(static_cast<int>(std::lround(v * 3.0f)), 0, 3)];
+    }
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;

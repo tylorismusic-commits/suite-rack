@@ -186,6 +186,17 @@ int main() {
         "double-click resets the control to its module default");
 
   check(!panel.widgetRects().empty(), "panel reports widget geometry");
+  bool sourcesOk = true;
+  for (int id = 0; id < kModuleCount; ++id) {
+    if (!moduleSource(id) || !*moduleSource(id)) sourcesOk = false;
+  }
+  check(sourcesOk, "every module has a source label");
+  check(std::string(moduleSource(static_cast<int>(ModuleId::SpacePlate))) ==
+            "Space Suite",
+        "Space modules report Space Suite");
+  check(std::string(moduleSource(static_cast<int>(ModuleId::Cleanup))) ==
+            "Repair Suite",
+        "Cleanup reports Repair Suite");
 
   // Drag slot 1 onto slot 2 and check the rack reorders.
   Shared dragS;
