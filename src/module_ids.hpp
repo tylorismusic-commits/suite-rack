@@ -55,6 +55,8 @@ enum class ModuleId : int {
   Glue,
   CompXpress,
   CompDigital,
+  CompMolot,
+  CompRed,
   Count
 };
 
@@ -70,7 +72,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Rider",     "Cleanup",  "Plate",    "Room",      "Hall",
     "Spring",    "Digital",  "Tape",     "Analog",    "Ping-Pong",
     "Chorus",    "Flanger",  "Phaser",   "Dimension", "Hearth Comp",
-    "Glue",      "Xpress",   "Digital",
+    "Glue",      "Xpress",   "Digital",  "Molot",    "Red",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -115,7 +117,9 @@ inline constexpr bool moduleIsComp(int id) noexcept {
          id == static_cast<int>(ModuleId::HearthComp) ||
          id == static_cast<int>(ModuleId::Glue) ||
          id == static_cast<int>(ModuleId::CompXpress) ||
-         id == static_cast<int>(ModuleId::CompDigital);
+         id == static_cast<int>(ModuleId::CompDigital) ||
+         id == static_cast<int>(ModuleId::CompMolot) ||
+         id == static_cast<int>(ModuleId::CompRed);
 }
 
 inline constexpr bool moduleIsColour(int id) noexcept {
@@ -441,6 +445,28 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         default: return 0.50;
       }
     case ModuleId::CompDigital:
+      switch (control) {
+        case kCtlThreshold: return 0.50;
+        case kCtlRatio: return 0.50;
+        case kCtlAttack: return 0.30;
+        case kCtlRelease: return 0.40;
+        case kCtlMakeup: return 0.50;
+        case kCtlMix: return 1.00;
+        case kCtlScHpf: return 0.10;
+        default: return 0.50;
+      }
+    case ModuleId::CompMolot:
+      switch (control) {
+        case kCtlThreshold: return 0.50;
+        case kCtlRatio: return 0.50;
+        case kCtlAttack: return 0.30;
+        case kCtlRelease: return 0.40;
+        case kCtlMakeup: return 0.50;
+        case kCtlMix: return 1.00;
+        case kCtlScHpf: return 0.10;
+        default: return 0.50;
+      }
+    case ModuleId::CompRed:
       switch (control) {
         case kCtlThreshold: return 0.50;
         case kCtlRatio: return 0.50;

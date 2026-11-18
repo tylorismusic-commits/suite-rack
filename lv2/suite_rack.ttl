@@ -23,7 +23,7 @@
     ] ;
     doap:homepage <https://github.com/tylorismusic-commits/suite-rack> ;
     lv2:majorVersion 0 ;
-    lv2:minorVersion 17 ;
+    lv2:minorVersion 18 ;
     lv2:microVersion 0 ;
     lv2:binary <suite_rack.so> ;
     rdfs:seeAlso <manifest.ttl> ;
@@ -96,7 +96,7 @@
         lv2:name "Module" ;
         lv2:default 1 ;
         lv2:minimum 0 ;
-        lv2:maximum 47 ;
+        lv2:maximum 49 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -145,7 +145,9 @@
             [ rdf:value 44 ; rdfs:label "Hearth Comp" ] ,
             [ rdf:value 45 ; rdfs:label "Glue" ] ,
             [ rdf:value 46 ; rdfs:label "Xpress" ] ,
-            [ rdf:value 47 ; rdfs:label "Digital" ] ;
+            [ rdf:value 47 ; rdfs:label "Digital" ] ,
+            [ rdf:value 48 ; rdfs:label "Molot" ] ,
+            [ rdf:value 49 ; rdfs:label "Red" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
     ] ,
     [
@@ -309,7 +311,7 @@
         lv2:name "Module" ;
         lv2:default 5 ;
         lv2:minimum 0 ;
-        lv2:maximum 47 ;
+        lv2:maximum 49 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -358,7 +360,9 @@
             [ rdf:value 44 ; rdfs:label "Hearth Comp" ] ,
             [ rdf:value 45 ; rdfs:label "Glue" ] ,
             [ rdf:value 46 ; rdfs:label "Xpress" ] ,
-            [ rdf:value 47 ; rdfs:label "Digital" ] ;
+            [ rdf:value 47 ; rdfs:label "Digital" ] ,
+            [ rdf:value 48 ; rdfs:label "Molot" ] ,
+            [ rdf:value 49 ; rdfs:label "Red" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
@@ -522,7 +526,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 47 ;
+        lv2:maximum 49 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -571,7 +575,9 @@
             [ rdf:value 44 ; rdfs:label "Hearth Comp" ] ,
             [ rdf:value 45 ; rdfs:label "Glue" ] ,
             [ rdf:value 46 ; rdfs:label "Xpress" ] ,
-            [ rdf:value 47 ; rdfs:label "Digital" ] ;
+            [ rdf:value 47 ; rdfs:label "Digital" ] ,
+            [ rdf:value 48 ; rdfs:label "Molot" ] ,
+            [ rdf:value 49 ; rdfs:label "Red" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
@@ -735,7 +741,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 47 ;
+        lv2:maximum 49 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -784,7 +790,9 @@
             [ rdf:value 44 ; rdfs:label "Hearth Comp" ] ,
             [ rdf:value 45 ; rdfs:label "Glue" ] ,
             [ rdf:value 46 ; rdfs:label "Xpress" ] ,
-            [ rdf:value 47 ; rdfs:label "Digital" ] ;
+            [ rdf:value 47 ; rdfs:label "Digital" ] ,
+            [ rdf:value 48 ; rdfs:label "Molot" ] ,
+            [ rdf:value 49 ; rdfs:label "Red" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
@@ -948,7 +956,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 47 ;
+        lv2:maximum 49 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -997,7 +1005,9 @@
             [ rdf:value 44 ; rdfs:label "Hearth Comp" ] ,
             [ rdf:value 45 ; rdfs:label "Glue" ] ,
             [ rdf:value 46 ; rdfs:label "Xpress" ] ,
-            [ rdf:value 47 ; rdfs:label "Digital" ] ;
+            [ rdf:value 47 ; rdfs:label "Digital" ] ,
+            [ rdf:value 48 ; rdfs:label "Molot" ] ,
+            [ rdf:value 49 ; rdfs:label "Red" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
@@ -1161,7 +1171,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 47 ;
+        lv2:maximum 49 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -1210,7 +1220,9 @@
             [ rdf:value 44 ; rdfs:label "Hearth Comp" ] ,
             [ rdf:value 45 ; rdfs:label "Glue" ] ,
             [ rdf:value 46 ; rdfs:label "Xpress" ] ,
-            [ rdf:value 47 ; rdfs:label "Digital" ] ;
+            [ rdf:value 47 ; rdfs:label "Digital" ] ,
+            [ rdf:value 48 ; rdfs:label "Molot" ] ,
+            [ rdf:value 49 ; rdfs:label "Red" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [

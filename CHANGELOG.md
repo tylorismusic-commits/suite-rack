@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.18.0-m2 — 2026-11-17
+
+- Added Comp Suite Molot and Red compressor modules.
+- Comp Suite is now fully represented in the rack except for Easy, which is
+  intentionally omitted.
+- Added the two models to hearth-dsp.
+
 ## 0.17.0-m2 — 2026-11-17
 
 - Added Comp Suite Xpress and Digital compressor modules.

@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.17.0-m2 — CLAP + LV2, module registry, forty-seven modules and drag reorder.**
+**Status: 0.18.0-m2 — CLAP + LV2, module registry, forty-nine modules and drag reorder.**
 The rest of the catalog, drag/reorder, module presets, browser search and user
 presets are next.
 
@@ -45,6 +45,8 @@ standalone plugins remain the full versions.
 
 ![Suite Rack — Comp Suite models](docs/rack-comp-suite.png)
 
+![Suite Rack — complete compressor family](docs/rack-comp-complete.png)
+
 ![Suite Rack — About](docs/rack-about.png)
 
 ## What goes in the rack
@@ -84,7 +86,7 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.17.0-m2 slice
+## Current 0.18.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
@@ -106,7 +108,7 @@ the 500-series format; Cleanup is the lightweight repair representative.
   3A, VCA, Valve, Console, Bus, Tape, Transformer, Gate, Transient, Clip and
   De-Ess, Density, Bleed Out, Peak Limiter, Image, Crush, Filter, Motion, Sub,
   Double, Dynamic EQ, Multiband, Rider, Cleanup, four reverbs, four delays and
-  four modulation modules, Hearth Comp, Glue, Xpress and Digital.
+  four modulation modules, Hearth Comp, Glue, Xpress, Digital, Molot and Red.
 - Serial engine and per-slot meters in place; DSP and panel tests pass.
 - **CLAP and LV2 builds** load in REAPER with the six-column editor and process
   audio.

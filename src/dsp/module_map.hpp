@@ -36,6 +36,8 @@ inline int compModel(int type) noexcept {
     case static_cast<int>(ModuleId::Glue): return 6;
     case static_cast<int>(ModuleId::CompXpress): return 7;
     case static_cast<int>(ModuleId::CompDigital): return 8;
+    case static_cast<int>(ModuleId::CompMolot): return 9;
+    case static_cast<int>(ModuleId::CompRed): return 10;
     default: return 0;
   }
 }

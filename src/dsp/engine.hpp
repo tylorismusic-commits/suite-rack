@@ -125,6 +125,8 @@ public:
           case ModuleId::Glue:
           case ModuleId::CompXpress:
           case ModuleId::CompDigital:
+          case ModuleId::CompMolot:
+          case ModuleId::CompRed:
             gr = comp_[s].process(l, r);
             break;
           case ModuleId::ColourValve:

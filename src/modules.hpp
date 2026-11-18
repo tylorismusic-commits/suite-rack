@@ -520,6 +520,15 @@ inline constexpr ModuleDesc kModules[] = {
      static_cast<int>(sizeof(kCompVcaControls) /
                       sizeof(kCompVcaControls[0])),
      kCompVcaControls},
+    {ModuleId::CompMolot, "Molot", "Comp", "Character compressor", false, true,
+     9, static_cast<int>(sizeof(kCompVcaControls) /
+                         sizeof(kCompVcaControls[0])),
+     kCompVcaControls},
+    {ModuleId::CompRed, "Red", "Comp", "British Class-A compressor", false,
+     true, 10,
+     static_cast<int>(sizeof(kCompVcaControls) /
+                      sizeof(kCompVcaControls[0])),
+     kCompVcaControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -572,6 +581,8 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Space Suite",
     "Hearth Channel",
     "Adhesive",
+    "Comp Suite",
+    "Comp Suite",
     "Comp Suite",
     "Comp Suite",
 };

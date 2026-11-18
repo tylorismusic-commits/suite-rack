@@ -164,6 +164,8 @@ int main() {
         static_cast<int>(ModuleId::Glue),
         static_cast<int>(ModuleId::CompXpress),
         static_cast<int>(ModuleId::CompDigital),
+        static_cast<int>(ModuleId::CompMolot),
+        static_cast<int>(ModuleId::CompRed),
     };
     for (int id : ids) {
       Engine e;
