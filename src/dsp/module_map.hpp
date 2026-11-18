@@ -105,6 +105,15 @@ inline hdsp::modules::ClipControls clipControlsFrom(
   return out;
 }
 
+inline hdsp::modules::DensityControls densityControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::DensityControls out;
+  out.input = c.c[0];
+  out.effect = c.c[1];
+  out.output = c.c[2];
+  return out;
+}
+
 inline hdsp::modules::DeEssControls deEssControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::DeEssControls out;

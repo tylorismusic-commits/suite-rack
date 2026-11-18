@@ -26,6 +26,7 @@ enum class ModuleId : int {
   DynTransient,
   DynClip,
   DynDeEss,
+  Density,
   Count
 };
 
@@ -35,7 +36,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Off",       "4K EQ",    "Hearth EQ", "Tilt",      "Air",
     "76 Blue",   "76 Black", "2A",        "3A",        "VCA",
     "Valve",     "Console",  "Bus",       "Tape",      "Transformer",
-    "Gate",      "Transient", "Clip",     "De-Ess",
+    "Gate",      "Transient", "Clip",     "De-Ess",   "Density",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -211,6 +212,13 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 1: return 0.60;  // Threshold
         case 2: return 0.50;  // Range
         case 3: return 1.00;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::Density:
+      switch (control) {
+        case 0: return 0.50;  // Input
+        case 1: return 0.50;  // Density
+        case 2: return 0.50;  // Output
         default: return 0.50;
       }
     default:

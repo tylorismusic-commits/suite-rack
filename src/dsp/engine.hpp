@@ -26,6 +26,7 @@ public:
     for (auto& transient : transient_) transient.prepare(sr_);
     for (auto& clip : clip_) clip.prepare(sr_);
     for (auto& deess : deess_) deess.prepare(sr_);
+    for (auto& density : density_) density.prepare(sr_);
     input_.setTime(15.0f, sr_);
     output_.setTime(15.0f, sr_);
     power_.setTime(20.0f, sr_);
@@ -47,6 +48,7 @@ public:
       transient_[i].setControls(transientControlsFrom(c.slot[i]));
       clip_[i].setControls(clipControlsFrom(c.slot[i]));
       deess_[i].setControls(deEssControlsFrom(c.slot[i]));
+      density_[i].setControls(densityControlsFrom(c.slot[i]));
       slotGain_[i].setTarget(hdsp::dbToGain(c.slot[i].gainDb));
     }
     input_.setTarget(hdsp::dbToGain(c.inputDb));
@@ -88,6 +90,8 @@ public:
             deess_[s].process(l, r);
             gr = deess_[s].lastGrDb();
           }
+        } else if (type == static_cast<int>(ModuleId::Density)) {
+          density_[s].process(l, r);
         } else {
           continue;
         }
@@ -129,6 +133,7 @@ public:
     for (auto& transient : transient_) transient.reset();
     for (auto& clip : clip_) clip.reset();
     for (auto& deess : deess_) deess.reset();
+    for (auto& density : density_) density.reset();
     input_.snap();
     output_.snap();
     power_.snap();
@@ -147,6 +152,7 @@ private:
   hdsp::modules::Transient transient_[kSlotCount];
   hdsp::modules::Clip clip_[kSlotCount];
   hdsp::modules::DeEss deess_[kSlotCount];
+  hdsp::modules::Density density_[kSlotCount];
   hdsp::Smoothed input_, output_, power_;
   hdsp::Smoothed slotGain_[kSlotCount];
 };

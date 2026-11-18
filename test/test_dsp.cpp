@@ -137,6 +137,7 @@ int main() {
         static_cast<int>(ModuleId::DynTransient),
         static_cast<int>(ModuleId::DynClip),
         static_cast<int>(ModuleId::DynDeEss),
+        static_cast<int>(ModuleId::Density),
     };
     for (int id : ids) {
       Engine e;

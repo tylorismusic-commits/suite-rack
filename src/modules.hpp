@@ -144,6 +144,12 @@ inline constexpr ControlDesc kClipControls[] = {
     {3, "MIX", "Mix", ControlFormat::Percent},
 };
 
+inline constexpr ControlDesc kDensityControls[] = {
+    {0, "INPUT", "Input", ControlFormat::TiltDb},
+    {1, "DENSITY", "Density", ControlFormat::Percent},
+    {2, "OUTPUT", "Output", ControlFormat::TiltDb},
+};
+
 inline constexpr ControlDesc kDeEssControls[] = {
     {0, "FREQ", "Frequency", ControlFormat::DeEssFreqHz},
     {1, "THR", "Threshold", ControlFormat::ThresholdDb},
@@ -218,6 +224,10 @@ inline constexpr ModuleDesc kModules[] = {
     {ModuleId::DynDeEss, "De-Ess", "Dyn", "High-band de-esser", false, false,
      0, static_cast<int>(sizeof(kDeEssControls) / sizeof(kDeEssControls[0])),
      kDeEssControls},
+    {ModuleId::Density, "Density", "Colour", "Harmonic density", false, false,
+     0, static_cast<int>(sizeof(kDensityControls) /
+                         sizeof(kDensityControls[0])),
+     kDensityControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,

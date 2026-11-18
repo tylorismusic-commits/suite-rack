@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.0-m2 — 2026-11-17
+
+- Added the Density harmonic-density module from Mastering Suite.
+- Density lives in hearth-dsp 0.4.0 and is consumed through the submodule.
+
 ## 0.5.1-m2 — 2026-11-17
 
 - Moved knob labels and values further from the knob body for the larger text.

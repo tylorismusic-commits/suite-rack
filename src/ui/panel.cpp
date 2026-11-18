@@ -105,6 +105,9 @@ ModuleStyle styleFor(int type) {
     case ModuleId::DynDeEss:
       return {{0.23, 0.12, 0.18}, {0.48, 0.24, 0.34},
               {0.98, 0.54, 0.72}, {0.95, 0.84, 0.88}};
+    case ModuleId::Density:
+      return {{0.08, 0.075, 0.07}, {0.24, 0.20, 0.16},
+              {0.92, 0.72, 0.34}, {0.90, 0.84, 0.72}};
     default:
       return {{0.105, 0.10, 0.095}, {0.24, 0.22, 0.19},
               {0.55, 0.50, 0.44}, {0.72, 0.70, 0.66}};
@@ -112,10 +115,10 @@ ModuleStyle styleFor(int type) {
 }
 bool browserCategoryMatches(int id, int category) {
   const ModuleDesc* d = moduleDesc(id);
-  if (category == 1) return d->isEq;
-  if (category == 2) return d->isComp;
-  if (category == 3) return moduleIsColour(id);
-  if (category == 4) return moduleIsDynamics(id);
+  if (category == 1) return std::strcmp(d->category, "EQ") == 0;
+  if (category == 2) return std::strcmp(d->category, "Comp") == 0;
+  if (category == 3) return std::strcmp(d->category, "Colour") == 0;
+  if (category == 4) return std::strcmp(d->category, "Dyn") == 0;
   return true;
 }
 
