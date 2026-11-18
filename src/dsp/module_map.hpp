@@ -205,6 +205,21 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::AC1Controls ac1ControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::AC1Controls out;
+  out.input = c.c[0];
+  out.output = c.c[1];
+  out.autoGain = false;
+  out.drive = c.c[2];
+  out.comp = c.c[3];
+  out.attack = c.c[4];
+  out.release = c.c[5];
+  out.stereoLink = true;
+  out.mode = c.c[6] > 0.5f ? 1 : 0;
+  return out;
+}
+
 inline hdsp::modules::TapeHeadControls tapeHeadControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::TapeHeadControls out;

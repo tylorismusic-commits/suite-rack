@@ -23,7 +23,7 @@
     ] ;
     doap:homepage <https://github.com/tylorismusic-commits/suite-rack> ;
     lv2:majorVersion 0 ;
-    lv2:minorVersion 24 ;
+    lv2:minorVersion 25 ;
     lv2:microVersion 0 ;
     lv2:binary <suite_rack.so> ;
     rdfs:seeAlso <manifest.ttl> ;
@@ -96,7 +96,7 @@
         lv2:name "Module" ;
         lv2:default 1 ;
         lv2:minimum 0 ;
-        lv2:maximum 59 ;
+        lv2:maximum 60 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -157,7 +157,8 @@
             [ rdf:value 56 ; rdfs:label "Tape Head" ] ,
             [ rdf:value 57 ; rdfs:label "Tube Driver" ] ,
             [ rdf:value 58 ; rdfs:label "DaTube" ] ,
-            [ rdf:value 59 ; rdfs:label "Fattener" ] ;
+            [ rdf:value 59 ; rdfs:label "Fattener" ] ,
+            [ rdf:value 60 ; rdfs:label "AC-1" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
     ] ,
     [
@@ -321,7 +322,7 @@
         lv2:name "Module" ;
         lv2:default 5 ;
         lv2:minimum 0 ;
-        lv2:maximum 59 ;
+        lv2:maximum 60 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -382,7 +383,8 @@
             [ rdf:value 56 ; rdfs:label "Tape Head" ] ,
             [ rdf:value 57 ; rdfs:label "Tube Driver" ] ,
             [ rdf:value 58 ; rdfs:label "DaTube" ] ,
-            [ rdf:value 59 ; rdfs:label "Fattener" ] ;
+            [ rdf:value 59 ; rdfs:label "Fattener" ] ,
+            [ rdf:value 60 ; rdfs:label "AC-1" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
@@ -546,7 +548,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 59 ;
+        lv2:maximum 60 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -607,7 +609,8 @@
             [ rdf:value 56 ; rdfs:label "Tape Head" ] ,
             [ rdf:value 57 ; rdfs:label "Tube Driver" ] ,
             [ rdf:value 58 ; rdfs:label "DaTube" ] ,
-            [ rdf:value 59 ; rdfs:label "Fattener" ] ;
+            [ rdf:value 59 ; rdfs:label "Fattener" ] ,
+            [ rdf:value 60 ; rdfs:label "AC-1" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
@@ -771,7 +774,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 59 ;
+        lv2:maximum 60 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -832,7 +835,8 @@
             [ rdf:value 56 ; rdfs:label "Tape Head" ] ,
             [ rdf:value 57 ; rdfs:label "Tube Driver" ] ,
             [ rdf:value 58 ; rdfs:label "DaTube" ] ,
-            [ rdf:value 59 ; rdfs:label "Fattener" ] ;
+            [ rdf:value 59 ; rdfs:label "Fattener" ] ,
+            [ rdf:value 60 ; rdfs:label "AC-1" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
@@ -996,7 +1000,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 59 ;
+        lv2:maximum 60 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -1057,7 +1061,8 @@
             [ rdf:value 56 ; rdfs:label "Tape Head" ] ,
             [ rdf:value 57 ; rdfs:label "Tube Driver" ] ,
             [ rdf:value 58 ; rdfs:label "DaTube" ] ,
-            [ rdf:value 59 ; rdfs:label "Fattener" ] ;
+            [ rdf:value 59 ; rdfs:label "Fattener" ] ,
+            [ rdf:value 60 ; rdfs:label "AC-1" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
@@ -1221,7 +1226,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 59 ;
+        lv2:maximum 60 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -1282,7 +1287,8 @@
             [ rdf:value 56 ; rdfs:label "Tape Head" ] ,
             [ rdf:value 57 ; rdfs:label "Tube Driver" ] ,
             [ rdf:value 58 ; rdfs:label "DaTube" ] ,
-            [ rdf:value 59 ; rdfs:label "Fattener" ] ;
+            [ rdf:value 59 ; rdfs:label "Fattener" ] ,
+            [ rdf:value 60 ; rdfs:label "AC-1" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [

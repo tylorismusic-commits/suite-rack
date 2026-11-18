@@ -66,6 +66,10 @@ enum class ControlFormat {
   DaTubeOutputDb,
   FattenerGainDb,
   TapeColor,
+  WideGainDb,
+  CompAmount,
+  AttackShortMs,
+  AC1Mode,
 };
 
 struct ControlDesc {
@@ -153,6 +157,17 @@ inline constexpr ControlDesc kEq510Controls[] = {
 
 inline constexpr const char* kTapeColorLabels[] = {"Normal", "Medium",
                                                    "Bright"};
+inline constexpr const char* kAC1ModeLabels[] = {"AC1", "AC101"};
+
+inline constexpr ControlDesc kJcAC1Controls[] = {
+    {0, "INPUT", "Input", ControlFormat::WideGainDb},
+    {1, "OUTPUT", "Output", ControlFormat::WideGainDb},
+    {2, "DRIVE", "Drive", ControlFormat::TiltDb},
+    {3, "COMP", "Comp", ControlFormat::CompAmount},
+    {4, "ATK", "Attack", ControlFormat::AttackShortMs},
+    {5, "REL", "Release", ControlFormat::GateReleaseMs},
+    {6, "MODE", "Mode", ControlFormat::AC1Mode, true, labels(kAC1ModeLabels)},
+};
 
 inline constexpr ControlDesc kJcTapeHeadControls[] = {
     {0, "DRIVE", "Drive", ControlFormat::Percent},
@@ -653,6 +668,9 @@ inline constexpr ModuleDesc kModules[] = {
      static_cast<int>(sizeof(kJcFattenerControls) /
                       sizeof(kJcFattenerControls[0])),
      kJcFattenerControls},
+    {ModuleId::JcAC1, "AC-1", "Colour", "JClones console channel", false, false,
+     0, static_cast<int>(sizeof(kJcAC1Controls) / sizeof(kJcAC1Controls[0])),
+     kJcAC1Controls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -714,6 +732,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Trowel",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
+    "JClones",
     "JClones",
     "JClones",
     "JClones",

@@ -67,6 +67,7 @@ enum class ModuleId : int {
   JcTubeDriver,
   JcDaTube,
   JcFattener,
+  JcAC1,
   Count
 };
 
@@ -85,6 +86,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Glue",      "Xpress",   "Digital",  "Molot",    "Red",
     "Reel",      "Ember",    "Tame",     "510 EQ",   "Pultec",
     "Classic Limiter", "Tape Head", "Tube Driver", "DaTube", "Fattener",
+    "AC-1",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -158,7 +160,8 @@ inline constexpr bool moduleHasGr(int id) noexcept {
          id == static_cast<int>(ModuleId::Limiter) ||
          id == static_cast<int>(ModuleId::Rider) ||
          id == static_cast<int>(ModuleId::Ember) ||
-         id == static_cast<int>(ModuleId::JcClassicLimiter);
+         id == static_cast<int>(ModuleId::JcClassicLimiter) ||
+         id == static_cast<int>(ModuleId::JcAC1);
 }
 
 // All controls are normalised to 0..1. The module descriptor maps them to
@@ -565,6 +568,17 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 0: return 0.00;  // Fattness
         case 1: return 0.00;  // Color
         case 2: return 0.50;  // Gain
+        default: return 0.50;
+      }
+    case ModuleId::JcAC1:
+      switch (control) {
+        case 0: return 0.50;  // Input
+        case 1: return 0.50;  // Output
+        case 2: return 0.50;  // Drive
+        case 3: return 0.11;  // Comp
+        case 4: return 0.04;  // Attack
+        case 5: return 0.57;  // Release
+        case 6: return 0.00;  // AC1 mode
         default: return 0.50;
       }
     default:

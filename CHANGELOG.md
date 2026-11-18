@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.25.0-m2 — 2026-11-18
+
+- Added JClones AC-1 console channel with input, output, drive, comp, attack,
+  release and AC1/AC101 mode. Auto gain and stereo link are fixed internally
+  to keep the faceplate inside the 500-series control budget.
+- AC-1 is labelled JClones and keeps the MIT attribution.
+
 ## 0.24.0-m2 — 2026-11-18
 
 - Added JClones Tape Head, Tube Driver, DaTube and Fattener.

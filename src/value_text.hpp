@@ -232,6 +232,19 @@ inline std::string formatControlValue(const ModuleDesc& module,
       static const char* names[3] = {"Normal", "Medium", "Bright"};
       return names[std::clamp(static_cast<int>(std::lround(v * 2.0f)), 0, 2)];
     }
+    case ControlFormat::WideGainDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -24.0f + 48.0f * v);
+      return buf;
+    case ControlFormat::CompAmount:
+      std::snprintf(buf, sizeof(buf), "%.1f", 1.0f + 9.0f * v);
+      return buf;
+    case ControlFormat::AttackShortMs:
+      std::snprintf(buf, sizeof(buf), "%.1f ms", 0.1f + 9.9f * v);
+      return buf;
+    case ControlFormat::AC1Mode: {
+      static const char* names[2] = {"AC1", "AC101"};
+      return names[std::clamp(static_cast<int>(std::lround(v)), 0, 1)];
+    }
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;

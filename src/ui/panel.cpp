@@ -228,6 +228,9 @@ ModuleStyle styleFor(int type) {
     case ModuleId::JcFattener:
       return {{0.22, 0.08, 0.08}, {0.48, 0.18, 0.16},
               {0.98, 0.40, 0.32}, {0.94, 0.82, 0.78}};
+    case ModuleId::JcAC1:
+      return {{0.13, 0.14, 0.17}, {0.30, 0.32, 0.38},
+              {0.64, 0.74, 0.96}, {0.88, 0.90, 0.94}};
     default:
       return {{0.105, 0.10, 0.095}, {0.24, 0.22, 0.19},
               {0.55, 0.50, 0.44}, {0.72, 0.70, 0.66}};
@@ -365,7 +368,7 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
     const double cx1 = x + 38, cx2 = x + 105;
     if (module->controlCount > 0) {
       const int rows = (module->controlCount + 1) / 2;
-      const double rowH = rows >= 4 ? 82.0 : 96.0;
+      const double rowH = rows >= 5 ? 68.0 : (rows >= 4 ? 82.0 : 96.0);
       int toggleSlot = 0;
       for (int k = 0; k < module->controlCount; ++k) {
         const ControlDesc& control = module->controls[k];

@@ -176,6 +176,7 @@ int main() {
         static_cast<int>(ModuleId::JcTubeDriver),
         static_cast<int>(ModuleId::JcDaTube),
         static_cast<int>(ModuleId::JcFattener),
+        static_cast<int>(ModuleId::JcAC1),
     };
     for (int id : ids) {
       Engine e;

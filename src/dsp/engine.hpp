@@ -48,6 +48,7 @@ public:
     for (auto& tube : tubeDriver_) tube.prepare(sr_);
     for (auto& da : daTube_) da.prepare(sr_);
     for (auto& fat : fattener_) fat.prepare(sr_);
+    for (auto& ac1 : ac1_) ac1.prepare(sr_);
     for (auto& cleanup : cleanup_) cleanup.prepare(sr_);
     for (auto& reverb : spaceReverb_) reverb.prepare(sr_);
     for (auto& delay : spaceDelay_) delay.prepare(sr_);
@@ -95,6 +96,7 @@ public:
       tubeDriver_[i].setControls(tubeDriverControlsFrom(c.slot[i]));
       daTube_[i].setControls(daTubeControlsFrom(c.slot[i]));
       fattener_[i].setControls(fattenerControlsFrom(c.slot[i]));
+      ac1_[i].setControls(ac1ControlsFrom(c.slot[i]));
       cleanup_[i].setControls(cleanupControlsFrom(c.slot[i]));
       spaceReverb_[i].setControls(
           spaceReverbControlsFrom(c.slot[i], spaceReverbMode(c.slot[i].type)));
@@ -180,6 +182,10 @@ public:
             break;
           case ModuleId::JcFattener:
             fattener_[s].process(l, r);
+            break;
+          case ModuleId::JcAC1:
+            ac1_[s].process(l, r);
+            gr = ac1_[s].lastGrDb();
             break;
           case ModuleId::ColourValve:
           case ModuleId::ColourConsole:
@@ -327,6 +333,7 @@ public:
     for (auto& tube : tubeDriver_) tube.reset();
     for (auto& da : daTube_) da.reset();
     for (auto& fat : fattener_) fat.reset();
+    for (auto& ac1 : ac1_) ac1.reset();
     for (auto& cleanup : cleanup_) cleanup.reset();
     for (auto& reverb : spaceReverb_) reverb.reset();
     for (auto& delay : spaceDelay_) delay.reset();
@@ -387,6 +394,7 @@ private:
   hdsp::modules::TubeDriver tubeDriver_[kSlotCount];
   hdsp::modules::DaTube daTube_[kSlotCount];
   hdsp::modules::Fattener fattener_[kSlotCount];
+  hdsp::modules::AC1 ac1_[kSlotCount];
   hdsp::modules::Cleanup cleanup_[kSlotCount];
   hdsp::modules::SpaceReverb spaceReverb_[kSlotCount];
   hdsp::modules::SpaceDelay spaceDelay_[kSlotCount];
