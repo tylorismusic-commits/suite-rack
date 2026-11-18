@@ -182,6 +182,7 @@ int main() {
         static_cast<int>(ModuleId::JcHyrax),
         static_cast<int>(ModuleId::JcBloom),
         static_cast<int>(ModuleId::JcRS124),
+        static_cast<int>(ModuleId::JcCL1B),
     };
     for (int id : ids) {
       Engine e;

@@ -77,6 +77,10 @@ enum class ControlFormat {
   BloomOutputDb,
   RsInputDb,
   RsOutputDb,
+  Ratio2To10,
+  ThresholdM40P10Db,
+  Unit10,
+  Output24Db,
 };
 
 struct ControlDesc {
@@ -162,10 +166,23 @@ inline constexpr ControlDesc kEq510Controls[] = {
     {3, "HPF", "HPF", ControlFormat::EqHpfHz},
 };
 
+inline constexpr const char* kCL1BModeLabels[] = {"Fixed", "Fixed/Manual",
+                                                  "Manual"};
+
 inline constexpr const char* kRs124ModelLabels[] = {"60050A", "61010B",
                                                     "60070B"};
 inline constexpr const char* kRs124ReleaseLabels[] = {"1", "2", "3",
                                                       "4", "5", "6"};
+
+inline constexpr ControlDesc kJcCL1BControls[] = {
+    {0, "RATIO", "Ratio", ControlFormat::Ratio2To10},
+    {1, "THRESHOLD", "Threshold", ControlFormat::ThresholdM40P10Db},
+    {2, "ATTACK", "Attack", ControlFormat::Unit10},
+    {3, "RELEASE", "Release", ControlFormat::Unit10},
+    {4, "A/R", "A/R Select", ControlFormat::Percent, true,
+     labels(kCL1BModeLabels)},
+    {5, "OUTPUT", "Output", ControlFormat::Output24Db},
+};
 
 inline constexpr ControlDesc kJcRS124Controls[] = {
     {0, "MODEL", "Model", ControlFormat::Percent, true, labels(kRs124ModelLabels)},
@@ -744,6 +761,10 @@ inline constexpr ModuleDesc kModules[] = {
      true, 0,
      static_cast<int>(sizeof(kJcRS124Controls) / sizeof(kJcRS124Controls[0])),
      kJcRS124Controls},
+    {ModuleId::JcCL1B, "CL-1B", "Comp", "JClones optical compressor", false,
+     true, 0,
+     static_cast<int>(sizeof(kJcCL1BControls) / sizeof(kJcCL1BControls[0])),
+     kJcCL1BControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -805,6 +826,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Trowel",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
+    "JClones",
     "JClones",
     "JClones",
     "JClones",

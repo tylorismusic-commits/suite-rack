@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.31.0-m2 — 2026-11-18
+
+- Added JClones CL-1B optical compressor with ratio, threshold, attack,
+  release, fixed/manual mode and output gain.
+- CL-1B uses the measured optical detector tables and reports gain reduction.
+
 ## 0.30.0-m2 — 2026-11-18
 
 - Added JClones RS-124 vari-mu compressor with model, input, release,

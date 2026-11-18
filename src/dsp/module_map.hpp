@@ -205,6 +205,18 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::CL1BControls cl1bControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::CL1BControls out;
+  out.ratio = c.c[0];
+  out.threshold = c.c[1];
+  out.attack = c.c[2];
+  out.release = c.c[3];
+  out.mode = std::clamp(static_cast<int>(std::lround(c.c[4] * 2.0f)), 0, 2);
+  out.output = c.c[5];
+  return out;
+}
+
 inline hdsp::modules::RS124Controls rs124ControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::RS124Controls out;

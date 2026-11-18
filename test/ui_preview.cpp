@@ -176,6 +176,13 @@ int main(int argc, char** argv) {
   s.set(slotParam(2, kSlotOffsetC0 + 1), 0.72);
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-rs124.png").c_str());
+  applyModuleDefaults(s, 2, static_cast<int>(ModuleId::JcCL1B));
+  applyModuleDefaults(s, 3, static_cast<int>(ModuleId::JcLMC1));
+  applyModuleDefaults(s, 4, static_cast<int>(ModuleId::JcAC1));
+  applyModuleDefaults(s, 5, static_cast<int>(ModuleId::HearthComp));
+  state.selectedSlot = 2;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-cl1b.png").c_str());
   state.aboutOpen = true;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-about.png").c_str());

@@ -73,6 +73,7 @@ enum class ModuleId : int {
   JcHyrax,
   JcBloom,
   JcRS124,
+  JcCL1B,
   Count
 };
 
@@ -92,7 +93,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Reel",      "Ember",    "Tame",     "510 EQ",   "Pultec",
     "Classic Limiter", "Tape Head", "Tube Driver", "DaTube", "Fattener",
     "AC-1",      "LMC-1",    "Modern Limiter", "Hyrax",
-    "Bloom",     "RS-124",
+    "Bloom",     "RS-124",   "CL-1B",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -171,7 +172,8 @@ inline constexpr bool moduleHasGr(int id) noexcept {
          id == static_cast<int>(ModuleId::JcLMC1) ||
          id == static_cast<int>(ModuleId::JcModernLimiter) ||
          id == static_cast<int>(ModuleId::JcHyrax) ||
-         id == static_cast<int>(ModuleId::JcRS124);
+         id == static_cast<int>(ModuleId::JcRS124) ||
+         id == static_cast<int>(ModuleId::JcCL1B);
 }
 
 // All controls are normalised to 0..1. The module descriptor maps them to
@@ -633,6 +635,16 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 3: return 0.00;  // SuperFuse off
         case 4: return 1.00;  // Output
         case 5: return 1.00;  // Box Tone on
+        default: return 0.50;
+      }
+    case ModuleId::JcCL1B:
+      switch (control) {
+        case 0: return 0.50;  // Ratio 6:1
+        case 1: return 0.80;  // Threshold 0 dB
+        case 2: return 0.50;  // Attack 5
+        case 3: return 0.50;  // Release 5
+        case 4: return 1.00;  // Manual
+        case 5: return 0.50;  // Output 0 dB
         default: return 0.50;
       }
     default:

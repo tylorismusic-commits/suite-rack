@@ -266,6 +266,18 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::RsOutputDb:
       std::snprintf(buf, sizeof(buf), "%.1f dB", -30.0f + 30.0f * v);
       return buf;
+    case ControlFormat::Ratio2To10:
+      std::snprintf(buf, sizeof(buf), "%.1f : 1", 2.0f + 8.0f * v);
+      return buf;
+    case ControlFormat::ThresholdM40P10Db:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -40.0f + 50.0f * v);
+      return buf;
+    case ControlFormat::Unit10:
+      std::snprintf(buf, sizeof(buf), "%.1f", 10.0f * v);
+      return buf;
+    case ControlFormat::Output24Db:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -24.0f + 48.0f * v);
+      return buf;
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;
