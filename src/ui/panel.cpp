@@ -1625,11 +1625,13 @@ bool Panel::handlePresetClick(Shared& shared, PanelState& state, double x,
   if (x >= 72 && x <= 108) {
     const int next = state.presetIndex <= 0 ? 0 : state.presetIndex - 1;
     applyPreset(shared, state, next);
+    state.presetOpen = 0;
     return true;
   }
   if (x >= 366 && x <= 402) {
     const int next = std::min(presetCount() - 1, state.presetIndex + 1);
     applyPreset(shared, state, next);
+    state.presetOpen = 0;
     return true;
   }
   if (x >= 110 && x <= 365) {
