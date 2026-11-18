@@ -136,6 +136,15 @@ inline constexpr const char* kDistortionLabels[] = {
     "Off", "Dist 2", "Dist 3", "Clip",
 };
 
+inline constexpr const char* kReelTypes[] = {"Reel", "Cassette"};
+
+inline constexpr ControlDesc kReelControls[] = {
+    {0, "TYPE", "Type", ControlFormat::Percent, true, labels(kReelTypes)},
+    {1, "DRIVE", "Drive", ControlFormat::Percent},
+    {2, "WOW", "Wow", ControlFormat::Percent},
+    {3, "MIX", "Mix", ControlFormat::Percent},
+};
+
 inline constexpr ControlDesc kCompXpressControls[] = {
     {0, "INPUT", "Input", ControlFormat::Percent},
     {kCtlRatio, "RATIO", "Ratio", ControlFormat::Ratio},
@@ -529,6 +538,10 @@ inline constexpr ModuleDesc kModules[] = {
      static_cast<int>(sizeof(kCompVcaControls) /
                       sizeof(kCompVcaControls[0])),
      kCompVcaControls},
+    {ModuleId::Reel, "Reel", "Colour", "Reel / cassette tape stage", false,
+     false, 0,
+     static_cast<int>(sizeof(kReelControls) / sizeof(kReelControls[0])),
+     kReelControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -585,6 +598,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Comp Suite",
     "Comp Suite",
     "Comp Suite",
+    "Adhesive",
 };
 
 constexpr bool moduleSourcesComplete() noexcept {

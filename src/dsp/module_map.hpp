@@ -205,6 +205,16 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::ReelControls reelControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::ReelControls out;
+  out.type = c.c[0] > 0.5f ? 1 : 0;
+  out.drive = c.c[1];
+  out.wow = c.c[2];
+  out.mix = c.c[3];
+  return out;
+}
+
 inline hdsp::modules::RiderControls riderControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::RiderControls out;

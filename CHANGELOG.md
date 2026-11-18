@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.19.0-m2 — 2026-11-17
+
+- Added Reel: reel/cassette tape stage with type, drive, wow and mix.
+- Reel reports its 4 ms transport latency to the rack.
+- Reel lives in hearth-dsp and is consumed through the submodule.
+
 ## 0.18.0-m2 — 2026-11-17
 
 - Added Comp Suite Molot and Red compressor modules.

@@ -57,6 +57,7 @@ enum class ModuleId : int {
   CompDigital,
   CompMolot,
   CompRed,
+  Reel,
   Count
 };
 
@@ -73,6 +74,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Spring",    "Digital",  "Tape",     "Analog",    "Ping-Pong",
     "Chorus",    "Flanger",  "Phaser",   "Dimension", "Hearth Comp",
     "Glue",      "Xpress",   "Digital",  "Molot",    "Red",
+    "Reel",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -475,6 +477,14 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case kCtlMakeup: return 0.50;
         case kCtlMix: return 1.00;
         case kCtlScHpf: return 0.10;
+        default: return 0.50;
+      }
+    case ModuleId::Reel:
+      switch (control) {
+        case 0: return 0.00;  // Reel
+        case 1: return 0.20;  // Drive
+        case 2: return 0.10;  // Wow
+        case 3: return 0.25;  // Mix
         default: return 0.50;
       }
     default:

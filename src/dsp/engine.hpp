@@ -38,6 +38,7 @@ public:
     for (auto& dynEq : dynamicEq_) dynEq.prepare(sr_);
     for (auto& multiband : multiband_) multiband.prepare(sr_);
     for (auto& rider : rider_) rider.prepare(sr_);
+    for (auto& reel : reel_) reel.prepare(sr_);
     for (auto& cleanup : cleanup_) cleanup.prepare(sr_);
     for (auto& reverb : spaceReverb_) reverb.prepare(sr_);
     for (auto& delay : spaceDelay_) delay.prepare(sr_);
@@ -75,6 +76,7 @@ public:
       dynamicEq_[i].setControls(dynamicEqControlsFrom(c.slot[i]));
       multiband_[i].setControls(multibandControlsFrom(c.slot[i]));
       rider_[i].setControls(riderControlsFrom(c.slot[i]));
+      reel_[i].setControls(reelControlsFrom(c.slot[i]));
       cleanup_[i].setControls(cleanupControlsFrom(c.slot[i]));
       spaceReverb_[i].setControls(
           spaceReverbControlsFrom(c.slot[i], spaceReverbMode(c.slot[i].type)));
@@ -128,6 +130,9 @@ public:
           case ModuleId::CompMolot:
           case ModuleId::CompRed:
             gr = comp_[s].process(l, r);
+            break;
+          case ModuleId::Reel:
+            reel_[s].process(l, r);
             break;
           case ModuleId::ColourValve:
           case ModuleId::ColourConsole:
@@ -265,6 +270,7 @@ public:
     for (auto& dynEq : dynamicEq_) dynEq.reset();
     for (auto& multiband : multiband_) multiband.reset();
     for (auto& rider : rider_) rider.reset();
+    for (auto& reel : reel_) reel.reset();
     for (auto& cleanup : cleanup_) cleanup.reset();
     for (auto& reverb : spaceReverb_) reverb.reset();
     for (auto& delay : spaceDelay_) delay.reset();
@@ -284,6 +290,8 @@ public:
         latency += bleedOut_[i].latencySamples();
       } else if (slot.type == static_cast<int>(ModuleId::Limiter)) {
         latency += limiter_[i].latencySamples();
+      } else if (slot.type == static_cast<int>(ModuleId::Reel)) {
+        latency += reel_[i].latencySamples();
       }
     }
     return latency;
@@ -311,6 +319,7 @@ private:
   hdsp::modules::DynamicEq dynamicEq_[kSlotCount];
   hdsp::modules::Multiband multiband_[kSlotCount];
   hdsp::modules::Rider rider_[kSlotCount];
+  hdsp::modules::Reel reel_[kSlotCount];
   hdsp::modules::Cleanup cleanup_[kSlotCount];
   hdsp::modules::SpaceReverb spaceReverb_[kSlotCount];
   hdsp::modules::SpaceDelay spaceDelay_[kSlotCount];
