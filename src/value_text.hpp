@@ -216,6 +216,9 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::BoostDb:
       std::snprintf(buf, sizeof(buf), "%.1f dB", v * 12.0f);
       return buf;
+    case ControlFormat::ClassicThresholdDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -20.0f + 20.0f * v);
+      return buf;
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;

@@ -171,6 +171,7 @@ int main() {
         static_cast<int>(ModuleId::Tame),
         static_cast<int>(ModuleId::Eq510),
         static_cast<int>(ModuleId::Pultec),
+        static_cast<int>(ModuleId::JcClassicLimiter),
     };
     for (int id : ids) {
       Engine e;

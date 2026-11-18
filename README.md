@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.22.0-m2 — CLAP + LV2, module registry, fifty-four modules and drag reorder.**
+**Status: 0.23.0-m2 — CLAP + LV2, module registry, fifty-five modules and drag reorder.**
 The rest of the catalog, drag/reorder, module presets, browser search and user
 presets are next.
 
@@ -55,6 +55,8 @@ standalone plugins remain the full versions.
 
 ![Suite Rack — 510 and Pultec](docs/rack-eq-extra.png)
 
+![Suite Rack — Classic Limiter](docs/rack-jclones.png)
+
 ![Suite Rack — About](docs/rack-about.png)
 
 ## What goes in the rack
@@ -94,7 +96,7 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.22.0-m2 slice
+## Current 0.23.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
@@ -117,7 +119,8 @@ the 500-series format; Cleanup is the lightweight repair representative.
   De-Ess, Density, Bleed Out, Peak Limiter, Image, Crush, Filter, Motion, Sub,
   Double, Dynamic EQ, Multiband, Rider, Cleanup, four reverbs, four delays and
   four modulation modules, Hearth Comp, Glue, Xpress, Digital, Molot, Red,
-  Reel, Ember, Tame, 510 EQ and Pultec.
+  Reel, Ember, Tame, 510 EQ, Pultec and the first JClones port, Classic
+  Limiter.
 - Serial engine and per-slot meters in place; DSP and panel tests pass.
 - **CLAP and LV2 builds** load in REAPER with the six-column editor and process
   audio.

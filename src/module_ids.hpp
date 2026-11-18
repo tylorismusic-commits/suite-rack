@@ -62,6 +62,7 @@ enum class ModuleId : int {
   Tame,
   Eq510,
   Pultec,
+  JcClassicLimiter,
   Count
 };
 
@@ -79,6 +80,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Chorus",    "Flanger",  "Phaser",   "Dimension", "Hearth Comp",
     "Glue",      "Xpress",   "Digital",  "Molot",    "Red",
     "Reel",      "Ember",    "Tame",     "510 EQ",   "Pultec",
+    "Classic Limiter",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -151,7 +153,8 @@ inline constexpr bool moduleHasGr(int id) noexcept {
          id == static_cast<int>(ModuleId::BleedOut) ||
          id == static_cast<int>(ModuleId::Limiter) ||
          id == static_cast<int>(ModuleId::Rider) ||
-         id == static_cast<int>(ModuleId::Ember);
+         id == static_cast<int>(ModuleId::Ember) ||
+         id == static_cast<int>(ModuleId::JcClassicLimiter);
 }
 
 // All controls are normalised to 0..1. The module descriptor maps them to
@@ -518,6 +521,13 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 2: return 0.00;  // High boost
         case 3: return 0.00;  // High atten
         case 4: return 0.50;  // Bandwidth
+        default: return 0.50;
+      }
+    case ModuleId::JcClassicLimiter:
+      switch (control) {
+        case 0: return 0.75;  // Threshold
+        case 1: return 0.50;  // Output
+        case 2: return 1.00;  // Mix
         default: return 0.50;
       }
     default:

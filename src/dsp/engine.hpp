@@ -43,6 +43,7 @@ public:
     for (auto& tame : tame_) tame.prepare(sr_);
     for (auto& eq510 : eq510_) eq510.prepare(sr_);
     for (auto& pultec : pultec_) pultec.prepare(sr_);
+    for (auto& classic : classicLimiter_) classic.prepare(sr_);
     for (auto& cleanup : cleanup_) cleanup.prepare(sr_);
     for (auto& reverb : spaceReverb_) reverb.prepare(sr_);
     for (auto& delay : spaceDelay_) delay.prepare(sr_);
@@ -85,6 +86,7 @@ public:
       tame_[i].setControls(tameControlsFrom(c.slot[i]));
       eq510_[i].setControls(eq510ControlsFrom(c.slot[i]));
       pultec_[i].setControls(pultecControlsFrom(c.slot[i]));
+      classicLimiter_[i].setControls(classicLimiterControlsFrom(c.slot[i]));
       cleanup_[i].setControls(cleanupControlsFrom(c.slot[i]));
       spaceReverb_[i].setControls(
           spaceReverbControlsFrom(c.slot[i], spaceReverbMode(c.slot[i].type)));
@@ -154,6 +156,10 @@ public:
             break;
           case ModuleId::Pultec:
             pultec_[s].process(l, r);
+            break;
+          case ModuleId::JcClassicLimiter:
+            classicLimiter_[s].process(l, r);
+            gr = classicLimiter_[s].lastGrDb();
             break;
           case ModuleId::ColourValve:
           case ModuleId::ColourConsole:
@@ -296,6 +302,7 @@ public:
     for (auto& tame : tame_) tame.reset();
     for (auto& eq510 : eq510_) eq510.reset();
     for (auto& pultec : pultec_) pultec.reset();
+    for (auto& classic : classicLimiter_) classic.reset();
     for (auto& cleanup : cleanup_) cleanup.reset();
     for (auto& reverb : spaceReverb_) reverb.reset();
     for (auto& delay : spaceDelay_) delay.reset();
@@ -317,6 +324,8 @@ public:
         latency += limiter_[i].latencySamples();
       } else if (slot.type == static_cast<int>(ModuleId::Reel)) {
         latency += reel_[i].latencySamples();
+      } else if (slot.type == static_cast<int>(ModuleId::JcClassicLimiter)) {
+        latency += classicLimiter_[i].latencySamples();
       }
     }
     return latency;
@@ -349,6 +358,7 @@ private:
   hdsp::modules::Tame tame_[kSlotCount];
   hdsp::modules::Eq510 eq510_[kSlotCount];
   hdsp::modules::Pultec pultec_[kSlotCount];
+  hdsp::modules::ClassicLimiter classicLimiter_[kSlotCount];
   hdsp::modules::Cleanup cleanup_[kSlotCount];
   hdsp::modules::SpaceReverb spaceReverb_[kSlotCount];
   hdsp::modules::SpaceDelay spaceDelay_[kSlotCount];

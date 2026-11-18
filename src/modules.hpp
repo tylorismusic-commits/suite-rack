@@ -61,6 +61,7 @@ enum class ControlFormat {
   SpaceDelayMs,
   CompDistortion,
   BoostDb,
+  ClassicThresholdDb,
 };
 
 struct ControlDesc {
@@ -144,6 +145,12 @@ inline constexpr ControlDesc kEq510Controls[] = {
     {1, "MID", "Mid", ControlFormat::TiltDb},
     {2, "HIGH", "High", ControlFormat::TiltDb},
     {3, "HPF", "HPF", ControlFormat::EqHpfHz},
+};
+
+inline constexpr ControlDesc kJcClassicLimiterControls[] = {
+    {0, "THR", "Threshold", ControlFormat::ClassicThresholdDb},
+    {1, "OUTPUT", "Output", ControlFormat::TiltDb},
+    {2, "MIX", "Mix", ControlFormat::Percent},
 };
 
 inline constexpr ControlDesc kPultecControls[] = {
@@ -584,6 +591,11 @@ inline constexpr ModuleDesc kModules[] = {
      false, 0,
      static_cast<int>(sizeof(kPultecControls) / sizeof(kPultecControls[0])),
      kPultecControls},
+    {ModuleId::JcClassicLimiter, "Classic Limiter", "Dyn",
+     "JClones-derived lookahead limiter", false, false, 0,
+     static_cast<int>(sizeof(kJcClassicLimiterControls) /
+                      sizeof(kJcClassicLimiterControls[0])),
+     kJcClassicLimiterControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -645,6 +657,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Trowel",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
+    "JClones",
 };
 
 constexpr bool moduleSourcesComplete() noexcept {

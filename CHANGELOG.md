@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.23.0-m2 — 2026-11-17
+
+- Added the first JClones-derived module: Classic Limiter, with threshold,
+  output and mix.
+- Classic Limiter reports its 3 ms lookahead latency and gain reduction.
+- The JClones-derived limiter lives in hearth-dsp.
+
 ## 0.22.0-m2 — 2026-11-17
 
 - Added the 510 EQ: low, mid, high and HPF.
