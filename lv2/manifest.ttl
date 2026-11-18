@@ -4,7 +4,7 @@
 @prefix ui:   <http://lv2plug.in/ns/extensions/ui#> .
 
 <https://github.com/tylorismusic-commits/suite-rack>
-    a lv2:Plugin ;
+    a lv2:Plugin , doap:Project ;
     lv2:binary <suite_rack.so> ;
     rdfs:seeAlso <suite_rack.ttl> , <presets.ttl> ;
     ui:ui <https://github.com/tylorismusic-commits/suite-rack#ui> .
@@ -14,6 +14,6 @@
     ui:binary <suite_rack_ui.so> ;
     rdfs:label "Suite Rack UI" ;
     lv2:requiredFeature ui:parent ;
-    lv2:optionalFeature ui:scaleFactor , ui:idleInterface ;
+    lv2:optionalFeature ui:idleInterface ;
     lv2:extensionData ui:idleInterface ;
     rdfs:seeAlso <suite_rack.ttl> .

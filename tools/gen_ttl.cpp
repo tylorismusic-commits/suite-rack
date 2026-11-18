@@ -130,10 +130,10 @@ std::string portBlock(int index, const char* symbol, const char* name,
   out << "        lv2:minimum " << num(minimum) << " ;\n";
   out << "        lv2:maximum " << num(maximum) << " ;\n";
   if (integer) {
-    out << "        lv2:integer true ;\n";
+    out << "        lv2:portProperty lv2:integer ;\n";
   }
   if (toggled) {
-    out << "        lv2:toggled true ;\n";
+    out << "        lv2:portProperty lv2:toggled ;\n";
   }
   if (labels.count > 0) {
     out << "        lv2:scalePoint ";
@@ -181,7 +181,7 @@ std::string buildPluginTtl() {
   out << "@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n";
   out << "\n";
   out << "<" << kUri << ">\n";
-  out << "    a lv2:Plugin ;\n";
+  out << "    a lv2:Plugin , doap:Project ;\n";
   out << "    doap:name \"" << kName << "\" ;\n";
   out << "    doap:shortdesc \"" << kShortDesc << "\" ;\n";
   out << "    doap:description \"" << kDescription << "\"@en ;\n";
@@ -191,7 +191,6 @@ std::string buildPluginTtl() {
   out << "        foaf:homepage <" << kHomepage << "> ;\n";
   out << "    ] ;\n";
   out << "    doap:homepage <" << kHomepage << "> ;\n";
-  out << "    lv2:majorVersion " << rack::kVersionMajor << " ;\n";
   out << "    lv2:minorVersion " << rack::kVersionMinor << " ;\n";
   out << "    lv2:microVersion " << rack::kVersionMicro << " ;\n";
   out << "    lv2:binary <" << kPluginBinary << "> ;\n";
@@ -266,8 +265,8 @@ std::string buildPluginTtl() {
       return;
     }
     seen.push_back(s);
-    groups << "\n<" << kUri << "#" << s << "> a pg:Group ; lv2:name \""
-           << module << "\" .\n";
+    groups << "\n<" << kUri << "#" << s << "> a pg:Group ; lv2:symbol \""
+           << s << "\" ; lv2:name \"" << module << "\" .\n";
   };
   for (uint32_t id = 0; id < rack::P_COUNT; ++id) {
     addGroup(rack::kParamSpecs[id].module);
@@ -286,7 +285,7 @@ std::string buildManifestTtl() {
   out << "@prefix ui:   <http://lv2plug.in/ns/extensions/ui#> .\n";
   out << "\n";
   out << "<" << kUri << ">\n";
-  out << "    a lv2:Plugin ;\n";
+  out << "    a lv2:Plugin , doap:Project ;\n";
   out << "    lv2:binary <" << kPluginBinary << "> ;\n";
   out << "    rdfs:seeAlso <suite_rack.ttl> , <presets.ttl> ;\n";
   out << "    ui:ui <" << kUri << "#ui> .\n";
@@ -296,7 +295,7 @@ std::string buildManifestTtl() {
   out << "    ui:binary <" << kUiBinary << "> ;\n";
   out << "    rdfs:label \"" << kName << " UI\" ;\n";
   out << "    lv2:requiredFeature ui:parent ;\n";
-  out << "    lv2:optionalFeature ui:scaleFactor , ui:idleInterface ;\n";
+  out << "    lv2:optionalFeature ui:idleInterface ;\n";
   out << "    lv2:extensionData ui:idleInterface ;\n";
   out << "    rdfs:seeAlso <suite_rack.ttl> .\n";
   return out.str();

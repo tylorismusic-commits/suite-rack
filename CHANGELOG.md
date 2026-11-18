@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.48.1-m2 — 2026-11-18
+
+- CLAP now pushes gain-reduction value events for its read-only Slot GR
+  parameters, so hosts that update from parameter events see the meters move.
+- Fixed LV2 metadata: `lv2:integer`/`lv2:toggled` are now port properties,
+  port groups have symbols, and the UI feature declarations validate.
+- `lv2_validate` reports zero errors for the plugin, manifest and preset files.
+- Reset preset delete confirmation when the rack preset browser is closed.
+
 ## 0.48.0-m2 — 2026-11-18
 
 - User rack presets can be renamed and deleted from the rack preset browser.

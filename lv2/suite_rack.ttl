@@ -12,7 +12,7 @@
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 
 <https://github.com/tylorismusic-commits/suite-rack>
-    a lv2:Plugin ;
+    a lv2:Plugin , doap:Project ;
     doap:name "Suite Rack" ;
     doap:shortdesc "Six-slot virtual 500 series mix rack with EQ, compression, colour, space, dynamics and utility modules" ;
     doap:description "A six-slot serial mix rack in the Suite visual language. Each slot hosts a compact 500 series module: EQ, colour, compressor, reverb, delay, modulation, gate, transient, de-esser, limiter or utility."@en ;
@@ -22,9 +22,8 @@
         foaf:homepage <https://github.com/tylorismusic-commits/suite-rack> ;
     ] ;
     doap:homepage <https://github.com/tylorismusic-commits/suite-rack> ;
-    lv2:majorVersion 0 ;
     lv2:minorVersion 48 ;
-    lv2:microVersion 0 ;
+    lv2:microVersion 1 ;
     lv2:binary <suite_rack.so> ;
     rdfs:seeAlso <manifest.ttl> ;
     ui:ui <https://github.com/tylorismusic-commits/suite-rack#ui> ;
@@ -63,8 +62,8 @@
         lv2:default 1 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        lv2:integer true ;
-        lv2:toggled true ;
+        lv2:portProperty lv2:integer ;
+        lv2:portProperty lv2:toggled ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#global> ;
     ] ,
     [
@@ -97,7 +96,7 @@
         lv2:default 1 ;
         lv2:minimum 0 ;
         lv2:maximum 72 ;
-        lv2:integer true ;
+        lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
             [ rdf:value 2 ; rdfs:label "Hearth EQ" ] ,
@@ -181,8 +180,8 @@
         lv2:default 0 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        lv2:integer true ;
-        lv2:toggled true ;
+        lv2:portProperty lv2:integer ;
+        lv2:portProperty lv2:toggled ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
@@ -335,7 +334,7 @@
         lv2:default 5 ;
         lv2:minimum 0 ;
         lv2:maximum 72 ;
-        lv2:integer true ;
+        lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
             [ rdf:value 2 ; rdfs:label "Hearth EQ" ] ,
@@ -419,8 +418,8 @@
         lv2:default 0 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        lv2:integer true ;
-        lv2:toggled true ;
+        lv2:portProperty lv2:integer ;
+        lv2:portProperty lv2:toggled ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
@@ -573,7 +572,7 @@
         lv2:default 0 ;
         lv2:minimum 0 ;
         lv2:maximum 72 ;
-        lv2:integer true ;
+        lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
             [ rdf:value 2 ; rdfs:label "Hearth EQ" ] ,
@@ -657,8 +656,8 @@
         lv2:default 0 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        lv2:integer true ;
-        lv2:toggled true ;
+        lv2:portProperty lv2:integer ;
+        lv2:portProperty lv2:toggled ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
@@ -811,7 +810,7 @@
         lv2:default 0 ;
         lv2:minimum 0 ;
         lv2:maximum 72 ;
-        lv2:integer true ;
+        lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
             [ rdf:value 2 ; rdfs:label "Hearth EQ" ] ,
@@ -895,8 +894,8 @@
         lv2:default 0 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        lv2:integer true ;
-        lv2:toggled true ;
+        lv2:portProperty lv2:integer ;
+        lv2:portProperty lv2:toggled ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
@@ -1049,7 +1048,7 @@
         lv2:default 0 ;
         lv2:minimum 0 ;
         lv2:maximum 72 ;
-        lv2:integer true ;
+        lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
             [ rdf:value 2 ; rdfs:label "Hearth EQ" ] ,
@@ -1133,8 +1132,8 @@
         lv2:default 0 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        lv2:integer true ;
-        lv2:toggled true ;
+        lv2:portProperty lv2:integer ;
+        lv2:portProperty lv2:toggled ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
@@ -1287,7 +1286,7 @@
         lv2:default 0 ;
         lv2:minimum 0 ;
         lv2:maximum 72 ;
-        lv2:integer true ;
+        lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
             [ rdf:value 2 ; rdfs:label "Hearth EQ" ] ,
@@ -1371,8 +1370,8 @@
         lv2:default 0 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        lv2:integer true ;
-        lv2:toggled true ;
+        lv2:portProperty lv2:integer ;
+        lv2:portProperty lv2:toggled ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
@@ -1669,20 +1668,20 @@
     ] .
 
 
-<https://github.com/tylorismusic-commits/suite-rack#global> a pg:Group ; lv2:name "Global" .
+<https://github.com/tylorismusic-commits/suite-rack#global> a pg:Group ; lv2:symbol "global" ; lv2:name "Global" .
 
-<https://github.com/tylorismusic-commits/suite-rack#slot1> a pg:Group ; lv2:name "Slot 1" .
+<https://github.com/tylorismusic-commits/suite-rack#slot1> a pg:Group ; lv2:symbol "slot1" ; lv2:name "Slot 1" .
 
-<https://github.com/tylorismusic-commits/suite-rack#slot2> a pg:Group ; lv2:name "Slot 2" .
+<https://github.com/tylorismusic-commits/suite-rack#slot2> a pg:Group ; lv2:symbol "slot2" ; lv2:name "Slot 2" .
 
-<https://github.com/tylorismusic-commits/suite-rack#slot3> a pg:Group ; lv2:name "Slot 3" .
+<https://github.com/tylorismusic-commits/suite-rack#slot3> a pg:Group ; lv2:symbol "slot3" ; lv2:name "Slot 3" .
 
-<https://github.com/tylorismusic-commits/suite-rack#slot4> a pg:Group ; lv2:name "Slot 4" .
+<https://github.com/tylorismusic-commits/suite-rack#slot4> a pg:Group ; lv2:symbol "slot4" ; lv2:name "Slot 4" .
 
-<https://github.com/tylorismusic-commits/suite-rack#slot5> a pg:Group ; lv2:name "Slot 5" .
+<https://github.com/tylorismusic-commits/suite-rack#slot5> a pg:Group ; lv2:symbol "slot5" ; lv2:name "Slot 5" .
 
-<https://github.com/tylorismusic-commits/suite-rack#slot6> a pg:Group ; lv2:name "Slot 6" .
+<https://github.com/tylorismusic-commits/suite-rack#slot6> a pg:Group ; lv2:symbol "slot6" ; lv2:name "Slot 6" .
 
-<https://github.com/tylorismusic-commits/suite-rack#meter> a pg:Group ; lv2:name "Meter" .
+<https://github.com/tylorismusic-commits/suite-rack#meter> a pg:Group ; lv2:symbol "meter" ; lv2:name "Meter" .
 
-<https://github.com/tylorismusic-commits/suite-rack#latency> a pg:Group ; lv2:name "Latency" .
+<https://github.com/tylorismusic-commits/suite-rack#latency> a pg:Group ; lv2:symbol "latency" ; lv2:name "Latency" .
