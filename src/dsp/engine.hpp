@@ -6,17 +6,12 @@
 #include <cmath>
 
 #include <hdsp/db.hpp>
+#include <hdsp/modules/modules.hpp>
 #include <hdsp/smoother.hpp>
 
-#include "colour_module.hpp"
-#include "clip_module.hpp"
-#include "comp_module.hpp"
-#include "deess_module.hpp"
 #include "controls.hpp"
-#include "eq_module.hpp"
-#include "gate_module.hpp"
 #include "module_ids.hpp"
-#include "transient_module.hpp"
+#include "module_map.hpp"
 
 namespace rack {
 
@@ -45,13 +40,13 @@ public:
   void setControls(const Controls& c) noexcept {
     controls_ = c;
     for (int i = 0; i < kSlotCount; ++i) {
-      eq_[i].setControls(c.slot[i]);
-      comp_[i].setControls(c.slot[i]);
-      colour_[i].setControls(c.slot[i]);
-      gate_[i].setControls(c.slot[i]);
-      transient_[i].setControls(c.slot[i]);
-      clip_[i].setControls(c.slot[i]);
-      deess_[i].setControls(c.slot[i]);
+      eq_[i].setControls(eqControlsFrom(c.slot[i]));
+      comp_[i].setControls(compControlsFrom(c.slot[i]));
+      colour_[i].setControls(colourControlsFrom(c.slot[i]));
+      gate_[i].setControls(gateControlsFrom(c.slot[i]));
+      transient_[i].setControls(transientControlsFrom(c.slot[i]));
+      clip_[i].setControls(clipControlsFrom(c.slot[i]));
+      deess_[i].setControls(deEssControlsFrom(c.slot[i]));
       slotGain_[i].setTarget(hdsp::dbToGain(c.slot[i].gainDb));
     }
     input_.setTarget(hdsp::dbToGain(c.inputDb));
@@ -145,13 +140,13 @@ public:
 private:
   float sr_ = 48000.0f;
   Controls controls_;
-  EqModule eq_[kSlotCount];
-  CompModule comp_[kSlotCount];
-  ColourModule colour_[kSlotCount];
-  GateModule gate_[kSlotCount];
-  TransientModule transient_[kSlotCount];
-  ClipModule clip_[kSlotCount];
-  DeEssModule deess_[kSlotCount];
+  hdsp::modules::Eq eq_[kSlotCount];
+  hdsp::modules::Comp comp_[kSlotCount];
+  hdsp::modules::Colour colour_[kSlotCount];
+  hdsp::modules::Gate gate_[kSlotCount];
+  hdsp::modules::Transient transient_[kSlotCount];
+  hdsp::modules::Clip clip_[kSlotCount];
+  hdsp::modules::DeEss deess_[kSlotCount];
   hdsp::Smoothed input_, output_, power_;
   hdsp::Smoothed slotGain_[kSlotCount];
 };

@@ -94,9 +94,16 @@ registry maps them to faceplate labels, display formats and DSP behaviour.
 Automation follows the slot, not the module: if a slot changes module, its
 control lanes are repurposed.
 
+The module DSP itself lives in **hearth-dsp 0.4.0** under
+`third_party/hearth-dsp`, pulled in as a git submodule. Suite Rack keeps only
+the rack engine and the adapter that maps its slot controls onto the shared
+typed module controls, so future plugins can use the same EQ, compressor,
+colour, gate, transient, clip and de-esser stages.
+
 ## Build and preview
 
 ```sh
+git submodule update --init --recursive
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j
 ctest --test-dir build --output-on-failure

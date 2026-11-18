@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include <hdsp/modules/eq.hpp>
+
 #include "module_ids.hpp"
 
 namespace rack {
@@ -22,18 +24,9 @@ struct SlotControls {
                                 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f};
 };
 
-inline float eqHpfHz(float v) noexcept {
-  v = std::clamp(v, 0.0f, 1.0f);
-  return 20.0f * std::pow(25.0f, v);
-}
-inline float eqLpfHz(float v) noexcept {
-  v = std::clamp(v, 0.0f, 1.0f);
-  return 500.0f * std::pow(40.0f, v);
-}
-inline float airFreqHz(float v) noexcept {
-  v = std::clamp(v, 0.0f, 1.0f);
-  return 2000.0f * std::pow(8.0f, v);
-}
+using hdsp::modules::airFreqHz;
+using hdsp::modules::eqHpfHz;
+using hdsp::modules::eqLpfHz;
 
 struct Controls {
   bool power = true;

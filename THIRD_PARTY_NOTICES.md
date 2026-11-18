@@ -49,7 +49,9 @@ License 1.1. The licence text ships beside it as `assets/fonts/OFL.txt`.
 
 ## hearth-dsp
 
-The shared DSP modules under `third_party/hearth-dsp` (ADAA saturation,
-biquads, envelopes, true-peak detection, oversampling and the ratio ladder) are
-part of hearth-dsp, GPL-3.0-or-later, extracted from this project. See
+The shared DSP under `third_party/hearth-dsp` is part of hearth-dsp,
+GPL-3.0-or-later, extracted from this project. It includes the ADAA saturation,
+biquads, envelopes, true-peak detection, oversampling, the ratio ladder and the
+shared processor modules: EQ, compressor (FET/optical/VCA), colour, gate,
+transient, clip and de-esser. Suite Rack consumes them as a git submodule. See
 `third_party/hearth-dsp/THIRD_PARTY_NOTICES.md` for algorithm provenance.
