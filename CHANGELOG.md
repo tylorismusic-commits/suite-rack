@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.2-m2 — 2026-11-17
+
+- Replaced the category-based module dispatch with an explicit ModuleId switch.
+- Added `-Werror=switch` to the engine-bearing targets, so adding a module
+  without wiring its processing branch is now a compile error.
+
 ## 0.8.1-m2 — 2026-11-17
 
 - Fixed the Peak Limiter being skipped by the rack engine dispatch.

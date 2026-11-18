@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(suite_rack VERSION 0.8.1 LANGUAGES CXX)
+project(suite_rack VERSION 0.8.2 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -29,6 +29,9 @@ set(RACK_UI_SOURCES src/ui/panel.cpp)
 add_executable(rack_dsp_test test/test_dsp.cpp)
 target_include_directories(rack_dsp_test PRIVATE "${CMAKE_SOURCE_DIR}/src")
 target_compile_features(rack_dsp_test PRIVATE cxx_std_17)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(rack_dsp_test PRIVATE -Wall -Wextra -Werror=switch)
+endif()
 add_test(NAME rack_dsp COMMAND rack_dsp_test)
 
 add_executable(rack_state_test test/test_state.cpp)
@@ -75,7 +78,8 @@ target_link_libraries(suite_rack PRIVATE
   ${CMAKE_DL_LIBS})
 target_compile_features(suite_rack PRIVATE cxx_std_17)
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-  target_compile_options(suite_rack PRIVATE -Wall -Wextra -fvisibility=hidden)
+  target_compile_options(suite_rack PRIVATE -Wall -Wextra -Werror=switch
+                         -fvisibility=hidden)
 endif()
 set_target_properties(suite_rack PROPERTIES
   PREFIX "" OUTPUT_NAME "SuiteRack" SUFFIX ".clap"
@@ -105,6 +109,9 @@ add_library(suite_rack_lv2 MODULE src/lv2/rack_lv2.cpp)
 target_include_directories(suite_rack_lv2 PRIVATE "${CMAKE_SOURCE_DIR}/src")
 target_link_libraries(suite_rack_lv2 PRIVATE PkgConfig::LV2)
 target_compile_features(suite_rack_lv2 PRIVATE cxx_std_17)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(suite_rack_lv2 PRIVATE -Wall -Wextra -Werror=switch)
+endif()
 set_target_properties(suite_rack_lv2 PROPERTIES
   PREFIX ""
   OUTPUT_NAME "suite_rack"

@@ -24,7 +24,7 @@
     doap:homepage <https://github.com/tylorismusic-commits/suite-rack> ;
     lv2:majorVersion 0 ;
     lv2:minorVersion 8 ;
-    lv2:microVersion 1 ;
+    lv2:microVersion 2 ;
     lv2:binary <suite_rack.so> ;
     rdfs:seeAlso <manifest.ttl> ;
     ui:ui <https://github.com/tylorismusic-commits/suite-rack#ui> ;

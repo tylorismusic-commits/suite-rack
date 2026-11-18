@@ -72,38 +72,62 @@ public:
       float l = dryL, r = dryR;
       for (int s = 0; s < kSlotCount; ++s) {
         const SlotControls& c = controls_.slot[s];
-        const int type = c.type;
-        if (type == static_cast<int>(ModuleId::Off) || c.bypass) continue;
+        if (c.bypass) continue;
         const float sl = l, sr = r;
         float gr = 0.0f;
-        if (moduleIsEq(type)) {
-          eq_[s].process(l, r);
-        } else if (moduleIsComp(type)) {
-          gr = comp_[s].process(l, r);
-        } else if (moduleIsColour(type)) {
-          colour_[s].process(l, r);
-        } else if (moduleIsDynamics(type)) {
-          if (type == static_cast<int>(ModuleId::DynGate)) {
+        // Explicit switch: with -Werror=switch, adding a ModuleId without
+        // handling it here is a compile error. The previous category helpers
+        // let Bleed Out and the Peak Limiter fall through silently.
+        switch (static_cast<ModuleId>(c.type)) {
+          case ModuleId::Off:
+            continue;
+          case ModuleId::Eq4K:
+          case ModuleId::EqHearth:
+          case ModuleId::EqTilt:
+          case ModuleId::EqAir:
+            eq_[s].process(l, r);
+            break;
+          case ModuleId::Comp76Blue:
+          case ModuleId::Comp76Black:
+          case ModuleId::Comp2A:
+          case ModuleId::Comp3A:
+          case ModuleId::CompVCA:
+            gr = comp_[s].process(l, r);
+            break;
+          case ModuleId::ColourValve:
+          case ModuleId::ColourConsole:
+          case ModuleId::ColourBus:
+          case ModuleId::ColourTape:
+          case ModuleId::ColourTransformer:
+            colour_[s].process(l, r);
+            break;
+          case ModuleId::DynGate:
             gate_[s].process(l, r);
             gr = gate_[s].lastGrDb();
-          } else if (type == static_cast<int>(ModuleId::DynTransient)) {
+            break;
+          case ModuleId::DynTransient:
             transient_[s].process(l, r);
-          } else if (type == static_cast<int>(ModuleId::DynClip)) {
+            break;
+          case ModuleId::DynClip:
             clip_[s].process(l, r);
-          } else if (type == static_cast<int>(ModuleId::DynDeEss)) {
+            break;
+          case ModuleId::DynDeEss:
             deess_[s].process(l, r);
             gr = deess_[s].lastGrDb();
-          } else if (type == static_cast<int>(ModuleId::BleedOut)) {
+            break;
+          case ModuleId::Density:
+            density_[s].process(l, r);
+            break;
+          case ModuleId::BleedOut:
             bleedOut_[s].process(l, r);
             gr = bleedOut_[s].lastGrDb();
-          } else if (type == static_cast<int>(ModuleId::Limiter)) {
+            break;
+          case ModuleId::Limiter:
             limiter_[s].process(l, r);
             gr = limiter_[s].lastGrDb();
-          }
-        } else if (type == static_cast<int>(ModuleId::Density)) {
-          density_[s].process(l, r);
-        } else {
-          continue;
+            break;
+          case ModuleId::Count:
+            continue;
         }
         const float mix = std::clamp(c.mix, 0.0f, 1.0f);
         l = sl + (l - sl) * mix;
