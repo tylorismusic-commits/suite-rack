@@ -26,6 +26,7 @@ struct PanelState {
   int browserCategory = 0;
   int browserScroll = 0;
   bool aboutOpen = false;
+  int aboutScroll = 0;
   float inLevelL = -120.0f;
   float inLevelR = -120.0f;
   float outLevelL = -120.0f;
@@ -111,6 +112,7 @@ private:
                  const PanelState& state) const;
   double browserHeight(int category) const;
   double browserY(int category) const;
+  int aboutMaxScroll() const;
   int slotAtX(double x) const;
   void moveSlot(Shared& shared, int from, int to);
   void drawGrMeter(cairo_t* cr, double x, double y, double w, double h,

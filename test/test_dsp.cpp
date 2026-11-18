@@ -148,6 +148,18 @@ int main() {
         static_cast<int>(ModuleId::Multiband),
         static_cast<int>(ModuleId::Rider),
         static_cast<int>(ModuleId::Cleanup),
+        static_cast<int>(ModuleId::SpacePlate),
+        static_cast<int>(ModuleId::SpaceRoom),
+        static_cast<int>(ModuleId::SpaceHall),
+        static_cast<int>(ModuleId::SpaceSpring),
+        static_cast<int>(ModuleId::SpaceDigital),
+        static_cast<int>(ModuleId::SpaceTape),
+        static_cast<int>(ModuleId::SpaceAnalog),
+        static_cast<int>(ModuleId::SpacePingPong),
+        static_cast<int>(ModuleId::SpaceChorus),
+        static_cast<int>(ModuleId::SpaceFlanger),
+        static_cast<int>(ModuleId::SpacePhaser),
+        static_cast<int>(ModuleId::SpaceDimension),
     };
     for (int id : ids) {
       Engine e;

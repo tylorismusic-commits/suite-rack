@@ -200,6 +200,15 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::RiderSpeedMs:
       std::snprintf(buf, sizeof(buf), "%.0f ms", 20.0f * std::pow(50.0f, v));
       return buf;
+    case ControlFormat::SpaceDecayS:
+      std::snprintf(buf, sizeof(buf), "%.2f s", 0.3f + 11.7f * v);
+      return buf;
+    case ControlFormat::SpacePreDelayMs:
+      std::snprintf(buf, sizeof(buf), "%.0f ms", v * 200.0f);
+      return buf;
+    case ControlFormat::SpaceDelayMs:
+      std::snprintf(buf, sizeof(buf), "%.0f ms", 1.0f + 1999.0f * v);
+      return buf;
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;
@@ -372,6 +381,9 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
           case ControlFormat::RiderSpeedMs:
             v = std::log(std::max(v, 20.0) / 20.0) / std::log(50.0);
             break;
+          case ControlFormat::SpaceDecayS: v = (v - 0.3) / 11.7; break;
+          case ControlFormat::SpacePreDelayMs: v = v / 200.0; break;
+          case ControlFormat::SpaceDelayMs: v = (v - 1.0) / 1999.0; break;
           default: break;
         }
       }

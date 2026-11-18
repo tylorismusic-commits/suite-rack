@@ -23,8 +23,8 @@
     ] ;
     doap:homepage <https://github.com/tylorismusic-commits/suite-rack> ;
     lv2:majorVersion 0 ;
-    lv2:minorVersion 14 ;
-    lv2:microVersion 0 ;
+    lv2:minorVersion 15 ;
+    lv2:microVersion 1 ;
     lv2:binary <suite_rack.so> ;
     rdfs:seeAlso <manifest.ttl> ;
     ui:ui <https://github.com/tylorismusic-commits/suite-rack#ui> ;
@@ -96,7 +96,7 @@
         lv2:name "Module" ;
         lv2:default 1 ;
         lv2:minimum 0 ;
-        lv2:maximum 31 ;
+        lv2:maximum 43 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -129,7 +129,19 @@
             [ rdf:value 28 ; rdfs:label "Dynamic EQ" ] ,
             [ rdf:value 29 ; rdfs:label "Multiband" ] ,
             [ rdf:value 30 ; rdfs:label "Rider" ] ,
-            [ rdf:value 31 ; rdfs:label "Cleanup" ] ;
+            [ rdf:value 31 ; rdfs:label "Cleanup" ] ,
+            [ rdf:value 32 ; rdfs:label "Plate" ] ,
+            [ rdf:value 33 ; rdfs:label "Room" ] ,
+            [ rdf:value 34 ; rdfs:label "Hall" ] ,
+            [ rdf:value 35 ; rdfs:label "Spring" ] ,
+            [ rdf:value 36 ; rdfs:label "Digital" ] ,
+            [ rdf:value 37 ; rdfs:label "Tape" ] ,
+            [ rdf:value 38 ; rdfs:label "Analog" ] ,
+            [ rdf:value 39 ; rdfs:label "Ping-Pong" ] ,
+            [ rdf:value 40 ; rdfs:label "Chorus" ] ,
+            [ rdf:value 41 ; rdfs:label "Flanger" ] ,
+            [ rdf:value 42 ; rdfs:label "Phaser" ] ,
+            [ rdf:value 43 ; rdfs:label "Dimension" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
     ] ,
     [
@@ -293,7 +305,7 @@
         lv2:name "Module" ;
         lv2:default 5 ;
         lv2:minimum 0 ;
-        lv2:maximum 31 ;
+        lv2:maximum 43 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -326,7 +338,19 @@
             [ rdf:value 28 ; rdfs:label "Dynamic EQ" ] ,
             [ rdf:value 29 ; rdfs:label "Multiband" ] ,
             [ rdf:value 30 ; rdfs:label "Rider" ] ,
-            [ rdf:value 31 ; rdfs:label "Cleanup" ] ;
+            [ rdf:value 31 ; rdfs:label "Cleanup" ] ,
+            [ rdf:value 32 ; rdfs:label "Plate" ] ,
+            [ rdf:value 33 ; rdfs:label "Room" ] ,
+            [ rdf:value 34 ; rdfs:label "Hall" ] ,
+            [ rdf:value 35 ; rdfs:label "Spring" ] ,
+            [ rdf:value 36 ; rdfs:label "Digital" ] ,
+            [ rdf:value 37 ; rdfs:label "Tape" ] ,
+            [ rdf:value 38 ; rdfs:label "Analog" ] ,
+            [ rdf:value 39 ; rdfs:label "Ping-Pong" ] ,
+            [ rdf:value 40 ; rdfs:label "Chorus" ] ,
+            [ rdf:value 41 ; rdfs:label "Flanger" ] ,
+            [ rdf:value 42 ; rdfs:label "Phaser" ] ,
+            [ rdf:value 43 ; rdfs:label "Dimension" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
@@ -490,7 +514,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 31 ;
+        lv2:maximum 43 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -523,7 +547,19 @@
             [ rdf:value 28 ; rdfs:label "Dynamic EQ" ] ,
             [ rdf:value 29 ; rdfs:label "Multiband" ] ,
             [ rdf:value 30 ; rdfs:label "Rider" ] ,
-            [ rdf:value 31 ; rdfs:label "Cleanup" ] ;
+            [ rdf:value 31 ; rdfs:label "Cleanup" ] ,
+            [ rdf:value 32 ; rdfs:label "Plate" ] ,
+            [ rdf:value 33 ; rdfs:label "Room" ] ,
+            [ rdf:value 34 ; rdfs:label "Hall" ] ,
+            [ rdf:value 35 ; rdfs:label "Spring" ] ,
+            [ rdf:value 36 ; rdfs:label "Digital" ] ,
+            [ rdf:value 37 ; rdfs:label "Tape" ] ,
+            [ rdf:value 38 ; rdfs:label "Analog" ] ,
+            [ rdf:value 39 ; rdfs:label "Ping-Pong" ] ,
+            [ rdf:value 40 ; rdfs:label "Chorus" ] ,
+            [ rdf:value 41 ; rdfs:label "Flanger" ] ,
+            [ rdf:value 42 ; rdfs:label "Phaser" ] ,
+            [ rdf:value 43 ; rdfs:label "Dimension" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
@@ -687,7 +723,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 31 ;
+        lv2:maximum 43 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -720,7 +756,19 @@
             [ rdf:value 28 ; rdfs:label "Dynamic EQ" ] ,
             [ rdf:value 29 ; rdfs:label "Multiband" ] ,
             [ rdf:value 30 ; rdfs:label "Rider" ] ,
-            [ rdf:value 31 ; rdfs:label "Cleanup" ] ;
+            [ rdf:value 31 ; rdfs:label "Cleanup" ] ,
+            [ rdf:value 32 ; rdfs:label "Plate" ] ,
+            [ rdf:value 33 ; rdfs:label "Room" ] ,
+            [ rdf:value 34 ; rdfs:label "Hall" ] ,
+            [ rdf:value 35 ; rdfs:label "Spring" ] ,
+            [ rdf:value 36 ; rdfs:label "Digital" ] ,
+            [ rdf:value 37 ; rdfs:label "Tape" ] ,
+            [ rdf:value 38 ; rdfs:label "Analog" ] ,
+            [ rdf:value 39 ; rdfs:label "Ping-Pong" ] ,
+            [ rdf:value 40 ; rdfs:label "Chorus" ] ,
+            [ rdf:value 41 ; rdfs:label "Flanger" ] ,
+            [ rdf:value 42 ; rdfs:label "Phaser" ] ,
+            [ rdf:value 43 ; rdfs:label "Dimension" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
@@ -884,7 +932,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 31 ;
+        lv2:maximum 43 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -917,7 +965,19 @@
             [ rdf:value 28 ; rdfs:label "Dynamic EQ" ] ,
             [ rdf:value 29 ; rdfs:label "Multiband" ] ,
             [ rdf:value 30 ; rdfs:label "Rider" ] ,
-            [ rdf:value 31 ; rdfs:label "Cleanup" ] ;
+            [ rdf:value 31 ; rdfs:label "Cleanup" ] ,
+            [ rdf:value 32 ; rdfs:label "Plate" ] ,
+            [ rdf:value 33 ; rdfs:label "Room" ] ,
+            [ rdf:value 34 ; rdfs:label "Hall" ] ,
+            [ rdf:value 35 ; rdfs:label "Spring" ] ,
+            [ rdf:value 36 ; rdfs:label "Digital" ] ,
+            [ rdf:value 37 ; rdfs:label "Tape" ] ,
+            [ rdf:value 38 ; rdfs:label "Analog" ] ,
+            [ rdf:value 39 ; rdfs:label "Ping-Pong" ] ,
+            [ rdf:value 40 ; rdfs:label "Chorus" ] ,
+            [ rdf:value 41 ; rdfs:label "Flanger" ] ,
+            [ rdf:value 42 ; rdfs:label "Phaser" ] ,
+            [ rdf:value 43 ; rdfs:label "Dimension" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
@@ -1081,7 +1141,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 31 ;
+        lv2:maximum 43 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -1114,7 +1174,19 @@
             [ rdf:value 28 ; rdfs:label "Dynamic EQ" ] ,
             [ rdf:value 29 ; rdfs:label "Multiband" ] ,
             [ rdf:value 30 ; rdfs:label "Rider" ] ,
-            [ rdf:value 31 ; rdfs:label "Cleanup" ] ;
+            [ rdf:value 31 ; rdfs:label "Cleanup" ] ,
+            [ rdf:value 32 ; rdfs:label "Plate" ] ,
+            [ rdf:value 33 ; rdfs:label "Room" ] ,
+            [ rdf:value 34 ; rdfs:label "Hall" ] ,
+            [ rdf:value 35 ; rdfs:label "Spring" ] ,
+            [ rdf:value 36 ; rdfs:label "Digital" ] ,
+            [ rdf:value 37 ; rdfs:label "Tape" ] ,
+            [ rdf:value 38 ; rdfs:label "Analog" ] ,
+            [ rdf:value 39 ; rdfs:label "Ping-Pong" ] ,
+            [ rdf:value 40 ; rdfs:label "Chorus" ] ,
+            [ rdf:value 41 ; rdfs:label "Flanger" ] ,
+            [ rdf:value 42 ; rdfs:label "Phaser" ] ,
+            [ rdf:value 43 ; rdfs:label "Dimension" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [

@@ -39,6 +39,9 @@ public:
     for (auto& multiband : multiband_) multiband.prepare(sr_);
     for (auto& rider : rider_) rider.prepare(sr_);
     for (auto& cleanup : cleanup_) cleanup.prepare(sr_);
+    for (auto& reverb : spaceReverb_) reverb.prepare(sr_);
+    for (auto& delay : spaceDelay_) delay.prepare(sr_);
+    for (auto& mod : spaceMod_) mod.prepare(sr_);
     input_.setTime(15.0f, sr_);
     output_.setTime(15.0f, sr_);
     power_.setTime(20.0f, sr_);
@@ -73,6 +76,12 @@ public:
       multiband_[i].setControls(multibandControlsFrom(c.slot[i]));
       rider_[i].setControls(riderControlsFrom(c.slot[i]));
       cleanup_[i].setControls(cleanupControlsFrom(c.slot[i]));
+      spaceReverb_[i].setControls(
+          spaceReverbControlsFrom(c.slot[i], spaceReverbMode(c.slot[i].type)));
+      spaceDelay_[i].setControls(
+          spaceDelayControlsFrom(c.slot[i], spaceDelayMode(c.slot[i].type)));
+      spaceMod_[i].setControls(
+          spaceModControlsFrom(c.slot[i], spaceModMode(c.slot[i].type)));
       slotGain_[i].setTarget(hdsp::dbToGain(c.slot[i].gainDb));
     }
     input_.setTarget(hdsp::dbToGain(c.inputDb));
@@ -179,6 +188,24 @@ public:
           case ModuleId::Cleanup:
             cleanup_[s].process(l, r);
             break;
+          case ModuleId::SpacePlate:
+          case ModuleId::SpaceRoom:
+          case ModuleId::SpaceHall:
+          case ModuleId::SpaceSpring:
+            spaceReverb_[s].process(l, r);
+            break;
+          case ModuleId::SpaceDigital:
+          case ModuleId::SpaceTape:
+          case ModuleId::SpaceAnalog:
+          case ModuleId::SpacePingPong:
+            spaceDelay_[s].process(l, r);
+            break;
+          case ModuleId::SpaceChorus:
+          case ModuleId::SpaceFlanger:
+          case ModuleId::SpacePhaser:
+          case ModuleId::SpaceDimension:
+            spaceMod_[s].process(l, r);
+            break;
           case ModuleId::Count:
             continue;
         }
@@ -233,6 +260,9 @@ public:
     for (auto& multiband : multiband_) multiband.reset();
     for (auto& rider : rider_) rider.reset();
     for (auto& cleanup : cleanup_) cleanup.reset();
+    for (auto& reverb : spaceReverb_) reverb.reset();
+    for (auto& delay : spaceDelay_) delay.reset();
+    for (auto& mod : spaceMod_) mod.reset();
     input_.snap();
     output_.snap();
     power_.snap();
@@ -276,6 +306,9 @@ private:
   hdsp::modules::Multiband multiband_[kSlotCount];
   hdsp::modules::Rider rider_[kSlotCount];
   hdsp::modules::Cleanup cleanup_[kSlotCount];
+  hdsp::modules::SpaceReverb spaceReverb_[kSlotCount];
+  hdsp::modules::SpaceDelay spaceDelay_[kSlotCount];
+  hdsp::modules::SpaceMod spaceMod_[kSlotCount];
   hdsp::Smoothed input_, output_, power_;
   hdsp::Smoothed slotGain_[kSlotCount];
 };

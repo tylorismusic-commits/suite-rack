@@ -144,6 +144,42 @@ ModuleStyle styleFor(int type) {
     case ModuleId::Cleanup:
       return {{0.14, 0.14, 0.13}, {0.30, 0.30, 0.28},
               {0.78, 0.80, 0.76}, {0.89, 0.89, 0.86}};
+    case ModuleId::SpacePlate:
+      return {{0.12, 0.10, 0.24}, {0.26, 0.22, 0.50},
+              {0.64, 0.56, 1.00}, {0.88, 0.86, 0.96}};
+    case ModuleId::SpaceRoom:
+      return {{0.14, 0.10, 0.22}, {0.30, 0.22, 0.46},
+              {0.72, 0.54, 0.98}, {0.90, 0.86, 0.95}};
+    case ModuleId::SpaceHall:
+      return {{0.09, 0.11, 0.26}, {0.20, 0.24, 0.52},
+              {0.52, 0.62, 1.00}, {0.86, 0.88, 0.96}};
+    case ModuleId::SpaceSpring:
+      return {{0.15, 0.09, 0.20}, {0.32, 0.20, 0.42},
+              {0.82, 0.50, 0.94}, {0.92, 0.86, 0.94}};
+    case ModuleId::SpaceDigital:
+      return {{0.07, 0.17, 0.16}, {0.16, 0.34, 0.32},
+              {0.40, 0.90, 0.82}, {0.86, 0.93, 0.91}};
+    case ModuleId::SpaceTape:
+      return {{0.10, 0.18, 0.11}, {0.22, 0.36, 0.24},
+              {0.52, 0.88, 0.60}, {0.86, 0.93, 0.87}};
+    case ModuleId::SpaceAnalog:
+      return {{0.14, 0.17, 0.09}, {0.30, 0.36, 0.18},
+              {0.72, 0.86, 0.42}, {0.90, 0.93, 0.84}};
+    case ModuleId::SpacePingPong:
+      return {{0.07, 0.14, 0.20}, {0.16, 0.30, 0.42},
+              {0.40, 0.76, 0.98}, {0.86, 0.92, 0.95}};
+    case ModuleId::SpaceChorus:
+      return {{0.24, 0.14, 0.07}, {0.50, 0.30, 0.12},
+              {0.98, 0.64, 0.26}, {0.95, 0.87, 0.72}};
+    case ModuleId::SpaceFlanger:
+      return {{0.24, 0.17, 0.06}, {0.50, 0.36, 0.12},
+              {0.98, 0.74, 0.22}, {0.95, 0.90, 0.74}};
+    case ModuleId::SpacePhaser:
+      return {{0.25, 0.12, 0.10}, {0.52, 0.24, 0.16},
+              {0.98, 0.50, 0.30}, {0.95, 0.85, 0.78}};
+    case ModuleId::SpaceDimension:
+      return {{0.24, 0.10, 0.15}, {0.50, 0.20, 0.28},
+              {0.98, 0.44, 0.58}, {0.95, 0.84, 0.88}};
     default:
       return {{0.105, 0.10, 0.095}, {0.24, 0.22, 0.19},
               {0.55, 0.50, 0.44}, {0.72, 0.70, 0.66}};
@@ -155,6 +191,7 @@ bool browserCategoryMatches(int id, int category) {
   if (category == 2) return std::strcmp(d->category, "Comp") == 0;
   if (category == 3) return std::strcmp(d->category, "Colour") == 0;
   if (category == 4) return std::strcmp(d->category, "Dyn") == 0;
+  if (category == 5) return std::strcmp(d->category, "Space") == 0;
   return true;
 }
 
@@ -330,20 +367,18 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
     const double bx = 240, bw = 560;
     const double bh = browserHeight(state.browserCategory);
     const double by = browserY(state.browserCategory);
-    for (int tab = 0; tab < 5; ++tab) {
+    for (int tab = 0; tab < 6; ++tab) {
       Widget t{};
       t.kind = Kind::BrowserTab;
       t.param = slotParam(state.browserSlot, kSlotOffsetType);
       t.value = tab;
-      t.x = bx + 18 + tab * 100.0;
+      t.x = bx + 30 + tab * 84.0;
       t.y = by + 46;
-      t.w = 94.0;
+      t.w = 80.0;
       t.h = 24.0;
-      t.label = tab == 0 ? "ALL"
-                         : (tab == 1 ? "EQ"
-                                     : (tab == 2 ? "COMP"
-                                                 : (tab == 3 ? "COLOUR"
-                                                             : "DYN")));
+      static const char* labels[6] = {"ALL", "EQ", "COMP",
+                                      "COLOUR", "DYN", "SPACE"};
+      t.label = labels[tab];
       widgets_.push_back(t);
     }
 
@@ -519,14 +554,21 @@ void Panel::drawBrowser(cairo_t* cr, const Shared& shared,
   text(cr, title, bx + bw * 0.5, by + 30, 14, 1, kText.r, kText.g, kText.b);
   text(cr, "One job per module · 3–8 controls · no deep pages", bx + bw * 0.5,
        by + 86, 8.5, 1, kDim.r, kDim.g, kDim.b);
-  const double tx = bx + 18, ty = by + 46;
+  const double tx = bx + 28, ty = by + 46;
   cairo_set_source_rgba(cr, 0.20, 0.17, 0.14, 0.7);
-  cairo_rectangle(cr, tx, ty, 494, 24);
+  cairo_rectangle(cr, tx, ty, 506, 24);
   cairo_fill(cr);
 }
 
+int Panel::aboutMaxScroll() const {
+  const int total = kModuleCount - 1;
+  const int visible = 26;  // 13 rows x 2 columns
+  if (total <= visible) return 0;
+  return (total - visible + 1) / 2;
+}
+
 void Panel::drawAbout(cairo_t* cr, const Shared& /*shared*/,
-                      const PanelState& /*state*/) const {
+                      const PanelState& state) const {
   cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 0.72);
   cairo_paint(cr);
   const double bx = 100, by = 50, bw = 840, bh = 650;
@@ -543,48 +585,73 @@ void Panel::drawAbout(cairo_t* cr, const Shared& /*shared*/,
        kDim.b);
 
   const double colX[2] = {120.0, 530.0};
-  const double headerY = 150.0;
-  text(cr, "MODULE", colX[0], headerY, 7, 0, kDim.r, kDim.g, kDim.b);
-  text(cr, "SOURCE", colX[0] + 92, headerY, 7, 0, kDim.r, kDim.g, kDim.b);
-  text(cr, "CONTROLS", colX[0] + 210, headerY, 7, 0, kDim.r, kDim.g, kDim.b);
-  text(cr, "MODULE", colX[1], headerY, 7, 0, kDim.r, kDim.g, kDim.b);
-  text(cr, "SOURCE", colX[1] + 92, headerY, 7, 0, kDim.r, kDim.g, kDim.b);
-  text(cr, "CONTROLS", colX[1] + 210, headerY, 7, 0, kDim.r, kDim.g, kDim.b);
+  const double headerY = 144.0;
+  for (int col = 0; col < 2; ++col) {
+    text(cr, "MODULE", colX[col], headerY, 7, 0, kDim.r, kDim.g, kDim.b);
+    text(cr, "SOURCE", colX[col] + 104, headerY, 7, 0, kDim.r, kDim.g, kDim.b);
+    text(cr, "CONTROLS", colX[col] + 218, headerY, 7, 0, kDim.r, kDim.g,
+         kDim.b);
+  }
 
-  const int perColumn = (kModuleCount - 1 + 1) / 2;
-  for (int id = 1; id < kModuleCount; ++id) {
-    const int index = id - 1;
-    const int col = index / perColumn;
-    const int row = index % perColumn;
-    const double x = colX[col];
-    const double y = 170.0 + row * 28.0;
-    const ModuleDesc* d = moduleDesc(id);
-    const ModuleStyle st = styleFor(id);
-    std::string controls;
-    for (int k = 0; k < d->controlCount; ++k) {
-      if (k > 0) controls += ", ";
-      controls += d->controls[k].label;
+  const int rows = 13;
+  const int start = state.aboutScroll * 2;
+  for (int row = 0; row < rows; ++row) {
+    for (int col = 0; col < 2; ++col) {
+      const int index = start + row * 2 + col;
+      const int id = index + 1;
+      if (id >= kModuleCount) continue;
+      const double x = colX[col];
+      const double y = 162.0 + row * 26.0;
+      const ModuleDesc* d = moduleDesc(id);
+      const ModuleStyle st = styleFor(id);
+      std::string controls;
+      for (int k = 0; k < d->controlCount; ++k) {
+        if (k > 0) controls += " ";
+        controls += d->controls[k].label;
+      }
+      if (controls.size() > 34) controls = controls.substr(0, 32) + "..";
+      text(cr, d->name, x, y, 8.5, 0, st.accent.r, st.accent.g, st.accent.b);
+      text(cr, moduleSource(id), x + 104, y, 6.8, 0, kDim.r, kDim.g, kDim.b);
+      text(cr, controls.c_str(), x + 218, y, 6.5, 0, kText.r, kText.g,
+           kText.b);
+      setRgb(cr, kEdge, 0.20);
+      cairo_set_line_width(cr, 0.6);
+      cairo_move_to(cr, x, y + 8);
+      cairo_line_to(cr, x + 380, y + 8);
+      cairo_stroke(cr);
     }
-    text(cr, d->name, x, y, 8.5, 0, st.accent.r, st.accent.g, st.accent.b);
-    text(cr, moduleSource(id), x + 92, y, 7.0, 0, kDim.r, kDim.g, kDim.b);
-    text(cr, controls.c_str(), x + 210, y, 6.8, 0, kText.r, kText.g, kText.b);
-    setRgb(cr, kEdge, 0.25);
-    cairo_set_line_width(cr, 0.6);
-    cairo_move_to(cr, x, y + 8);
-    cairo_line_to(cr, x + 380, y + 8);
-    cairo_stroke(cr);
+  }
+
+  const int maxScroll = aboutMaxScroll();
+  if (maxScroll > 0) {
+    roundRect(cr, 120, 604, 58, 26, 4);
+    setRgb(cr, state.aboutScroll > 0 ? Rgb{0.20, 0.17, 0.14}
+                                     : Rgb{0.12, 0.11, 0.10});
+    cairo_fill(cr);
+    text(cr, "UP", 149, 621, 8, 1, kText.r, kText.g, kText.b);
+    roundRect(cr, 184, 604, 58, 26, 4);
+    setRgb(cr, state.aboutScroll < maxScroll ? Rgb{0.20, 0.17, 0.14}
+                                             : Rgb{0.12, 0.11, 0.10});
+    cairo_fill(cr);
+    text(cr, "DOWN", 213, 621, 8, 1, kText.r, kText.g, kText.b);
+    char pos[64];
+    const int first = start + 1;
+    const int last = std::min(start + rows * 2, kModuleCount - 1);
+    std::snprintf(pos, sizeof(pos), "Modules %d-%d of %d  ·  scroll wheel",
+                  first, last, kModuleCount - 1);
+    text(cr, pos, 262, 621, 7, 0, kDim.r, kDim.g, kDim.b);
   }
 
   text(cr, "Click a module name or empty card area to open its browser. Drag it to reorder slots.",
-       120, 574, 7.5, 0, kText.r, kText.g, kText.b);
+       120, 520, 7.5, 0, kText.r, kText.g, kText.b);
   text(cr, "Double-click a knob to reset it. Right-click text entry is coming.",
-       120, 588, 7.5, 0, kText.r, kText.g, kText.b);
+       120, 534, 7.5, 0, kText.r, kText.g, kText.b);
   text(cr, "Suite Rack is GPL-3.0-or-later. Shared module DSP lives in hearth-dsp.",
-       120, 608, 7.0, 0, kDim.r, kDim.g, kDim.b);
+       120, 554, 7.0, 0, kDim.r, kDim.g, kDim.b);
   text(cr, "JClones-derived ports use MIT-licensed JClones DSP; see THIRD_PARTY_NOTICES.md.",
-       120, 622, 7.0, 0, kDim.r, kDim.g, kDim.b);
+       120, 568, 7.0, 0, kDim.r, kDim.g, kDim.b);
   text(cr, "Jost font: SIL OFL 1.1. CLAP headers: MIT. Exclusive modules are unique to this plugin.",
-       120, 636, 7.0, 0, kDim.r, kDim.g, kDim.b);
+       120, 582, 7.0, 0, kDim.r, kDim.g, kDim.b);
 
   roundRect(cr, 820, 654, 80, 26, 4);
   setRgb(cr, kAccent);
@@ -943,6 +1010,14 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
                         bool fine) {
   (void)fine;
   if (state.aboutOpen) {
+    if (x >= 120 && x <= 178 && y >= 604 && y <= 630) {
+      state.aboutScroll = std::max(0, state.aboutScroll - 1);
+      return true;
+    }
+    if (x >= 184 && x <= 242 && y >= 604 && y <= 630) {
+      state.aboutScroll = std::min(aboutMaxScroll(), state.aboutScroll + 1);
+      return true;
+    }
     if ((x >= 820 && x <= 900 && y >= 654 && y <= 680) ||
         x < 100 || x > 940 || y < 50 || y > 700) {
       state.aboutOpen = false;
@@ -951,6 +1026,7 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
   }
   if (x >= 880 && x <= 976 && y >= 20 && y <= 48) {
     state.aboutOpen = true;
+    state.aboutScroll = 0;
     return true;
   }
   if (handlePresetClick(shared, state, x, y)) return true;
@@ -1110,7 +1186,12 @@ void Panel::pointerUp(Shared& shared, PanelState& state) {
 }
 
 bool Panel::wheel(Shared& shared, PanelState& state, double x, double y, double dy) {
-  if (state.aboutOpen) return true;
+  if (state.aboutOpen) {
+    const int maxScroll = aboutMaxScroll();
+    state.aboutScroll = std::clamp(
+        state.aboutScroll - (dy > 0 ? 1 : -1), 0, maxScroll);
+    return true;
+  }
   if (state.browserSlot >= 0) {
     const int maxScroll =
         std::max(0, browserEntryCount(state.browserCategory) - 16);

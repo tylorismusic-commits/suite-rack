@@ -39,6 +39,18 @@ enum class ModuleId : int {
   Multiband,
   Rider,
   Cleanup,
+  SpacePlate,
+  SpaceRoom,
+  SpaceHall,
+  SpaceSpring,
+  SpaceDigital,
+  SpaceTape,
+  SpaceAnalog,
+  SpacePingPong,
+  SpaceChorus,
+  SpaceFlanger,
+  SpacePhaser,
+  SpaceDimension,
   Count
 };
 
@@ -51,7 +63,9 @@ inline constexpr const char* kModuleLabels[] = {
     "Gate",      "Transient", "Clip",     "De-Ess",   "Density",
     "Bleed Out", "Peak Limiter", "Image", "Crush", "Filter", "Motion",
     "Sub",       "Double",   "Dynamic EQ", "Multiband",
-    "Rider",     "Cleanup",
+    "Rider",     "Cleanup",  "Plate",    "Room",      "Hall",
+    "Spring",    "Digital",  "Tape",     "Analog",    "Ping-Pong",
+    "Chorus",    "Flanger",  "Phaser",   "Dimension",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -343,6 +357,44 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 1: return 0.50;  // De-hum
         case 2: return 0.00;  // Mains 50
         case 3: return 1.00;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::SpacePlate:
+    case ModuleId::SpaceRoom:
+    case ModuleId::SpaceHall:
+    case ModuleId::SpaceSpring:
+      switch (control) {
+        case 0: return 0.50;  // Size
+        case 1: return 0.18;  // Decay
+        case 2: return 0.12;  // Pre-delay
+        case 3: return 0.50;  // Tone
+        case 4: return 0.70;  // Width
+        case 5: return 0.30;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::SpaceDigital:
+    case ModuleId::SpaceTape:
+    case ModuleId::SpaceAnalog:
+    case ModuleId::SpacePingPong:
+      switch (control) {
+        case 0: return 0.19;  // Time
+        case 1: return 0.35;  // Feedback
+        case 2: return 0.50;  // Tone
+        case 3: return 0.15;  // Mod
+        case 4: return 0.50;  // Width
+        case 5: return 0.25;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::SpaceChorus:
+    case ModuleId::SpaceFlanger:
+    case ModuleId::SpacePhaser:
+    case ModuleId::SpaceDimension:
+      switch (control) {
+        case 0: return 0.25;  // Rate
+        case 1: return 0.50;  // Depth
+        case 2: return 0.20;  // Feedback
+        case 3: return 0.70;  // Width
+        case 4: return 0.40;  // Mix
         default: return 0.50;
       }
     default:

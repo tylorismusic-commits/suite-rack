@@ -29,6 +29,9 @@ int main(int argc, char** argv) {
   state.browserCategory = 1;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-browser-eq.png").c_str());
+  state.browserCategory = 5;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-browser-space.png").c_str());
   state.browserCategory = 0;
   state.browserSlot = -1;
   state.selectedSlot = 4;
@@ -64,6 +67,13 @@ int main(int argc, char** argv) {
   state.selectedSlot = 2;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-rider.png").c_str());
+  applyModuleDefaults(s, 2, static_cast<int>(ModuleId::SpacePlate));
+  applyModuleDefaults(s, 3, static_cast<int>(ModuleId::SpaceTape));
+  applyModuleDefaults(s, 4, static_cast<int>(ModuleId::SpaceChorus));
+  applyModuleDefaults(s, 5, static_cast<int>(ModuleId::SpaceHall));
+  state.selectedSlot = 2;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-space.png").c_str());
   state.aboutOpen = true;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-about.png").c_str());

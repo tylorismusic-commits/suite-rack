@@ -56,6 +56,9 @@ enum class ControlFormat {
   MakeupDb,
   RiderTargetDb,
   RiderSpeedMs,
+  SpaceDecayS,
+  SpacePreDelayMs,
+  SpaceDelayMs,
 };
 
 struct ControlDesc {
@@ -184,6 +187,32 @@ inline constexpr const char* kMotionModeLabels[] = {"Tremolo", "Auto-Pan",
                                                     "Rotary"};
 
 inline constexpr const char* kMainsLabels[] = {"50 Hz", "60 Hz"};
+
+inline constexpr ControlDesc kSpaceReverbControls[] = {
+    {0, "SIZE", "Size", ControlFormat::Percent},
+    {1, "DECAY", "Decay", ControlFormat::SpaceDecayS},
+    {2, "PRE", "Pre-Delay", ControlFormat::SpacePreDelayMs},
+    {3, "TONE", "Tone", ControlFormat::Percent},
+    {4, "WIDTH", "Width", ControlFormat::Percent},
+    {5, "MIX", "Mix", ControlFormat::Percent},
+};
+
+inline constexpr ControlDesc kSpaceDelayControls[] = {
+    {0, "TIME", "Time", ControlFormat::SpaceDelayMs},
+    {1, "FB", "Feedback", ControlFormat::Percent},
+    {2, "TONE", "Tone", ControlFormat::Percent},
+    {3, "MOD", "Mod", ControlFormat::Percent},
+    {4, "WIDTH", "Width", ControlFormat::Percent},
+    {5, "MIX", "Mix", ControlFormat::Percent},
+};
+
+inline constexpr ControlDesc kSpaceModControls[] = {
+    {0, "RATE", "Rate", ControlFormat::LfoRateHz},
+    {1, "DEPTH", "Depth", ControlFormat::Percent},
+    {2, "FB", "Feedback", ControlFormat::Percent},
+    {3, "WIDTH", "Width", ControlFormat::Percent},
+    {4, "MIX", "Mix", ControlFormat::Percent},
+};
 
 inline constexpr ControlDesc kRiderControls[] = {
     {0, "TARGET", "Target", ControlFormat::RiderTargetDb},
@@ -365,7 +394,7 @@ inline constexpr ModuleDesc kModules[] = {
      static_cast<int>(sizeof(kLimiterControls) /
                       sizeof(kLimiterControls[0])),
      kLimiterControls},
-    {ModuleId::Image, "Image", "Dyn", "Width, mono-maker, balance and M/S",
+    {ModuleId::Image, "Image", "Space", "Width, mono-maker, balance and M/S",
      false, false, 0,
      static_cast<int>(sizeof(kImageControls) / sizeof(kImageControls[0])),
      kImageControls},
@@ -377,14 +406,14 @@ inline constexpr ModuleDesc kModules[] = {
      false, 0,
      static_cast<int>(sizeof(kFilterControls) / sizeof(kFilterControls[0])),
      kFilterControls},
-    {ModuleId::Motion, "Motion", "Dyn", "Tremolo, auto-pan and rotary", false,
+    {ModuleId::Motion, "Motion", "Space", "Tremolo, auto-pan and rotary", false,
      false, 0,
      static_cast<int>(sizeof(kMotionControls) / sizeof(kMotionControls[0])),
      kMotionControls},
     {ModuleId::Sub, "Sub", "Dyn", "Subharmonic synthesizer", false, false, 0,
      static_cast<int>(sizeof(kSubControls) / sizeof(kSubControls[0])),
      kSubControls},
-    {ModuleId::Double, "Double", "Dyn", "Doubler / microshift", false, false, 0,
+    {ModuleId::Double, "Double", "Space", "Doubler / microshift", false, false, 0,
      static_cast<int>(sizeof(kDoubleControls) / sizeof(kDoubleControls[0])),
      kDoubleControls},
     {ModuleId::DynamicEq, "Dynamic EQ", "Dyn", "Single-band dynamic EQ", false,
@@ -404,6 +433,57 @@ inline constexpr ModuleDesc kModules[] = {
      0,
      static_cast<int>(sizeof(kCleanupControls) / sizeof(kCleanupControls[0])),
      kCleanupControls},
+    {ModuleId::SpacePlate, "Plate", "Space", "Plate reverb", false, false, 0,
+     static_cast<int>(sizeof(kSpaceReverbControls) /
+                      sizeof(kSpaceReverbControls[0])),
+     kSpaceReverbControls},
+    {ModuleId::SpaceRoom, "Room", "Space", "Room reverb", false, false, 0,
+     static_cast<int>(sizeof(kSpaceReverbControls) /
+                      sizeof(kSpaceReverbControls[0])),
+     kSpaceReverbControls},
+    {ModuleId::SpaceHall, "Hall", "Space", "Hall reverb", false, false, 0,
+     static_cast<int>(sizeof(kSpaceReverbControls) /
+                      sizeof(kSpaceReverbControls[0])),
+     kSpaceReverbControls},
+    {ModuleId::SpaceSpring, "Spring", "Space", "Spring reverb", false, false, 0,
+     static_cast<int>(sizeof(kSpaceReverbControls) /
+                      sizeof(kSpaceReverbControls[0])),
+     kSpaceReverbControls},
+    {ModuleId::SpaceDigital, "Digital", "Space", "Digital delay", false, false,
+     0,
+     static_cast<int>(sizeof(kSpaceDelayControls) /
+                      sizeof(kSpaceDelayControls[0])),
+     kSpaceDelayControls},
+    {ModuleId::SpaceTape, "Tape", "Space", "Tape delay", false, false, 0,
+     static_cast<int>(sizeof(kSpaceDelayControls) /
+                      sizeof(kSpaceDelayControls[0])),
+     kSpaceDelayControls},
+    {ModuleId::SpaceAnalog, "Analog", "Space", "Analog delay", false, false, 0,
+     static_cast<int>(sizeof(kSpaceDelayControls) /
+                      sizeof(kSpaceDelayControls[0])),
+     kSpaceDelayControls},
+    {ModuleId::SpacePingPong, "Ping-Pong", "Space", "Ping-pong delay", false,
+     false, 0,
+     static_cast<int>(sizeof(kSpaceDelayControls) /
+                      sizeof(kSpaceDelayControls[0])),
+     kSpaceDelayControls},
+    {ModuleId::SpaceChorus, "Chorus", "Space", "Chorus", false, false, 0,
+     static_cast<int>(sizeof(kSpaceModControls) /
+                      sizeof(kSpaceModControls[0])),
+     kSpaceModControls},
+    {ModuleId::SpaceFlanger, "Flanger", "Space", "Flanger", false, false, 0,
+     static_cast<int>(sizeof(kSpaceModControls) /
+                      sizeof(kSpaceModControls[0])),
+     kSpaceModControls},
+    {ModuleId::SpacePhaser, "Phaser", "Space", "Phaser", false, false, 0,
+     static_cast<int>(sizeof(kSpaceModControls) /
+                      sizeof(kSpaceModControls[0])),
+     kSpaceModControls},
+    {ModuleId::SpaceDimension, "Dimension", "Space", "Dimension modulation",
+     false, false, 0,
+     static_cast<int>(sizeof(kSpaceModControls) /
+                      sizeof(kSpaceModControls[0])),
+     kSpaceModControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,

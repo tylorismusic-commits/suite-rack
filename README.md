@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.14.0-m2 — CLAP + LV2, module registry, thirty-one modules and drag reorder.**
+**Status: 0.15.1-m2 — CLAP + LV2, module registry, forty-three modules and drag reorder.**
 The rest of the catalog, drag/reorder, module presets, browser search and user
 presets are next.
 
@@ -23,6 +23,8 @@ standalone plugins remain the full versions.
 
 ![Suite Rack — EQ category](docs/rack-browser-eq.png)
 
+![Suite Rack — Space category](docs/rack-browser-space.png)
+
 ![Suite Rack — Bleed Out](docs/rack-bleedout.png)
 
 ![Suite Rack — Peak Limiter](docs/rack-limiter.png)
@@ -36,6 +38,8 @@ standalone plugins remain the full versions.
 ![Suite Rack — Dynamic EQ and Multiband](docs/rack-dyn.png)
 
 ![Suite Rack — Rider and Cleanup](docs/rack-rider.png)
+
+![Suite Rack — Space modules](docs/rack-space.png)
 
 ![Suite Rack — About](docs/rack-about.png)
 
@@ -76,7 +80,7 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.14.0-m2 slice
+## Current 0.15.1-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
@@ -89,13 +93,15 @@ the 500-series format; Cleanup is the lightweight repair representative.
 - Bleed Out has a separate automated **GHOST ON** button.
 - Filled slots hide the **CHOOSE** hint so longer module names have room.
 - **ABOUT** opens a reference table with each module's source, controls and attributions.
-- Module browser with **ALL / EQ / COMP / COLOUR / DYN** categories and scrolling.
+- Module browser with **ALL / EQ / COMP / COLOUR / DYN / SPACE** categories and scrolling.
+- The **SPACE** category includes reverbs, delays, modulation, Image and Double.
 - Generic per-slot controls: twelve control slots plus type, bypass, mix and
   gain. Host automation follows the slot, not the module.
 - **Available modules:** 4K EQ, Hearth EQ, Tilt, Air, 76 Blue, 76 Black, 2A,
   3A, VCA, Valve, Console, Bus, Tape, Transformer, Gate, Transient, Clip and
   De-Ess, Density, Bleed Out, Peak Limiter, Image, Crush, Filter, Motion, Sub,
-  Double, Dynamic EQ, Multiband, Rider and Cleanup.
+  Double, Dynamic EQ, Multiband, Rider, Cleanup, four reverbs, four delays and
+  four modulation modules.
 - Serial engine and per-slot meters in place; DSP and panel tests pass.
 - **CLAP and LV2 builds** load in REAPER with the six-column editor and process
   audio.

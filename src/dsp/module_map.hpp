@@ -130,6 +130,74 @@ inline hdsp::modules::MultibandControls multibandControlsFrom(
   return out;
 }
 
+inline int spaceReverbMode(int type) noexcept {
+  switch (type) {
+    case static_cast<int>(ModuleId::SpacePlate): return 0;
+    case static_cast<int>(ModuleId::SpaceRoom): return 1;
+    case static_cast<int>(ModuleId::SpaceHall): return 2;
+    case static_cast<int>(ModuleId::SpaceSpring): return 3;
+    default: return 0;
+  }
+}
+
+inline int spaceDelayMode(int type) noexcept {
+  switch (type) {
+    case static_cast<int>(ModuleId::SpaceDigital): return 0;
+    case static_cast<int>(ModuleId::SpaceTape): return 1;
+    case static_cast<int>(ModuleId::SpaceAnalog): return 2;
+    case static_cast<int>(ModuleId::SpacePingPong): return 3;
+    default: return 0;
+  }
+}
+
+inline int spaceModMode(int type) noexcept {
+  switch (type) {
+    case static_cast<int>(ModuleId::SpaceChorus): return 0;
+    case static_cast<int>(ModuleId::SpaceFlanger): return 1;
+    case static_cast<int>(ModuleId::SpacePhaser): return 2;
+    case static_cast<int>(ModuleId::SpaceDimension): return 3;
+    default: return 0;
+  }
+}
+
+inline hdsp::modules::SpaceReverbControls spaceReverbControlsFrom(
+    const SlotControls& c, int mode) noexcept {
+  hdsp::modules::SpaceReverbControls out;
+  out.mode = mode;
+  out.size = c.c[0];
+  out.decay = c.c[1];
+  out.predelay = c.c[2];
+  out.tone = c.c[3];
+  out.width = c.c[4];
+  out.mix = c.c[5];
+  return out;
+}
+
+inline hdsp::modules::SpaceDelayControls spaceDelayControlsFrom(
+    const SlotControls& c, int mode) noexcept {
+  hdsp::modules::SpaceDelayControls out;
+  out.mode = mode;
+  out.time = c.c[0];
+  out.feedback = c.c[1];
+  out.tone = c.c[2];
+  out.mod = c.c[3];
+  out.width = c.c[4];
+  out.mix = c.c[5];
+  return out;
+}
+
+inline hdsp::modules::SpaceModControls spaceModControlsFrom(
+    const SlotControls& c, int mode) noexcept {
+  hdsp::modules::SpaceModControls out;
+  out.mode = mode;
+  out.rate = c.c[0];
+  out.depth = c.c[1];
+  out.feedback = c.c[2];
+  out.width = c.c[3];
+  out.mix = c.c[4];
+  return out;
+}
+
 inline hdsp::modules::RiderControls riderControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::RiderControls out;

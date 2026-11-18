@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.15.1-m2 — 2026-11-17
+
+- Space is now its own browser category, containing reverbs, delays,
+  modulation, Image, Motion and Double.
+- The About reference now scrolls with the wheel or UP/DOWN buttons.
+- It shows two readable columns instead of a crowded three-column table.
+
+## 0.15.0-m2 — 2026-11-17
+
+- Added the twelve Space modules: Plate, Room, Hall, Spring, Digital, Tape,
+  Analog, Ping-Pong, Chorus, Flanger, Phaser and Dimension.
+- Added the SPACE browser category.
+- Space DSP lives in hearth-dsp and is consumed through the submodule.
+- The About reference now uses three columns for the larger catalog.
+
 ## 0.14.0-m2 — 2026-11-17
 
 - Added Rider: target, speed, range and mix.

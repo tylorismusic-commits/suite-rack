@@ -211,6 +211,12 @@ int main() {
   panel.pointerDown(s, state, 930, 34, false);
   panel.pointerUp(s, state);
   check(state.aboutOpen, "ABOUT button opens the reference");
+  check(state.aboutScroll == 0, "ABOUT starts at the first page");
+  panel.wheel(s, state, 500, 300, -1.0);
+  check(state.aboutScroll == 1, "ABOUT wheel scrolls down");
+  panel.pointerDown(s, state, 149, 617, false);
+  panel.pointerUp(s, state);
+  check(state.aboutScroll == 0, "ABOUT UP button scrolls back");
   panel.pointerDown(s, state, 860, 667, false);
   panel.pointerUp(s, state);
   check(!state.aboutOpen, "ABOUT close button closes the reference");
