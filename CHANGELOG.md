@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.10.0-m2 — 2026-11-17
+
+- Added Filter: cutoff, resonance, envelope amount, LFO rate and LP/BP/HP mode.
+- Added Motion: tremolo, auto-pan and rotary with rate, depth, width and mix.
+- Mode buttons now sit just above the MIX/GAIN labels instead of over knobs.
+- Filter and Motion live in hearth-dsp and are consumed through the submodule.
+
 ## 0.9.0-m2 — 2026-11-17
 
 - Added Image: width, mono-maker, balance and an M/S monitor toggle.

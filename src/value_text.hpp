@@ -159,6 +159,20 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::CrushToneHz:
       std::snprintf(buf, sizeof(buf), "%.1f kHz", 1.0f * std::pow(20.0f, v));
       return buf;
+    case ControlFormat::FilterCutoffHz:
+      std::snprintf(buf, sizeof(buf), "%.0f Hz", 20.0f * std::pow(1000.0f, v));
+      return buf;
+    case ControlFormat::LfoRateHz:
+      std::snprintf(buf, sizeof(buf), "%.2f Hz", 0.05f * std::pow(200.0f, v));
+      return buf;
+    case ControlFormat::FilterMode: {
+      static const char* names[3] = {"LP", "BP", "HP"};
+      return names[std::clamp(static_cast<int>(std::lround(v * 2.0f)), 0, 2)];
+    }
+    case ControlFormat::MotionMode: {
+      static const char* names[3] = {"Tremolo", "Auto-Pan", "Rotary"};
+      return names[std::clamp(static_cast<int>(std::lround(v * 2.0f)), 0, 2)];
+    }
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;
@@ -309,6 +323,12 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
           case ControlFormat::CrushBits: v = (v - 1.0) / 15.0; break;
           case ControlFormat::CrushToneHz:
             v = std::log(std::max(v, 1.0) / 1.0) / std::log(20.0);
+            break;
+          case ControlFormat::FilterCutoffHz:
+            v = std::log(std::max(v, 20.0) / 20.0) / std::log(1000.0);
+            break;
+          case ControlFormat::LfoRateHz:
+            v = std::log(std::max(v, 0.05) / 0.05) / std::log(200.0);
             break;
           default: break;
         }

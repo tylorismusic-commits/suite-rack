@@ -43,6 +43,10 @@ enum class ControlFormat {
   MonoHz,
   CrushBits,
   CrushToneHz,
+  FilterCutoffHz,
+  LfoRateHz,
+  FilterMode,
+  MotionMode,
 };
 
 struct ControlDesc {
@@ -164,6 +168,28 @@ inline constexpr ControlDesc kBleedOutControls[] = {
     {2, "DEBLEED", "DeBleed", ControlFormat::Percent},
     {3, "GHOST", "Ghost", ControlFormat::Percent},
     {4, "GHOST ON", "Ghost On", ControlFormat::Percent, false, {}, true},
+};
+
+inline constexpr const char* kFilterModeLabels[] = {"LP", "BP", "HP"};
+inline constexpr const char* kMotionModeLabels[] = {"Tremolo", "Auto-Pan",
+                                                    "Rotary"};
+
+inline constexpr ControlDesc kFilterControls[] = {
+    {0, "CUTOFF", "Cutoff", ControlFormat::FilterCutoffHz},
+    {1, "RES", "Resonance", ControlFormat::Percent},
+    {2, "ENV", "Envelope", ControlFormat::BipolarPercent},
+    {3, "RATE", "Rate", ControlFormat::LfoRateHz},
+    {4, "MODE", "Mode", ControlFormat::FilterMode, true,
+     labels(kFilterModeLabels)},
+};
+
+inline constexpr ControlDesc kMotionControls[] = {
+    {0, "RATE", "Rate", ControlFormat::LfoRateHz},
+    {1, "DEPTH", "Depth", ControlFormat::Percent},
+    {2, "WIDTH", "Width", ControlFormat::Percent},
+    {3, "MODE", "Mode", ControlFormat::MotionMode, true,
+     labels(kMotionModeLabels)},
+    {4, "MIX", "Mix", ControlFormat::Percent},
 };
 
 inline constexpr ControlDesc kImageControls[] = {
@@ -289,6 +315,14 @@ inline constexpr ModuleDesc kModules[] = {
      false, false, 0,
      static_cast<int>(sizeof(kCrushControls) / sizeof(kCrushControls[0])),
      kCrushControls},
+    {ModuleId::Filter, "Filter", "Dyn", "Envelope / LFO auto-filter", false,
+     false, 0,
+     static_cast<int>(sizeof(kFilterControls) / sizeof(kFilterControls[0])),
+     kFilterControls},
+    {ModuleId::Motion, "Motion", "Dyn", "Tremolo, auto-pan and rotary", false,
+     false, 0,
+     static_cast<int>(sizeof(kMotionControls) / sizeof(kMotionControls[0])),
+     kMotionControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,

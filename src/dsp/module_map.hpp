@@ -105,6 +105,32 @@ inline hdsp::modules::ClipControls clipControlsFrom(
   return out;
 }
 
+inline hdsp::modules::FilterControls filterControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::FilterControls out;
+  out.cutoff = c.c[0];
+  out.resonance = c.c[1];
+  out.envelope = c.c[2];
+  out.rate = c.c[3];
+  out.mode = std::clamp(
+      static_cast<int>(std::lround(std::clamp(c.c[4], 0.0f, 1.0f) * 2.0f)), 0,
+      2);
+  return out;
+}
+
+inline hdsp::modules::MotionControls motionControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::MotionControls out;
+  out.rate = c.c[0];
+  out.depth = c.c[1];
+  out.width = c.c[2];
+  out.mode = std::clamp(
+      static_cast<int>(std::lround(std::clamp(c.c[3], 0.0f, 1.0f) * 2.0f)), 0,
+      2);
+  out.mix = c.c[4];
+  return out;
+}
+
 inline hdsp::modules::ImageControls imageControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::ImageControls out;

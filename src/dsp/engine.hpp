@@ -31,6 +31,8 @@ public:
     for (auto& limiter : limiter_) limiter.prepare(sr_);
     for (auto& image : image_) image.prepare(sr_);
     for (auto& crush : crush_) crush.prepare(sr_);
+    for (auto& filter : filter_) filter.prepare(sr_);
+    for (auto& motion : motion_) motion.prepare(sr_);
     input_.setTime(15.0f, sr_);
     output_.setTime(15.0f, sr_);
     power_.setTime(20.0f, sr_);
@@ -57,6 +59,8 @@ public:
       limiter_[i].setControls(limiterControlsFrom(c.slot[i]));
       image_[i].setControls(imageControlsFrom(c.slot[i]));
       crush_[i].setControls(crushControlsFrom(c.slot[i]));
+      filter_[i].setControls(filterControlsFrom(c.slot[i]));
+      motion_[i].setControls(motionControlsFrom(c.slot[i]));
       slotGain_[i].setTarget(hdsp::dbToGain(c.slot[i].gainDb));
     }
     input_.setTarget(hdsp::dbToGain(c.inputDb));
@@ -136,6 +140,12 @@ public:
           case ModuleId::Crush:
             crush_[s].process(l, r);
             break;
+          case ModuleId::Filter:
+            filter_[s].process(l, r);
+            break;
+          case ModuleId::Motion:
+            motion_[s].process(l, r);
+            break;
           case ModuleId::Count:
             continue;
         }
@@ -182,6 +192,8 @@ public:
     for (auto& limiter : limiter_) limiter.reset();
     for (auto& image : image_) image.reset();
     for (auto& crush : crush_) crush.reset();
+    for (auto& filter : filter_) filter.reset();
+    for (auto& motion : motion_) motion.reset();
     input_.snap();
     output_.snap();
     power_.snap();
@@ -217,6 +229,8 @@ private:
   hdsp::modules::Limiter limiter_[kSlotCount];
   hdsp::modules::Image image_[kSlotCount];
   hdsp::modules::Crush crush_[kSlotCount];
+  hdsp::modules::Filter filter_[kSlotCount];
+  hdsp::modules::Motion motion_[kSlotCount];
   hdsp::Smoothed input_, output_, power_;
   hdsp::Smoothed slotGain_[kSlotCount];
 };

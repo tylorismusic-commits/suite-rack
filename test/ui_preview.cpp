@@ -40,6 +40,11 @@ int main(int argc, char** argv) {
   state.selectedSlot = 2;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-image.png").c_str());
+  applyModuleDefaults(s, 2, static_cast<int>(ModuleId::Filter));
+  applyModuleDefaults(s, 3, static_cast<int>(ModuleId::Motion));
+  state.selectedSlot = 2;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-filter.png").c_str());
   cairo_destroy(cr);
   cairo_surface_destroy(surf);
   std::printf("wrote rack-eq.png and rack-comp.png\n");

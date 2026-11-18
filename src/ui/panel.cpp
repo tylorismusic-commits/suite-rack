@@ -120,6 +120,12 @@ ModuleStyle styleFor(int type) {
     case ModuleId::Crush:
       return {{0.24, 0.11, 0.07}, {0.50, 0.24, 0.12},
               {0.98, 0.56, 0.24}, {0.94, 0.86, 0.72}};
+    case ModuleId::Filter:
+      return {{0.08, 0.14, 0.21}, {0.18, 0.30, 0.42},
+              {0.42, 0.76, 0.98}, {0.86, 0.91, 0.94}};
+    case ModuleId::Motion:
+      return {{0.24, 0.13, 0.08}, {0.50, 0.28, 0.14},
+              {0.98, 0.66, 0.28}, {0.95, 0.88, 0.74}};
     default:
       return {{0.105, 0.10, 0.095}, {0.24, 0.22, 0.19},
               {0.55, 0.50, 0.44}, {0.72, 0.70, 0.66}};
@@ -248,27 +254,31 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
     if (module->controlCount > 0) {
       const int rows = (module->controlCount + 1) / 2;
       const double rowH = rows >= 4 ? 82.0 : 96.0;
+      int toggleSlot = 0;
       for (int k = 0; k < module->controlCount; ++k) {
         const ControlDesc& control = module->controls[k];
-        const double ky = y + 165.0 + (k / 2) * rowH;
         if (control.toggled) {
+          // Mode buttons live at the bottom of the control area, just above
+          // the MIX/GAIN labels, so they never sit on top of a knob.
           Widget t{};
           t.kind = Kind::ModuleToggle;
           t.param = slotParam(i, kSlotOffsetC0 + control.param);
           t.x = x + 10;
-          t.y = ky - 12;
+          t.y = y + 452.0 - toggleSlot * 30.0;
           t.w = colW - 20;
           t.h = 22;
           t.label = control.label;
           t.styleSlot = i;
           t.styleType = type;
           widgets_.push_back(t);
-        } else {
-          const double kx = (k & 1) ? cx2 : cx1;
-          knob(slotParam(i, kSlotOffsetC0 + control.param), kx, ky, 18,
-               control.label, i, true, control.param,
-               control.stepped ? control.labels.count : 0);
+          ++toggleSlot;
+          continue;
         }
+        const double kx = (k & 1) ? cx2 : cx1;
+        const double ky = y + 165.0 + (k / 2) * rowH;
+        knob(slotParam(i, kSlotOffsetC0 + control.param), kx, ky, 18,
+             control.label, i, true, control.param,
+             control.stepped ? control.labels.count : 0);
       }
     }
 
