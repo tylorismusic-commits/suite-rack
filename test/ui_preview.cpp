@@ -183,6 +183,14 @@ int main(int argc, char** argv) {
   state.selectedSlot = 2;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-cl1b.png").c_str());
+  applyModuleDefaults(s, 2, static_cast<int>(ModuleId::JcDuTape));
+  applyModuleDefaults(s, 3, static_cast<int>(ModuleId::ColourTape));
+  applyModuleDefaults(s, 4, static_cast<int>(ModuleId::JcTapeHead));
+  applyModuleDefaults(s, 5, static_cast<int>(ModuleId::Reel));
+  state.selectedSlot = 2;
+  s.set(slotParam(2, kSlotOffsetC0 + 5), 0.0);
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-dutape.png").c_str());
   state.aboutOpen = true;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-about.png").c_str());

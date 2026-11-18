@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.32.0-m2 — 2026-11-18
+
+- Added JClones DuTape tape saturator with input, output, six machine
+  profiles, three speeds, noise reduction and dithering.
+
 ## 0.31.0-m2 — 2026-11-18
 
 - Added JClones CL-1B optical compressor with ratio, threshold, attack,

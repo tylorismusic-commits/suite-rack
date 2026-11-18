@@ -81,6 +81,7 @@ enum class ControlFormat {
   ThresholdM40P10Db,
   Unit10,
   Output24Db,
+  TapeGainDb,
 };
 
 struct ControlDesc {
@@ -166,6 +167,14 @@ inline constexpr ControlDesc kEq510Controls[] = {
     {3, "HPF", "HPF", ControlFormat::EqHpfHz},
 };
 
+inline constexpr const char* kDuTapeMachineLabels[] = {
+    "Ideal Tape", "80s 2 Tk.", "70s 24Tk.", "60s 2 Tk.", "60s Tube",
+    "1/2 M.Tk."};
+inline constexpr const char* kDuTapeSpeedLabels[] = {"30 ips", "15 ips",
+                                                     "7 1/2 ips"};
+inline constexpr const char* kDuTapeNrLabels[] = {"Off", "Type 1", "Type 2",
+                                                  "Noiseless"};
+
 inline constexpr const char* kCL1BModeLabels[] = {"Fixed", "Fixed/Manual",
                                                   "Manual"};
 
@@ -173,6 +182,18 @@ inline constexpr const char* kRs124ModelLabels[] = {"60050A", "61010B",
                                                     "60070B"};
 inline constexpr const char* kRs124ReleaseLabels[] = {"1", "2", "3",
                                                       "4", "5", "6"};
+
+inline constexpr ControlDesc kJcDuTapeControls[] = {
+    {0, "INPUT", "Input", ControlFormat::TapeGainDb},
+    {1, "OUTPUT", "Output", ControlFormat::TapeGainDb},
+    {2, "MACHINE", "Machine Brand", ControlFormat::Percent, true,
+     labels(kDuTapeMachineLabels)},
+    {3, "SPEED", "Speed", ControlFormat::Percent, true,
+     labels(kDuTapeSpeedLabels)},
+    {4, "NOISE RED", "Noise Reduction", ControlFormat::Percent, true,
+     labels(kDuTapeNrLabels)},
+    {5, "DITHER", "Dithering", ControlFormat::Percent, false, {}, true},
+};
 
 inline constexpr ControlDesc kJcCL1BControls[] = {
     {0, "RATIO", "Ratio", ControlFormat::Ratio2To10},
@@ -765,6 +786,10 @@ inline constexpr ModuleDesc kModules[] = {
      true, 0,
      static_cast<int>(sizeof(kJcCL1BControls) / sizeof(kJcCL1BControls[0])),
      kJcCL1BControls},
+    {ModuleId::JcDuTape, "DuTape", "Colour", "JClones tape saturator", false,
+     false, 0,
+     static_cast<int>(sizeof(kJcDuTapeControls) / sizeof(kJcDuTapeControls[0])),
+     kJcDuTapeControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -826,6 +851,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Trowel",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
+    "JClones",
     "JClones",
     "JClones",
     "JClones",

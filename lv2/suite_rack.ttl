@@ -23,7 +23,7 @@
     ] ;
     doap:homepage <https://github.com/tylorismusic-commits/suite-rack> ;
     lv2:majorVersion 0 ;
-    lv2:minorVersion 31 ;
+    lv2:minorVersion 32 ;
     lv2:microVersion 0 ;
     lv2:binary <suite_rack.so> ;
     rdfs:seeAlso <manifest.ttl> ;
@@ -96,7 +96,7 @@
         lv2:name "Module" ;
         lv2:default 1 ;
         lv2:minimum 0 ;
-        lv2:maximum 66 ;
+        lv2:maximum 67 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -164,7 +164,8 @@
             [ rdf:value 63 ; rdfs:label "Hyrax" ] ,
             [ rdf:value 64 ; rdfs:label "Bloom" ] ,
             [ rdf:value 65 ; rdfs:label "RS-124" ] ,
-            [ rdf:value 66 ; rdfs:label "CL-1B" ] ;
+            [ rdf:value 66 ; rdfs:label "CL-1B" ] ,
+            [ rdf:value 67 ; rdfs:label "DuTape" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
     ] ,
     [
@@ -328,7 +329,7 @@
         lv2:name "Module" ;
         lv2:default 5 ;
         lv2:minimum 0 ;
-        lv2:maximum 66 ;
+        lv2:maximum 67 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -396,7 +397,8 @@
             [ rdf:value 63 ; rdfs:label "Hyrax" ] ,
             [ rdf:value 64 ; rdfs:label "Bloom" ] ,
             [ rdf:value 65 ; rdfs:label "RS-124" ] ,
-            [ rdf:value 66 ; rdfs:label "CL-1B" ] ;
+            [ rdf:value 66 ; rdfs:label "CL-1B" ] ,
+            [ rdf:value 67 ; rdfs:label "DuTape" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
@@ -560,7 +562,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 66 ;
+        lv2:maximum 67 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -628,7 +630,8 @@
             [ rdf:value 63 ; rdfs:label "Hyrax" ] ,
             [ rdf:value 64 ; rdfs:label "Bloom" ] ,
             [ rdf:value 65 ; rdfs:label "RS-124" ] ,
-            [ rdf:value 66 ; rdfs:label "CL-1B" ] ;
+            [ rdf:value 66 ; rdfs:label "CL-1B" ] ,
+            [ rdf:value 67 ; rdfs:label "DuTape" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
@@ -792,7 +795,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 66 ;
+        lv2:maximum 67 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -860,7 +863,8 @@
             [ rdf:value 63 ; rdfs:label "Hyrax" ] ,
             [ rdf:value 64 ; rdfs:label "Bloom" ] ,
             [ rdf:value 65 ; rdfs:label "RS-124" ] ,
-            [ rdf:value 66 ; rdfs:label "CL-1B" ] ;
+            [ rdf:value 66 ; rdfs:label "CL-1B" ] ,
+            [ rdf:value 67 ; rdfs:label "DuTape" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
@@ -1024,7 +1028,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 66 ;
+        lv2:maximum 67 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -1092,7 +1096,8 @@
             [ rdf:value 63 ; rdfs:label "Hyrax" ] ,
             [ rdf:value 64 ; rdfs:label "Bloom" ] ,
             [ rdf:value 65 ; rdfs:label "RS-124" ] ,
-            [ rdf:value 66 ; rdfs:label "CL-1B" ] ;
+            [ rdf:value 66 ; rdfs:label "CL-1B" ] ,
+            [ rdf:value 67 ; rdfs:label "DuTape" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
@@ -1256,7 +1261,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 66 ;
+        lv2:maximum 67 ;
         lv2:integer true ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -1324,7 +1329,8 @@
             [ rdf:value 63 ; rdfs:label "Hyrax" ] ,
             [ rdf:value 64 ; rdfs:label "Bloom" ] ,
             [ rdf:value 65 ; rdfs:label "RS-124" ] ,
-            [ rdf:value 66 ; rdfs:label "CL-1B" ] ;
+            [ rdf:value 66 ; rdfs:label "CL-1B" ] ,
+            [ rdf:value 67 ; rdfs:label "DuTape" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [

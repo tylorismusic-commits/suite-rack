@@ -205,6 +205,19 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::DuTapeControls duTapeControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::DuTapeControls out;
+  out.input = c.c[0];
+  out.output = c.c[1];
+  out.machine = std::clamp(static_cast<int>(std::lround(c.c[2] * 5.0f)), 0, 5);
+  out.speed = std::clamp(static_cast<int>(std::lround(c.c[3] * 2.0f)), 0, 2);
+  out.noiseReduction =
+      std::clamp(static_cast<int>(std::lround(c.c[4] * 3.0f)), 0, 3);
+  out.dithering = c.c[5] > 0.5f;
+  return out;
+}
+
 inline hdsp::modules::CL1BControls cl1bControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::CL1BControls out;

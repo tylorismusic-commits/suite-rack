@@ -74,6 +74,7 @@ enum class ModuleId : int {
   JcBloom,
   JcRS124,
   JcCL1B,
+  JcDuTape,
   Count
 };
 
@@ -93,7 +94,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Reel",      "Ember",    "Tame",     "510 EQ",   "Pultec",
     "Classic Limiter", "Tape Head", "Tube Driver", "DaTube", "Fattener",
     "AC-1",      "LMC-1",    "Modern Limiter", "Hyrax",
-    "Bloom",     "RS-124",   "CL-1B",
+    "Bloom",     "RS-124",   "CL-1B",   "DuTape",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -645,6 +646,16 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 3: return 0.50;  // Release 5
         case 4: return 1.00;  // Manual
         case 5: return 0.50;  // Output 0 dB
+        default: return 0.50;
+      }
+    case ModuleId::JcDuTape:
+      switch (control) {
+        case 0: return 0.667;  // Input 0 dB
+        case 1: return 0.667;  // Output 0 dB
+        case 2: return 0.00;   // Ideal Tape
+        case 3: return 0.00;   // 30 ips
+        case 4: return 1.00;   // Noiseless
+        case 5: return 1.00;   // Dithering on
         default: return 0.50;
       }
     default:

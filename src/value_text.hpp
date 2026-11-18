@@ -278,6 +278,9 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::Output24Db:
       std::snprintf(buf, sizeof(buf), "%.1f dB", -24.0f + 48.0f * v);
       return buf;
+    case ControlFormat::TapeGainDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -12.0f + 18.0f * v);
+      return buf;
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;
