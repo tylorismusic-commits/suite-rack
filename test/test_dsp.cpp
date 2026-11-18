@@ -179,6 +179,7 @@ int main() {
         static_cast<int>(ModuleId::JcAC1),
         static_cast<int>(ModuleId::JcLMC1),
         static_cast<int>(ModuleId::JcModernLimiter),
+        static_cast<int>(ModuleId::JcHyrax),
     };
     for (int id : ids) {
       Engine e;

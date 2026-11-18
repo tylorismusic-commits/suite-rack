@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.28.0-m2 — 2026-11-18
+
+- Added JClones Hyrax brickwall limiter with input, threshold, output and mix.
+- Hyrax uses JClones' sliding-max attack, linear-phase attack filter and hold
+  stage, reports gain reduction and its latency.
+
 ## 0.27.0-m2 — 2026-11-18
 
 - Added JClones Modern Limiter with input, threshold, output and mix.

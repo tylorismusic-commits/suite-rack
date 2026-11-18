@@ -51,6 +51,7 @@ public:
     for (auto& ac1 : ac1_) ac1.prepare(sr_);
     for (auto& lmc : lmc1_) lmc.prepare(sr_);
     for (auto& modern : modernLimiter_) modern.prepare(sr_);
+    for (auto& hyrax : hyrax_) hyrax.prepare(sr_);
     for (auto& cleanup : cleanup_) cleanup.prepare(sr_);
     for (auto& reverb : spaceReverb_) reverb.prepare(sr_);
     for (auto& delay : spaceDelay_) delay.prepare(sr_);
@@ -101,6 +102,7 @@ public:
       ac1_[i].setControls(ac1ControlsFrom(c.slot[i]));
       lmc1_[i].setControls(lmc1ControlsFrom(c.slot[i]));
       modernLimiter_[i].setControls(modernLimiterControlsFrom(c.slot[i]));
+      hyrax_[i].setControls(hyraxControlsFrom(c.slot[i]));
       cleanup_[i].setControls(cleanupControlsFrom(c.slot[i]));
       spaceReverb_[i].setControls(
           spaceReverbControlsFrom(c.slot[i], spaceReverbMode(c.slot[i].type)));
@@ -198,6 +200,10 @@ public:
           case ModuleId::JcModernLimiter:
             modernLimiter_[s].process(l, r);
             gr = modernLimiter_[s].lastGrDb();
+            break;
+          case ModuleId::JcHyrax:
+            hyrax_[s].process(l, r);
+            gr = hyrax_[s].lastGrDb();
             break;
           case ModuleId::ColourValve:
           case ModuleId::ColourConsole:
@@ -348,6 +354,7 @@ public:
     for (auto& ac1 : ac1_) ac1.reset();
     for (auto& lmc : lmc1_) lmc.reset();
     for (auto& modern : modernLimiter_) modern.reset();
+    for (auto& hyrax : hyrax_) hyrax.reset();
     for (auto& cleanup : cleanup_) cleanup.reset();
     for (auto& reverb : spaceReverb_) reverb.reset();
     for (auto& delay : spaceDelay_) delay.reset();
@@ -373,6 +380,8 @@ public:
         latency += classicLimiter_[i].latencySamples();
       } else if (slot.type == static_cast<int>(ModuleId::JcModernLimiter)) {
         latency += modernLimiter_[i].latencySamples();
+      } else if (slot.type == static_cast<int>(ModuleId::JcHyrax)) {
+        latency += hyrax_[i].latencySamples();
       }
     }
     return latency;
@@ -413,6 +422,7 @@ private:
   hdsp::modules::AC1 ac1_[kSlotCount];
   hdsp::modules::LMC1 lmc1_[kSlotCount];
   hdsp::modules::ModernLimiter modernLimiter_[kSlotCount];
+  hdsp::modules::Hyrax hyrax_[kSlotCount];
   hdsp::modules::Cleanup cleanup_[kSlotCount];
   hdsp::modules::SpaceReverb spaceReverb_[kSlotCount];
   hdsp::modules::SpaceDelay spaceDelay_[kSlotCount];

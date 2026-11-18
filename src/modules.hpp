@@ -71,6 +71,7 @@ enum class ControlFormat {
   AttackShortMs,
   AC1Mode,
   Threshold48Db,
+  Threshold18Db,
 };
 
 struct ControlDesc {
@@ -154,6 +155,13 @@ inline constexpr ControlDesc kEq510Controls[] = {
     {1, "MID", "Mid", ControlFormat::TiltDb},
     {2, "HIGH", "High", ControlFormat::TiltDb},
     {3, "HPF", "HPF", ControlFormat::EqHpfHz},
+};
+
+inline constexpr ControlDesc kJcHyraxControls[] = {
+    {0, "INPUT", "Input", ControlFormat::WideGainDb},
+    {1, "THR", "Threshold", ControlFormat::Threshold18Db},
+    {2, "OUTPUT", "Output", ControlFormat::WideGainDb},
+    {3, "MIX", "Mix", ControlFormat::Percent},
 };
 
 inline constexpr ControlDesc kJcModernLimiterControls[] = {
@@ -695,6 +703,10 @@ inline constexpr ModuleDesc kModules[] = {
      static_cast<int>(sizeof(kJcModernLimiterControls) /
                       sizeof(kJcModernLimiterControls[0])),
      kJcModernLimiterControls},
+    {ModuleId::JcHyrax, "Hyrax", "Dyn", "JClones brickwall limiter", false,
+     true, 0,
+     static_cast<int>(sizeof(kJcHyraxControls) / sizeof(kJcHyraxControls[0])),
+     kJcHyraxControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -756,6 +768,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Trowel",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
+    "JClones",
     "JClones",
     "JClones",
     "JClones",

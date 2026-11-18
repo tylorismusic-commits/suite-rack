@@ -70,6 +70,7 @@ enum class ModuleId : int {
   JcAC1,
   JcLMC1,
   JcModernLimiter,
+  JcHyrax,
   Count
 };
 
@@ -88,7 +89,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Glue",      "Xpress",   "Digital",  "Molot",    "Red",
     "Reel",      "Ember",    "Tame",     "510 EQ",   "Pultec",
     "Classic Limiter", "Tape Head", "Tube Driver", "DaTube", "Fattener",
-    "AC-1",      "LMC-1",    "Modern Limiter",
+    "AC-1",      "LMC-1",    "Modern Limiter", "Hyrax",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -165,7 +166,8 @@ inline constexpr bool moduleHasGr(int id) noexcept {
          id == static_cast<int>(ModuleId::JcClassicLimiter) ||
          id == static_cast<int>(ModuleId::JcAC1) ||
          id == static_cast<int>(ModuleId::JcLMC1) ||
-         id == static_cast<int>(ModuleId::JcModernLimiter);
+         id == static_cast<int>(ModuleId::JcModernLimiter) ||
+         id == static_cast<int>(ModuleId::JcHyrax);
 }
 
 // All controls are normalised to 0..1. The module descriptor maps them to
@@ -597,6 +599,14 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
       switch (control) {
         case 0: return 0.50;  // Input
         case 1: return 0.95;  // Threshold
+        case 2: return 0.50;  // Output
+        case 3: return 1.00;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::JcHyrax:
+      switch (control) {
+        case 0: return 0.50;  // Input
+        case 1: return 0.94;  // Threshold
         case 2: return 0.50;  // Output
         case 3: return 1.00;  // Mix
         default: return 0.50;
