@@ -57,6 +57,7 @@ public:
     for (auto& cl : cl1b_) cl.prepare(sr_);
     for (auto& tape : duTape_) tape.prepare(sr_);
     for (auto& vbl : vbl_) vbl.prepare(sr_);
+    for (auto& l2 : l2_) l2.prepare(sr_);
     for (auto& cleanup : cleanup_) cleanup.prepare(sr_);
     for (auto& reverb : spaceReverb_) reverb.prepare(sr_);
     for (auto& delay : spaceDelay_) delay.prepare(sr_);
@@ -113,6 +114,7 @@ public:
       cl1b_[i].setControls(cl1bControlsFrom(c.slot[i]));
       duTape_[i].setControls(duTapeControlsFrom(c.slot[i]));
       vbl_[i].setControls(vblControlsFrom(c.slot[i]));
+      l2_[i].setControls(l2ControlsFrom(c.slot[i]));
       cleanup_[i].setControls(cleanupControlsFrom(c.slot[i]));
       spaceReverb_[i].setControls(
           spaceReverbControlsFrom(c.slot[i], spaceReverbMode(c.slot[i].type)));
@@ -232,6 +234,10 @@ public:
           case ModuleId::JcVBL:
             vbl_[s].process(l, r);
             gr = vbl_[s].lastGrDb();
+            break;
+          case ModuleId::JcL2:
+            l2_[s].process(l, r);
+            gr = l2_[s].lastGrDb();
             break;
           case ModuleId::ColourValve:
           case ModuleId::ColourConsole:
@@ -388,6 +394,7 @@ public:
     for (auto& cl : cl1b_) cl.reset();
     for (auto& tape : duTape_) tape.reset();
     for (auto& vbl : vbl_) vbl.reset();
+    for (auto& l2 : l2_) l2.reset();
     for (auto& cleanup : cleanup_) cleanup.reset();
     for (auto& reverb : spaceReverb_) reverb.reset();
     for (auto& delay : spaceDelay_) delay.reset();
@@ -415,6 +422,8 @@ public:
         latency += modernLimiter_[i].latencySamples();
       } else if (slot.type == static_cast<int>(ModuleId::JcHyrax)) {
         latency += hyrax_[i].latencySamples();
+      } else if (slot.type == static_cast<int>(ModuleId::JcL2)) {
+        latency += l2_[i].latencySamples();
       }
     }
     return latency;
@@ -461,6 +470,7 @@ private:
   hdsp::modules::CL1B cl1b_[kSlotCount];
   hdsp::modules::DuTape duTape_[kSlotCount];
   hdsp::modules::VBL vbl_[kSlotCount];
+  hdsp::modules::L2 l2_[kSlotCount];
   hdsp::modules::Cleanup cleanup_[kSlotCount];
   hdsp::modules::SpaceReverb spaceReverb_[kSlotCount];
   hdsp::modules::SpaceDelay spaceDelay_[kSlotCount];

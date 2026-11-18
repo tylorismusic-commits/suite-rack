@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.34.0-m2 — 2026-11-18
+
+- Added JClones L2 lookahead limiter with threshold, ceiling, auto release,
+  release, quantize, dither and shaping.
+- L2 uses dual moving-average smoothing, program-dependent auto release and
+  the original IDR dither/noise-shaping stage, and reports latency and gain
+  reduction.
+
 ## 0.33.0-m2 — 2026-11-18
 
 - Added JClones VBL tube broadcast limiter with input, comp, emphasis, bias,

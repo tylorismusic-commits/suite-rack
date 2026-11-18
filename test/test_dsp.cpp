@@ -185,6 +185,7 @@ int main() {
         static_cast<int>(ModuleId::JcCL1B),
         static_cast<int>(ModuleId::JcDuTape),
         static_cast<int>(ModuleId::JcVBL),
+        static_cast<int>(ModuleId::JcL2),
     };
     for (int id : ids) {
       Engine e;

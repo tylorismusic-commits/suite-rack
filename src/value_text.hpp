@@ -284,6 +284,19 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::Comp48Db:
       std::snprintf(buf, sizeof(buf), "%.1f dB", 48.0f * v);
       return buf;
+    case ControlFormat::Threshold30Db:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -30.0f + 30.0f * v);
+      return buf;
+    case ControlFormat::L2ReleaseMs: {
+      const double ms = std::pow(10.0, 5.0 * static_cast<double>(v) - 5.0) * 1000.0;
+      if (ms < 10.0)
+        std::snprintf(buf, sizeof(buf), "%.2f ms", ms);
+      else if (ms < 100.0)
+        std::snprintf(buf, sizeof(buf), "%.1f ms", ms);
+      else
+        std::snprintf(buf, sizeof(buf), "%.0f ms", ms);
+      return buf;
+    }
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;

@@ -205,6 +205,19 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::L2Controls l2ControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::L2Controls out;
+  out.threshold = c.c[0];
+  out.ceiling = c.c[1];
+  out.autoRelease = c.c[2] > 0.5f;
+  out.release = c.c[3];
+  out.quantize = std::clamp(static_cast<int>(std::lround(c.c[4] * 4.0f)), 0, 4);
+  out.dither = std::clamp(static_cast<int>(std::lround(c.c[5] * 2.0f)), 0, 2);
+  out.shaping = std::clamp(static_cast<int>(std::lround(c.c[6] * 3.0f)), 0, 3);
+  return out;
+}
+
 inline hdsp::modules::VBLControls vblControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::VBLControls out;

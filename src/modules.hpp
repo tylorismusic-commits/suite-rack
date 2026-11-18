@@ -83,6 +83,8 @@ enum class ControlFormat {
   Output24Db,
   TapeGainDb,
   Comp48Db,
+  Threshold30Db,
+  L2ReleaseMs,
 };
 
 struct ControlDesc {
@@ -168,6 +170,12 @@ inline constexpr ControlDesc kEq510Controls[] = {
     {3, "HPF", "HPF", ControlFormat::EqHpfHz},
 };
 
+inline constexpr const char* kL2QuantizeLabels[] = {"16", "18", "20", "22",
+                                                    "24"};
+inline constexpr const char* kL2DitherLabels[] = {"None", "Type 1", "Type 2"};
+inline constexpr const char* kL2ShapingLabels[] = {"None", "Moderate", "Normal",
+                                                   "Ultra"};
+
 inline constexpr const char* kDuTapeMachineLabels[] = {
     "Ideal Tape", "80s 2 Tk.", "70s 24Tk.", "60s 2 Tk.", "60s Tube",
     "1/2 M.Tk."};
@@ -183,6 +191,19 @@ inline constexpr const char* kRs124ModelLabels[] = {"60050A", "61010B",
                                                     "60070B"};
 inline constexpr const char* kRs124ReleaseLabels[] = {"1", "2", "3",
                                                       "4", "5", "6"};
+
+inline constexpr ControlDesc kJcL2Controls[] = {
+    {0, "THRESHOLD", "Threshold", ControlFormat::Threshold30Db},
+    {1, "CEILING", "Ceiling", ControlFormat::Threshold30Db},
+    {2, "AUTO REL", "Auto Release", ControlFormat::Percent, false, {}, true},
+    {3, "RELEASE", "Release", ControlFormat::L2ReleaseMs},
+    {4, "QUANTIZE", "Quantize", ControlFormat::Percent, true,
+     labels(kL2QuantizeLabels)},
+    {5, "DITHER", "Dither", ControlFormat::Percent, true,
+     labels(kL2DitherLabels)},
+    {6, "SHAPING", "Shaping", ControlFormat::Percent, true,
+     labels(kL2ShapingLabels)},
+};
 
 inline constexpr ControlDesc kJcVBLControls[] = {
     {0, "INPUT", "Input", ControlFormat::Output24Db},
@@ -806,6 +827,9 @@ inline constexpr ModuleDesc kModules[] = {
      true, 0,
      static_cast<int>(sizeof(kJcVBLControls) / sizeof(kJcVBLControls[0])),
      kJcVBLControls},
+    {ModuleId::JcL2, "L2", "Dyn", "JClones lookahead limiter", false, true, 0,
+     static_cast<int>(sizeof(kJcL2Controls) / sizeof(kJcL2Controls[0])),
+     kJcL2Controls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -867,6 +891,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Trowel",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
+    "JClones",
     "JClones",
     "JClones",
     "JClones",
