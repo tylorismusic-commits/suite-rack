@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.48.2-m2 — 2026-11-18
+
+- Implemented the CLAP gain-adjustment-metering extension so REAPER shows the
+  Suite Rack gain-reduction meter. The reported value is the largest active
+  slot reduction, in negative dB.
+
 ## 0.48.1-m2 — 2026-11-18
 
 - CLAP now pushes gain-reduction value events for its read-only Slot GR

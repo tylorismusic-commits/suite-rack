@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.48.1-m2 — public alpha: CLAP + LV2, seventy-two modules, full preset browsers, drag reorder, browser search and typed values.**
+**Status: 0.48.2-m2 — public alpha: CLAP + LV2, seventy-two modules, full preset browsers, drag reorder, browser search and typed values.**
 More factory module presets are next.
 
 A virtual 500 series mix rack in the Suite visual language: six serial slots, each
@@ -147,8 +147,9 @@ but a few areas are still intentionally limited:
 - Automation is per slot: type, bypass, mix, gain and twelve generic module
   controls. The CLAP build shows module-aware control names and hides controls
   that the active module does not use; LV2 port names remain generic by design.
-- Gain reduction is exposed to hosts as LV2 `slotN_gr` output ports and as
-  read-only CLAP Slot GR parameters.
+- Gain reduction is exposed to hosts as LV2 `slotN_gr` output ports,
+  read-only CLAP Slot GR parameters and the CLAP gain-adjustment-metering
+  extension used by REAPER.
 - Trowel smoothing is represented by **Tame** inside the rack. The standalone
   Trowel remains the full version.
 - Linux CLAP and LV2 builds are tested in REAPER. macOS and Windows packaging
@@ -159,7 +160,7 @@ but a few areas are still intentionally limited:
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.48.1-m2 slice
+## Current 0.48.2-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.

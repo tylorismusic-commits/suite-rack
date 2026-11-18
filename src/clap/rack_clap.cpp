@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <clap/all.h>
+#include <clap/ext/draft/gain-adjustment-metering.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -868,6 +869,19 @@ clap_process_status pluginProcess(const clap_plugin_t* p, const clap_process_t* 
   return CLAP_PROCESS_CONTINUE;
 }
 
+double gainAdjustmentGet(const clap_plugin_t* p) {
+  const Plugin* s = self(p);
+  double gr = 0.0;
+  for (int i = 0; i < kSlotCount; ++i) {
+    gr = std::max(gr, static_cast<double>(s->meters.slotGrDb[i]));
+  }
+  return -gr;
+}
+
+const clap_plugin_gain_adjustment_metering_t kGainAdjustmentMeteringExt = {
+    gainAdjustmentGet,
+};
+
 const void* pluginGetExtension(const clap_plugin_t*, const char* id) {
   if (std::strcmp(id, CLAP_EXT_PARAMS) == 0) {
     return &kParamsExt;
@@ -886,6 +900,9 @@ const void* pluginGetExtension(const clap_plugin_t*, const char* id) {
   }
   if (std::strcmp(id, CLAP_EXT_LATENCY) == 0) {
     return &kLatencyExt;
+  }
+  if (std::strcmp(id, CLAP_EXT_GAIN_ADJUSTMENT_METERING) == 0) {
+    return &kGainAdjustmentMeteringExt;
   }
   return nullptr;
 }
