@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.0-m1 — 2026-11-17
+
+- LV2 plugin and X11/Cairo UI, sharing the CLAP DSP and panel.
+- Shared CLAP/LV2 state format with round-trip recall.
+- State and automation mapping tests: parameter round-trip, bad/truncated state
+  rejection, dirty-flag behaviour and slot/global control mapping.
+- LV2 metadata generator and a TTL freshness test.
+- CLAP state now uses the shared format.
+- Bumped to 0.2.0-m1.
+
 ## Unreleased
 
 - Suite Rack is now planned as the flagship “try all my stuff” rack: every

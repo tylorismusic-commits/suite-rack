@@ -1,7 +1,8 @@
 # Suite Rack
 
-**Status: M0 scaffold with a working CLAP build.** LV2 wrapper, rack state
-recall, host automation and the full module catalog are next.
+**Status: 0.2.0-m1 — CLAP + LV2, shared state recall and automation mapping.**
+The full module catalog, browser categories/search, drag/reorder and user
+presets are next.
 
 A virtual 500-series rack in the Suite visual language: six serial slots, each
 hosting one compact module. Slot 1 starts as EQ, slot 2 as Comp, slots 3–6 are
@@ -71,7 +72,12 @@ the 500-series format; Cleanup is the lightweight repair representative.
 - Serial engine and per-slot meters in place; DSP and panel tests pass.
 - **CLAP build loads in REAPER**, opens the six-column editor and processes
   audio.
-- LV2 wrapper, rack state recall and the remaining modules are next.
+- **LV2 plugin + X11 UI** load in REAPER with the same six-column editor.
+- **Shared state format** for CLAP and LV2; project save/reload recalls the
+  rack settings in both formats.
+- **State and automation mapping tests** cover round-trip recall, dirty-flag
+  reporting and slot/global parameter mapping.
+- The remaining modules and browser categories/search are next.
 
 ## Architecture
 
@@ -93,23 +99,31 @@ ctest --test-dir build --output-on-failure
 ./build/rack_ui_preview assets/fonts /tmp/suite-rack-preview
 ```
 
-## Install CLAP
+## Install
+
+CLAP:
 
 ```sh
 cp build/clap/SuiteRack.clap ~/.clap/
 cp -r build/clap/SuiteRack.resources ~/.clap/
 ```
 
+LV2:
+
+```sh
+cp -r build/lv2/suite-rack.lv2 ~/.lv2/
+```
+
 ## Next
 
-1. LV2 wrapper + LV2 UI.
-2. Rack state recall and automation tests.
-3. Module registry, browser categories and search.
-4. Suite core modules: EQ, colour, compression.
-5. Space, dynamics and utility modules.
-6. New extras: Image, Dynamic EQ, Multiband, Sub, Double, Filter, Crush, Motion,
+1. Module registry with generic per-slot controls, browser categories and
+   search.
+2. Drag/reorder, per-slot gain, module presets.
+3. Suite core modules: EQ, colour, compression.
+4. Space, dynamics and utility modules.
+5. New extras: Image, Dynamic EQ, Multiband, Sub, Double, Filter, Crush, Motion,
    Rider.
-7. JClones ports, 510 and Pultec.
-8. User preset saving across the Suite.
+6. JClones ports, 510 and Pultec.
+7. User preset saving across the Suite.
 
 GPL-3.0-or-later.

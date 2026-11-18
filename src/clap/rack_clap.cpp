@@ -25,6 +25,7 @@
 
 #include "dsp/engine.hpp"
 #include "params.hpp"
+#include "state.hpp"
 #include "value_text.hpp"
 #include "version.hpp"
 #include "ui/geometry.hpp"
@@ -509,66 +510,37 @@ const clap_plugin_params_t kParamsExt = {
 
 // --- State ------------------------------------------------------------------
 
-bool writeAll(const clap_ostream_t* stream, const void* data, size_t size) {
-  const char* p = static_cast<const char*>(data);
-  while (size > 0) {
-    const int64_t n = stream->write(stream, p, size);
-    if (n <= 0) return false;
-    p += n;
-    size -= static_cast<size_t>(n);
-  }
-  return true;
-}
-
-bool readAll(const clap_istream_t* stream, void* data, size_t size) {
-  char* p = static_cast<char*>(data);
-  while (size > 0) {
-    const int64_t n = stream->read(stream, p, size);
-    if (n <= 0) return false;
-    p += n;
-    size -= static_cast<size_t>(n);
-  }
-  return true;
-}
-
-constexpr uint32_t kStateMagic = 0x44525332;  // "DRS2"
-
 bool stateSave(const clap_plugin_t* p, const clap_ostream_t* stream) {
   Plugin* s = self(p);
-  double values[P_COUNT];
-  for (uint32_t i = 0; i < P_COUNT; ++i) {
-    values[i] = s->shared.get(i);
+  const std::vector<uint8_t> blob =
+      serializeState(s->shared, s->editor.scale());
+  const char* data = reinterpret_cast<const char*>(blob.data());
+  size_t size = blob.size();
+  while (size > 0) {
+    const int64_t n = stream->write(stream, data, size);
+    if (n <= 0) return false;
+    data += n;
+    size -= static_cast<size_t>(n);
   }
-  const uint32_t count = P_COUNT;
-  const double scale = s->editor.scale();
-  return writeAll(stream, &kStateMagic, sizeof(kStateMagic)) &&
-         writeAll(stream, &count, sizeof(count)) &&
-         writeAll(stream, values, sizeof(values)) &&
-         writeAll(stream, &scale, sizeof(scale));
+  return true;
 }
 
 bool stateLoad(const clap_plugin_t* p, const clap_istream_t* stream) {
   Plugin* s = self(p);
-  uint32_t magic = 0;
-  uint32_t count = 0;
-  if (!readAll(stream, &magic, sizeof(magic)) ||
-      !readAll(stream, &count, sizeof(count)) || magic != kStateMagic ||
-      count > 1024) {
-    return false;
+  std::vector<uint8_t> blob;
+  char buffer[4096];
+  while (true) {
+    const int64_t n = stream->read(stream, buffer, sizeof(buffer));
+    if (n < 0) return false;
+    if (n == 0) break;
+    blob.insert(blob.end(), buffer, buffer + n);
+    if (blob.size() > 1024 * 1024) return false;
   }
-  std::vector<double> values(count, 0.0);
-  if (count > 0 && !readAll(stream, values.data(), sizeof(double) * count)) {
-    return false;
-  }
-  const uint32_t limit = std::min(count, static_cast<uint32_t>(P_COUNT));
-  for (uint32_t i = 0; i < limit; ++i) {
-    s->shared.setFromHost(i, values[i]);
-  }
-  // The UI scale and sample path are optional, so older states still load.
   double scale = 0.0;
-  if (stream->read(stream, &scale, sizeof(scale)) ==
-          static_cast<int64_t>(sizeof(scale)) &&
-      scale > 0.0) {
+  if (!deserializeState(blob.data(), blob.size(), s->shared, &scale)) {
+    return false;
+  }
+  if (scale > 0.0) {
     s->editor.resize(scale);
   }
   return true;

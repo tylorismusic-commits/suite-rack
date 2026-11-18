@@ -1,10 +1,10 @@
 # Maintainer: tylor <tylorismusic@users.noreply.github.com>
-pkgname=comp-suite
+pkgname=suite-rack
 pkgver=0.2.0
 pkgrel=1
-pkgdesc="Six-model compressor plugin for Linux (CLAP + LV2)"
+pkgdesc="Six-slot virtual 500-series mix rack for Linux (CLAP + LV2)"
 arch=('x86_64')
-url="https://github.com/tylorismusic-commits/comp-suite"
+url="https://github.com/tylorismusic-commits/suite-rack"
 license=('GPL-3.0-or-later')
 depends=('cairo' 'freetype2' 'libx11' 'lv2')
 makedepends=('cmake' 'pkgconf' 'lilv' 'libxtst' 'xorg-server-xvfb')
