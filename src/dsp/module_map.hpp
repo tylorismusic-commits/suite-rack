@@ -32,6 +32,8 @@ inline int compModel(int type) noexcept {
     case static_cast<int>(ModuleId::Comp2A): return 2;
     case static_cast<int>(ModuleId::Comp3A): return 3;
     case static_cast<int>(ModuleId::CompVCA): return 4;
+    case static_cast<int>(ModuleId::HearthComp): return 5;
+    case static_cast<int>(ModuleId::Glue): return 6;
     default: return 0;
   }
 }

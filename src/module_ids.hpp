@@ -51,6 +51,8 @@ enum class ModuleId : int {
   SpaceFlanger,
   SpacePhaser,
   SpaceDimension,
+  HearthComp,
+  Glue,
   Count
 };
 
@@ -65,7 +67,8 @@ inline constexpr const char* kModuleLabels[] = {
     "Sub",       "Double",   "Dynamic EQ", "Multiband",
     "Rider",     "Cleanup",  "Plate",    "Room",      "Hall",
     "Spring",    "Digital",  "Tape",     "Analog",    "Ping-Pong",
-    "Chorus",    "Flanger",  "Phaser",   "Dimension",
+    "Chorus",    "Flanger",  "Phaser",   "Dimension", "Hearth Comp",
+    "Glue",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -106,7 +109,9 @@ inline constexpr bool moduleIsComp(int id) noexcept {
          id == static_cast<int>(ModuleId::Comp76Black) ||
          id == static_cast<int>(ModuleId::Comp2A) ||
          id == static_cast<int>(ModuleId::Comp3A) ||
-         id == static_cast<int>(ModuleId::CompVCA);
+         id == static_cast<int>(ModuleId::CompVCA) ||
+         id == static_cast<int>(ModuleId::HearthComp) ||
+         id == static_cast<int>(ModuleId::Glue);
 }
 
 inline constexpr bool moduleIsColour(int id) noexcept {
@@ -395,6 +400,28 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 2: return 0.20;  // Feedback
         case 3: return 0.70;  // Width
         case 4: return 0.40;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::HearthComp:
+      switch (control) {
+        case kCtlThreshold: return 0.50;
+        case kCtlRatio: return 0.30;
+        case kCtlAttack: return 0.40;
+        case kCtlRelease: return 0.50;
+        case kCtlMakeup: return 0.50;
+        case kCtlMix: return 1.00;
+        case kCtlScHpf: return 0.10;
+        default: return 0.50;
+      }
+    case ModuleId::Glue:
+      switch (control) {
+        case kCtlThreshold: return 0.50;
+        case kCtlRatio: return 0.20;
+        case kCtlAttack: return 0.50;
+        case kCtlRelease: return 0.50;
+        case kCtlMakeup: return 0.50;
+        case kCtlMix: return 1.00;
+        case kCtlScHpf: return 0.10;
         default: return 0.50;
       }
     default:

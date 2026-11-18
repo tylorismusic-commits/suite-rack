@@ -160,6 +160,8 @@ int main() {
         static_cast<int>(ModuleId::SpaceFlanger),
         static_cast<int>(ModuleId::SpacePhaser),
         static_cast<int>(ModuleId::SpaceDimension),
+        static_cast<int>(ModuleId::HearthComp),
+        static_cast<int>(ModuleId::Glue),
     };
     for (int id : ids) {
       Engine e;

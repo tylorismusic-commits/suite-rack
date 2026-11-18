@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.16.0-m2 — 2026-11-17
+
+- Added Hearth Comp and Glue compressor modules.
+- Both use the shared VCA engine with their own output colour.
+- Added the two models to hearth-dsp.
+
 ## 0.15.1-m2 — 2026-11-17
 
 - Space is now its own browser category, containing reverbs, delays,

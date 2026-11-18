@@ -484,6 +484,15 @@ inline constexpr ModuleDesc kModules[] = {
      static_cast<int>(sizeof(kSpaceModControls) /
                       sizeof(kSpaceModControls[0])),
      kSpaceModControls},
+    {ModuleId::HearthComp, "Hearth Comp", "Comp", "Console compressor", false,
+     true, 5,
+     static_cast<int>(sizeof(kCompVcaControls) /
+                      sizeof(kCompVcaControls[0])),
+     kCompVcaControls},
+    {ModuleId::Glue, "Glue", "Comp", "Bus glue compressor", false, true, 6,
+     static_cast<int>(sizeof(kCompVcaControls) /
+                      sizeof(kCompVcaControls[0])),
+     kCompVcaControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
