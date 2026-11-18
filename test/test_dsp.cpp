@@ -168,6 +168,7 @@ int main() {
         static_cast<int>(ModuleId::CompRed),
         static_cast<int>(ModuleId::Reel),
         static_cast<int>(ModuleId::Ember),
+        static_cast<int>(ModuleId::Tame),
     };
     for (int id : ids) {
       Engine e;

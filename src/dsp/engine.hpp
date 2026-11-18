@@ -40,6 +40,7 @@ public:
     for (auto& rider : rider_) rider.prepare(sr_);
     for (auto& reel : reel_) reel.prepare(sr_);
     for (auto& ember : ember_) ember.prepare(sr_);
+    for (auto& tame : tame_) tame.prepare(sr_);
     for (auto& cleanup : cleanup_) cleanup.prepare(sr_);
     for (auto& reverb : spaceReverb_) reverb.prepare(sr_);
     for (auto& delay : spaceDelay_) delay.prepare(sr_);
@@ -79,6 +80,7 @@ public:
       rider_[i].setControls(riderControlsFrom(c.slot[i]));
       reel_[i].setControls(reelControlsFrom(c.slot[i]));
       ember_[i].setControls(emberControlsFrom(c.slot[i]));
+      tame_[i].setControls(tameControlsFrom(c.slot[i]));
       cleanup_[i].setControls(cleanupControlsFrom(c.slot[i]));
       spaceReverb_[i].setControls(
           spaceReverbControlsFrom(c.slot[i], spaceReverbMode(c.slot[i].type)));
@@ -139,6 +141,9 @@ public:
           case ModuleId::Ember:
             ember_[s].process(l, r);
             gr = ember_[s].lastGrDb();
+            break;
+          case ModuleId::Tame:
+            tame_[s].process(l, r);
             break;
           case ModuleId::ColourValve:
           case ModuleId::ColourConsole:
@@ -278,6 +283,7 @@ public:
     for (auto& rider : rider_) rider.reset();
     for (auto& reel : reel_) reel.reset();
     for (auto& ember : ember_) ember.reset();
+    for (auto& tame : tame_) tame.reset();
     for (auto& cleanup : cleanup_) cleanup.reset();
     for (auto& reverb : spaceReverb_) reverb.reset();
     for (auto& delay : spaceDelay_) delay.reset();
@@ -328,6 +334,7 @@ private:
   hdsp::modules::Rider rider_[kSlotCount];
   hdsp::modules::Reel reel_[kSlotCount];
   hdsp::modules::Ember ember_[kSlotCount];
+  hdsp::modules::Tame tame_[kSlotCount];
   hdsp::modules::Cleanup cleanup_[kSlotCount];
   hdsp::modules::SpaceReverb spaceReverb_[kSlotCount];
   hdsp::modules::SpaceDelay spaceDelay_[kSlotCount];

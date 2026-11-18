@@ -205,6 +205,17 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::TameControls tameControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::TameControls out;
+  out.amount = c.c[0];
+  out.focus = c.c[1];
+  out.selectivity = c.c[2];
+  out.sensitivity = c.c[3];
+  out.mix = c.c[4];
+  return out;
+}
+
 inline hdsp::modules::EmberControls emberControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::EmberControls out;

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.21.0-m2 — 2026-11-17
+
+- Added Tame: Amount, Focus, Selectivity, Sensitivity and Mix.
+- Tame is the Trowel adaptive resonance suppressor.
+- Tame lives in hearth-dsp and is consumed through the submodule.
+
 ## 0.20.0-m2 — 2026-11-17
 
 - Added Ember: one-knob mastering finish with tone, glue, harmonics and air.

@@ -59,6 +59,7 @@ enum class ModuleId : int {
   CompRed,
   Reel,
   Ember,
+  Tame,
   Count
 };
 
@@ -75,7 +76,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Spring",    "Digital",  "Tape",     "Analog",    "Ping-Pong",
     "Chorus",    "Flanger",  "Phaser",   "Dimension", "Hearth Comp",
     "Glue",      "Xpress",   "Digital",  "Molot",    "Red",
-    "Reel",      "Ember",
+    "Reel",      "Ember",    "Tame",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -491,6 +492,15 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
       }
     case ModuleId::Ember:
       return control == 0 ? 0.00 : 0.50;
+    case ModuleId::Tame:
+      switch (control) {
+        case 0: return 0.00;  // Amount
+        case 1: return 0.50;  // Focus
+        case 2: return 0.50;  // Selectivity
+        case 3: return 0.50;  // Sensitivity
+        case 4: return 1.00;  // Mix
+        default: return 0.50;
+      }
     default:
       return 0.50;
   }
