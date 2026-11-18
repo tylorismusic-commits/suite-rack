@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.24.0-m2 — 2026-11-18
+
+- Added JClones Tape Head, Tube Driver, DaTube and Fattener.
+- All four are labelled JClones and keep the MIT attribution.
+- They live in hearth-dsp and are consumed through the submodule.
+
 ## 0.23.0-m2 — 2026-11-17
 
 - Added the first JClones-derived module: Classic Limiter, with threshold,

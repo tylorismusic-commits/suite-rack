@@ -131,6 +131,13 @@ int main(int argc, char** argv) {
   state.selectedSlot = 2;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-jclones.png").c_str());
+  applyModuleDefaults(s, 0, static_cast<int>(ModuleId::JcTapeHead));
+  applyModuleDefaults(s, 1, static_cast<int>(ModuleId::JcTubeDriver));
+  applyModuleDefaults(s, 2, static_cast<int>(ModuleId::JcDaTube));
+  applyModuleDefaults(s, 3, static_cast<int>(ModuleId::JcFattener));
+  state.selectedSlot = 0;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-jclones-sat.png").c_str());
   state.aboutOpen = true;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-about.png").c_str());

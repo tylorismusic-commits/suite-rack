@@ -62,6 +62,10 @@ enum class ControlFormat {
   CompDistortion,
   BoostDb,
   ClassicThresholdDb,
+  TrimDb,
+  DaTubeOutputDb,
+  FattenerGainDb,
+  TapeColor,
 };
 
 struct ControlDesc {
@@ -145,6 +149,39 @@ inline constexpr ControlDesc kEq510Controls[] = {
     {1, "MID", "Mid", ControlFormat::TiltDb},
     {2, "HIGH", "High", ControlFormat::TiltDb},
     {3, "HPF", "HPF", ControlFormat::EqHpfHz},
+};
+
+inline constexpr const char* kTapeColorLabels[] = {"Normal", "Medium",
+                                                   "Bright"};
+
+inline constexpr ControlDesc kJcTapeHeadControls[] = {
+    {0, "DRIVE", "Drive", ControlFormat::Percent},
+    {1, "TRIM", "Trim", ControlFormat::TrimDb},
+    {2, "COLOR", "Color", ControlFormat::TapeColor, true,
+     labels(kTapeColorLabels)},
+    {3, "CLIP", "Clip", ControlFormat::Percent, false, {}, true},
+};
+
+inline constexpr ControlDesc kJcTubeDriverControls[] = {
+    {0, "INPUT", "Input", ControlFormat::TiltDb},
+    {1, "DRIVE", "Drive", ControlFormat::Percent},
+    {2, "BIAS", "Bias", ControlFormat::Percent},
+    {3, "BOOST", "Boost", ControlFormat::Percent, false, {}, true},
+    {4, "OUTPUT", "Output", ControlFormat::TiltDb},
+};
+
+inline constexpr ControlDesc kJcDaTubeControls[] = {
+    {0, "DRIVE", "Drive", ControlFormat::Percent},
+    {1, "BALANCE", "Balance", ControlFormat::Percent},
+    {2, "OUTPUT", "Output", ControlFormat::DaTubeOutputDb},
+    {3, "BITS", "Bit Reduction", ControlFormat::Percent, false, {}, true},
+    {4, "FOLD", "Fold Back", ControlFormat::Percent, false, {}, true},
+};
+
+inline constexpr ControlDesc kJcFattenerControls[] = {
+    {0, "FATTNESS", "Fattness", ControlFormat::Percent},
+    {1, "COLOR", "Color", ControlFormat::Percent},
+    {2, "GAIN", "Gain", ControlFormat::FattenerGainDb},
 };
 
 inline constexpr ControlDesc kJcClassicLimiterControls[] = {
@@ -596,6 +633,26 @@ inline constexpr ModuleDesc kModules[] = {
      static_cast<int>(sizeof(kJcClassicLimiterControls) /
                       sizeof(kJcClassicLimiterControls[0])),
      kJcClassicLimiterControls},
+    {ModuleId::JcTapeHead, "Tape Head", "Colour", "JClones tape saturation",
+     false, false, 0,
+     static_cast<int>(sizeof(kJcTapeHeadControls) /
+                      sizeof(kJcTapeHeadControls[0])),
+     kJcTapeHeadControls},
+    {ModuleId::JcTubeDriver, "Tube Driver", "Colour",
+     "JClones tube saturation", false, false, 0,
+     static_cast<int>(sizeof(kJcTubeDriverControls) /
+                      sizeof(kJcTubeDriverControls[0])),
+     kJcTubeDriverControls},
+    {ModuleId::JcDaTube, "DaTube", "Colour", "JClones tube saturation", false,
+     false, 0,
+     static_cast<int>(sizeof(kJcDaTubeControls) /
+                      sizeof(kJcDaTubeControls[0])),
+     kJcDaTubeControls},
+    {ModuleId::JcFattener, "Fattener", "Colour", "JClones soft clipper", false,
+     false, 0,
+     static_cast<int>(sizeof(kJcFattenerControls) /
+                      sizeof(kJcFattenerControls[0])),
+     kJcFattenerControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -657,6 +714,10 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Trowel",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
+    "JClones",
+    "JClones",
+    "JClones",
+    "JClones",
     "JClones",
 };
 

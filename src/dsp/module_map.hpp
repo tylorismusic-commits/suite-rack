@@ -205,6 +205,49 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::TapeHeadControls tapeHeadControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::TapeHeadControls out;
+  out.drive = c.c[0];
+  out.trim = c.c[1];
+  out.color = std::clamp(
+      static_cast<int>(std::lround(std::clamp(c.c[2], 0.0f, 1.0f) * 2.0f)), 0,
+      2);
+  out.clip = c.c[3] > 0.5f;
+  return out;
+}
+
+inline hdsp::modules::TubeDriverControls tubeDriverControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::TubeDriverControls out;
+  out.input = c.c[0];
+  out.drive = c.c[1];
+  out.bias = c.c[2];
+  out.boost = c.c[3] > 0.5f;
+  out.output = c.c[4];
+  return out;
+}
+
+inline hdsp::modules::DaTubeControls daTubeControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::DaTubeControls out;
+  out.drive = c.c[0];
+  out.balance = c.c[1];
+  out.output = c.c[2];
+  out.bitReduction = c.c[3] > 0.5f;
+  out.foldBack = c.c[4] > 0.5f;
+  return out;
+}
+
+inline hdsp::modules::FattenerControls fattenerControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::FattenerControls out;
+  out.fattness = c.c[0];
+  out.color = c.c[1];
+  out.gain = c.c[2];
+  return out;
+}
+
 inline hdsp::modules::ClassicLimiterControls classicLimiterControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::ClassicLimiterControls out;

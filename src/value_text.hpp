@@ -219,6 +219,19 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::ClassicThresholdDb:
       std::snprintf(buf, sizeof(buf), "%.1f dB", -20.0f + 20.0f * v);
       return buf;
+    case ControlFormat::TrimDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -21.0f + 21.0f * v);
+      return buf;
+    case ControlFormat::DaTubeOutputDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -24.0f + 24.0f * v);
+      return buf;
+    case ControlFormat::FattenerGainDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -24.0f + 48.0f * v);
+      return buf;
+    case ControlFormat::TapeColor: {
+      static const char* names[3] = {"Normal", "Medium", "Bright"};
+      return names[std::clamp(static_cast<int>(std::lround(v * 2.0f)), 0, 2)];
+    }
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;

@@ -172,6 +172,10 @@ int main() {
         static_cast<int>(ModuleId::Eq510),
         static_cast<int>(ModuleId::Pultec),
         static_cast<int>(ModuleId::JcClassicLimiter),
+        static_cast<int>(ModuleId::JcTapeHead),
+        static_cast<int>(ModuleId::JcTubeDriver),
+        static_cast<int>(ModuleId::JcDaTube),
+        static_cast<int>(ModuleId::JcFattener),
     };
     for (int id : ids) {
       Engine e;

@@ -63,6 +63,10 @@ enum class ModuleId : int {
   Eq510,
   Pultec,
   JcClassicLimiter,
+  JcTapeHead,
+  JcTubeDriver,
+  JcDaTube,
+  JcFattener,
   Count
 };
 
@@ -80,7 +84,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Chorus",    "Flanger",  "Phaser",   "Dimension", "Hearth Comp",
     "Glue",      "Xpress",   "Digital",  "Molot",    "Red",
     "Reel",      "Ember",    "Tame",     "510 EQ",   "Pultec",
-    "Classic Limiter",
+    "Classic Limiter", "Tape Head", "Tube Driver", "DaTube", "Fattener",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -528,6 +532,39 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 0: return 0.75;  // Threshold
         case 1: return 0.50;  // Output
         case 2: return 1.00;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::JcTapeHead:
+      switch (control) {
+        case 0: return 0.28;  // Drive
+        case 1: return 0.86;  // Trim
+        case 2: return 0.00;  // Normal
+        case 3: return 1.00;  // Clip on
+        default: return 0.50;
+      }
+    case ModuleId::JcTubeDriver:
+      switch (control) {
+        case 0: return 0.50;  // Input
+        case 1: return 0.20;  // Drive
+        case 2: return 0.50;  // Bias
+        case 3: return 0.00;  // Boost off
+        case 4: return 0.50;  // Output
+        default: return 0.50;
+      }
+    case ModuleId::JcDaTube:
+      switch (control) {
+        case 0: return 0.30;  // Drive
+        case 1: return 1.00;  // Balance
+        case 2: return 0.75;  // Output
+        case 3: return 0.00;  // Bit reduction off
+        case 4: return 0.00;  // Fold back off
+        default: return 0.50;
+      }
+    case ModuleId::JcFattener:
+      switch (control) {
+        case 0: return 0.00;  // Fattness
+        case 1: return 0.00;  // Color
+        case 2: return 0.50;  // Gain
         default: return 0.50;
       }
     default:
