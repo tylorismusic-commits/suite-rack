@@ -58,6 +58,7 @@ enum class ModuleId : int {
   CompMolot,
   CompRed,
   Reel,
+  Ember,
   Count
 };
 
@@ -74,7 +75,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Spring",    "Digital",  "Tape",     "Analog",    "Ping-Pong",
     "Chorus",    "Flanger",  "Phaser",   "Dimension", "Hearth Comp",
     "Glue",      "Xpress",   "Digital",  "Molot",    "Red",
-    "Reel",
+    "Reel",      "Ember",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -146,7 +147,8 @@ inline constexpr bool moduleHasGr(int id) noexcept {
          id == static_cast<int>(ModuleId::DynDeEss) ||
          id == static_cast<int>(ModuleId::BleedOut) ||
          id == static_cast<int>(ModuleId::Limiter) ||
-         id == static_cast<int>(ModuleId::Rider);
+         id == static_cast<int>(ModuleId::Rider) ||
+         id == static_cast<int>(ModuleId::Ember);
 }
 
 // All controls are normalised to 0..1. The module descriptor maps them to
@@ -487,6 +489,8 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 3: return 0.25;  // Mix
         default: return 0.50;
       }
+    case ModuleId::Ember:
+      return control == 0 ? 0.00 : 0.50;
     default:
       return 0.50;
   }

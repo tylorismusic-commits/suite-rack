@@ -205,6 +205,13 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::EmberControls emberControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::EmberControls out;
+  out.amount = c.c[0];
+  return out;
+}
+
 inline hdsp::modules::ReelControls reelControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::ReelControls out;

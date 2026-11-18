@@ -167,6 +167,7 @@ int main() {
         static_cast<int>(ModuleId::CompMolot),
         static_cast<int>(ModuleId::CompRed),
         static_cast<int>(ModuleId::Reel),
+        static_cast<int>(ModuleId::Ember),
     };
     for (int id : ids) {
       Engine e;
