@@ -205,6 +205,27 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::Eq510Controls eq510ControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::Eq510Controls out;
+  out.low = c.c[0];
+  out.mid = c.c[1];
+  out.high = c.c[2];
+  out.hpf = c.c[3];
+  return out;
+}
+
+inline hdsp::modules::PultecControls pultecControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::PultecControls out;
+  out.lowBoost = c.c[0];
+  out.lowAtten = c.c[1];
+  out.highBoost = c.c[2];
+  out.highAtten = c.c[3];
+  out.bandwidth = c.c[4];
+  return out;
+}
+
 inline hdsp::modules::TameControls tameControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::TameControls out;

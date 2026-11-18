@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.22.0-m2 — 2026-11-17
+
+- Added the 510 EQ: low, mid, high and HPF.
+- Added the Pultec: low boost/attenuation, high boost/attenuation and
+  bandwidth.
+- Both live in hearth-dsp and are consumed through the submodule.
+
 ## 0.21.0-m2 — 2026-11-17
 
 - Added Tame: Amount, Focus, Selectivity, Sensitivity and Mix.

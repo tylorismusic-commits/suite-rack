@@ -60,6 +60,8 @@ enum class ModuleId : int {
   Reel,
   Ember,
   Tame,
+  Eq510,
+  Pultec,
   Count
 };
 
@@ -76,7 +78,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Spring",    "Digital",  "Tape",     "Analog",    "Ping-Pong",
     "Chorus",    "Flanger",  "Phaser",   "Dimension", "Hearth Comp",
     "Glue",      "Xpress",   "Digital",  "Molot",    "Red",
-    "Reel",      "Ember",    "Tame",
+    "Reel",      "Ember",    "Tame",     "510 EQ",   "Pultec",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -499,6 +501,23 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 2: return 0.50;  // Selectivity
         case 3: return 0.50;  // Sensitivity
         case 4: return 1.00;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::Eq510:
+      switch (control) {
+        case 0: return 0.50;  // Low
+        case 1: return 0.50;  // Mid
+        case 2: return 0.50;  // High
+        case 3: return 0.00;  // HPF
+        default: return 0.50;
+      }
+    case ModuleId::Pultec:
+      switch (control) {
+        case 0: return 0.00;  // Low boost
+        case 1: return 0.00;  // Low atten
+        case 2: return 0.00;  // High boost
+        case 3: return 0.00;  // High atten
+        case 4: return 0.50;  // Bandwidth
         default: return 0.50;
       }
     default:

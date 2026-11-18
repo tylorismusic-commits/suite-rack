@@ -116,6 +116,16 @@ int main(int argc, char** argv) {
   state.selectedSlot = 2;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-tame.png").c_str());
+  applyModuleDefaults(s, 2, static_cast<int>(ModuleId::Eq510));
+  applyModuleDefaults(s, 3, static_cast<int>(ModuleId::Pultec));
+  s.set(slotParam(2, kSlotOffsetC0 + 0), 0.65);
+  s.set(slotParam(2, kSlotOffsetC0 + 3), 0.20);
+  s.set(slotParam(3, kSlotOffsetC0 + 0), 0.60);
+  s.set(slotParam(3, kSlotOffsetC0 + 1), 0.20);
+  s.set(slotParam(3, kSlotOffsetC0 + 2), 0.50);
+  state.selectedSlot = 2;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-eq-extra.png").c_str());
   state.aboutOpen = true;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-about.png").c_str());

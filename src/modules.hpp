@@ -60,6 +60,7 @@ enum class ControlFormat {
   SpacePreDelayMs,
   SpaceDelayMs,
   CompDistortion,
+  BoostDb,
 };
 
 struct ControlDesc {
@@ -137,6 +138,21 @@ inline constexpr const char* kDistortionLabels[] = {
 };
 
 inline constexpr const char* kReelTypes[] = {"Reel", "Cassette"};
+
+inline constexpr ControlDesc kEq510Controls[] = {
+    {0, "LOW", "Low", ControlFormat::TiltDb},
+    {1, "MID", "Mid", ControlFormat::TiltDb},
+    {2, "HIGH", "High", ControlFormat::TiltDb},
+    {3, "HPF", "HPF", ControlFormat::EqHpfHz},
+};
+
+inline constexpr ControlDesc kPultecControls[] = {
+    {0, "LOW BOOST", "Low Boost", ControlFormat::BoostDb},
+    {1, "LOW ATTEN", "Low Attenuation", ControlFormat::BoostDb},
+    {2, "HIGH BOOST", "High Boost", ControlFormat::BoostDb},
+    {3, "HIGH ATTEN", "High Attenuation", ControlFormat::BoostDb},
+    {4, "BANDWIDTH", "Bandwidth", ControlFormat::Percent},
+};
 
 inline constexpr ControlDesc kTameControls[] = {
     {0, "AMOUNT", "Amount", ControlFormat::Percent},
@@ -561,6 +577,13 @@ inline constexpr ModuleDesc kModules[] = {
     {ModuleId::Tame, "Tame", "EQ", "Trowel resonance suppressor", false, false,
      0, static_cast<int>(sizeof(kTameControls) / sizeof(kTameControls[0])),
      kTameControls},
+    {ModuleId::Eq510, "510 EQ", "EQ", "Fixed-band console EQ", false, false, 0,
+     static_cast<int>(sizeof(kEq510Controls) / sizeof(kEq510Controls[0])),
+     kEq510Controls},
+    {ModuleId::Pultec, "Pultec", "EQ", "Low/high boost and cut EQ", false,
+     false, 0,
+     static_cast<int>(sizeof(kPultecControls) / sizeof(kPultecControls[0])),
+     kPultecControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -620,6 +643,8 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Adhesive",
     "Ember",
     "Trowel",
+    "Suite Rack exclusive",
+    "Suite Rack exclusive",
 };
 
 constexpr bool moduleSourcesComplete() noexcept {

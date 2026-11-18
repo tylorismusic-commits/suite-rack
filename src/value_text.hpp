@@ -213,6 +213,9 @@ inline std::string formatControlValue(const ModuleDesc& module,
       static const char* names[4] = {"Off", "Dist 2", "Dist 3", "Clip"};
       return names[std::clamp(static_cast<int>(std::lround(v * 3.0f)), 0, 3)];
     }
+    case ControlFormat::BoostDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", v * 12.0f);
+      return buf;
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;
