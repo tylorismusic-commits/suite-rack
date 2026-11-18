@@ -156,6 +156,13 @@ inline constexpr ControlDesc kEq510Controls[] = {
     {3, "HPF", "HPF", ControlFormat::EqHpfHz},
 };
 
+inline constexpr ControlDesc kJcModernLimiterControls[] = {
+    {0, "INPUT", "Input", ControlFormat::WideGainDb},
+    {1, "THR", "Threshold", ControlFormat::ClassicThresholdDb},
+    {2, "OUTPUT", "Output", ControlFormat::WideGainDb},
+    {3, "MIX", "Mix", ControlFormat::Percent},
+};
+
 inline constexpr const char* kTapeColorLabels[] = {"Normal", "Medium",
                                                    "Bright"};
 inline constexpr const char* kAC1ModeLabels[] = {"AC1", "AC101"};
@@ -683,6 +690,11 @@ inline constexpr ModuleDesc kModules[] = {
      true, 0,
      static_cast<int>(sizeof(kJcLMC1Controls) / sizeof(kJcLMC1Controls[0])),
      kJcLMC1Controls},
+    {ModuleId::JcModernLimiter, "Modern Limiter", "Dyn",
+     "JClones lookahead limiter", false, false, 0,
+     static_cast<int>(sizeof(kJcModernLimiterControls) /
+                      sizeof(kJcModernLimiterControls[0])),
+     kJcModernLimiterControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -744,6 +756,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Trowel",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
+    "JClones",
     "JClones",
     "JClones",
     "JClones",

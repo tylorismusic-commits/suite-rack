@@ -148,6 +148,12 @@ int main(int argc, char** argv) {
   state.selectedSlot = 2;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-lmc1.png").c_str());
+  applyModuleDefaults(s, 2, static_cast<int>(ModuleId::JcModernLimiter));
+  applyModuleDefaults(s, 3, static_cast<int>(ModuleId::JcClassicLimiter));
+  applyModuleDefaults(s, 4, static_cast<int>(ModuleId::Limiter));
+  state.selectedSlot = 2;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-jclones-limiter.png").c_str());
   state.aboutOpen = true;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-about.png").c_str());

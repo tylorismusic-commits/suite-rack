@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.27.0-m2 — 2026-11-18
+
+- Added JClones Modern Limiter with input, threshold, output and mix.
+- Modern Limiter reports its 0.18 ms lookahead latency and gain reduction.
+
 ## 0.26.0-m2 — 2026-11-18
 
 - Added JClones LMC-1 console compressor with input, threshold, output and

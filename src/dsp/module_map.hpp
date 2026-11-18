@@ -205,6 +205,16 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::ModernLimiterControls modernLimiterControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::ModernLimiterControls out;
+  out.input = c.c[0];
+  out.threshold = c.c[1];
+  out.output = c.c[2];
+  out.mix = c.c[3];
+  return out;
+}
+
 inline hdsp::modules::LMC1Controls lmc1ControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::LMC1Controls out;
