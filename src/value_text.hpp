@@ -260,6 +260,12 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::BloomOutputDb:
       std::snprintf(buf, sizeof(buf), "%.1f dB", -12.0f + 12.0f * v);
       return buf;
+    case ControlFormat::RsInputDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -24.0f + 48.0f * v);
+      return buf;
+    case ControlFormat::RsOutputDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -30.0f + 30.0f * v);
+      return buf;
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;

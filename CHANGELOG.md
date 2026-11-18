@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.30.0-m2 — 2026-11-18
+
+- Added JClones RS-124 vari-mu compressor with model, input, release,
+  SuperFuse, output and box tone.
+- RS-124 uses the measured JClones gain, release and gain-reduction tables
+  with cubic-spline interpolation and reports gain reduction.
+
 ## 0.29.0-m2 — 2026-11-18
 
 - Added JClones Bloom harmonic enhancer with input, effect, curve, output,

@@ -53,6 +53,7 @@ public:
     for (auto& modern : modernLimiter_) modern.prepare(sr_);
     for (auto& hyrax : hyrax_) hyrax.prepare(sr_);
     for (auto& bloom : bloom_) bloom.prepare(sr_);
+    for (auto& rs : rs124_) rs.prepare(sr_);
     for (auto& cleanup : cleanup_) cleanup.prepare(sr_);
     for (auto& reverb : spaceReverb_) reverb.prepare(sr_);
     for (auto& delay : spaceDelay_) delay.prepare(sr_);
@@ -105,6 +106,7 @@ public:
       modernLimiter_[i].setControls(modernLimiterControlsFrom(c.slot[i]));
       hyrax_[i].setControls(hyraxControlsFrom(c.slot[i]));
       bloom_[i].setControls(bloomControlsFrom(c.slot[i]));
+      rs124_[i].setControls(rs124ControlsFrom(c.slot[i]));
       cleanup_[i].setControls(cleanupControlsFrom(c.slot[i]));
       spaceReverb_[i].setControls(
           spaceReverbControlsFrom(c.slot[i], spaceReverbMode(c.slot[i].type)));
@@ -209,6 +211,10 @@ public:
             break;
           case ModuleId::JcBloom:
             bloom_[s].process(l, r);
+            break;
+          case ModuleId::JcRS124:
+            rs124_[s].process(l, r);
+            gr = rs124_[s].lastGrDb();
             break;
           case ModuleId::ColourValve:
           case ModuleId::ColourConsole:
@@ -361,6 +367,7 @@ public:
     for (auto& modern : modernLimiter_) modern.reset();
     for (auto& hyrax : hyrax_) hyrax.reset();
     for (auto& bloom : bloom_) bloom.reset();
+    for (auto& rs : rs124_) rs.reset();
     for (auto& cleanup : cleanup_) cleanup.reset();
     for (auto& reverb : spaceReverb_) reverb.reset();
     for (auto& delay : spaceDelay_) delay.reset();
@@ -430,6 +437,7 @@ private:
   hdsp::modules::ModernLimiter modernLimiter_[kSlotCount];
   hdsp::modules::Hyrax hyrax_[kSlotCount];
   hdsp::modules::Bloom bloom_[kSlotCount];
+  hdsp::modules::RS124 rs124_[kSlotCount];
   hdsp::modules::Cleanup cleanup_[kSlotCount];
   hdsp::modules::SpaceReverb spaceReverb_[kSlotCount];
   hdsp::modules::SpaceDelay spaceDelay_[kSlotCount];

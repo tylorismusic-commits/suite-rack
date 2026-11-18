@@ -75,6 +75,8 @@ enum class ControlFormat {
   CurveBipolar,
   BloomInputDb,
   BloomOutputDb,
+  RsInputDb,
+  RsOutputDb,
 };
 
 struct ControlDesc {
@@ -158,6 +160,21 @@ inline constexpr ControlDesc kEq510Controls[] = {
     {1, "MID", "Mid", ControlFormat::TiltDb},
     {2, "HIGH", "High", ControlFormat::TiltDb},
     {3, "HPF", "HPF", ControlFormat::EqHpfHz},
+};
+
+inline constexpr const char* kRs124ModelLabels[] = {"60050A", "61010B",
+                                                    "60070B"};
+inline constexpr const char* kRs124ReleaseLabels[] = {"1", "2", "3",
+                                                      "4", "5", "6"};
+
+inline constexpr ControlDesc kJcRS124Controls[] = {
+    {0, "MODEL", "Model", ControlFormat::Percent, true, labels(kRs124ModelLabels)},
+    {1, "INPUT", "Input", ControlFormat::RsInputDb},
+    {2, "RELEASE", "Release", ControlFormat::Percent, true,
+     labels(kRs124ReleaseLabels)},
+    {3, "SUPERFUSE", "SuperFuse", ControlFormat::Percent, false, {}, true},
+    {4, "OUTPUT", "Output", ControlFormat::RsOutputDb},
+    {5, "BOX TONE", "Box Tone", ControlFormat::Percent, false, {}, true},
 };
 
 inline constexpr ControlDesc kJcBloomControls[] = {
@@ -723,6 +740,10 @@ inline constexpr ModuleDesc kModules[] = {
      false, 0,
      static_cast<int>(sizeof(kJcBloomControls) / sizeof(kJcBloomControls[0])),
      kJcBloomControls},
+    {ModuleId::JcRS124, "RS-124", "Comp", "JClones vari-mu compressor", false,
+     true, 0,
+     static_cast<int>(sizeof(kJcRS124Controls) / sizeof(kJcRS124Controls[0])),
+     kJcRS124Controls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -784,6 +805,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "Trowel",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
+    "JClones",
     "JClones",
     "JClones",
     "JClones",

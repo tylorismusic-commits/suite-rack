@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.29.0-m2 — CLAP + LV2, module registry, sixty-four modules and drag reorder.**
+**Status: 0.30.0-m2 — CLAP + LV2, module registry, sixty-five modules and drag reorder.**
 The rest of the catalog, drag/reorder, module presets, browser search and user
 presets are next.
 
@@ -69,6 +69,8 @@ standalone plugins remain the full versions.
 
 ![Suite Rack — JClones Bloom](docs/rack-bloom.png)
 
+![Suite Rack — JClones RS-124](docs/rack-rs124.png)
+
 ![Suite Rack — About](docs/rack-about.png)
 
 ## What goes in the rack
@@ -108,7 +110,7 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.29.0-m2 slice
+## Current 0.30.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
@@ -132,7 +134,7 @@ the 500-series format; Cleanup is the lightweight repair representative.
   Double, Dynamic EQ, Multiband, Rider, Cleanup, four reverbs, four delays and
   four modulation modules, Hearth Comp, Glue, Xpress, Digital, Molot, Red,
   Reel, Ember, Tame, 510 EQ, Pultec, Classic Limiter, Tape Head, Tube Driver,
-  DaTube, Fattener, AC-1, LMC-1, Modern Limiter, Hyrax and Bloom.
+  DaTube, Fattener, AC-1, LMC-1, Modern Limiter, Hyrax, RS-124 and Bloom.
 - Serial engine and per-slot meters in place; DSP and panel tests pass.
 - **CLAP and LV2 builds** load in REAPER with the six-column editor and process
   audio.

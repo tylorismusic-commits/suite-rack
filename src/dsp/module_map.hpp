@@ -205,6 +205,18 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::RS124Controls rs124ControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::RS124Controls out;
+  out.model = c.c[0];
+  out.input = c.c[1];
+  out.release = c.c[2];
+  out.superFuse = c.c[3] > 0.5f;
+  out.output = c.c[4];
+  out.boxTone = c.c[5] > 0.5f;
+  return out;
+}
+
 inline hdsp::modules::BloomControls bloomControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::BloomControls out;
