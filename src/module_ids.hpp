@@ -79,6 +79,7 @@ enum class ModuleId : int {
   JcL2,
   JcO3,
   HybridEq,
+  CustomEq,
   Count
 };
 
@@ -98,7 +99,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Reel",      "Ember",    "Tame",     "510 EQ",   "Pultec",
     "Classic Limiter", "Tape Head", "Tube Driver", "DaTube", "Fattener",
     "AC-1",      "LMC-1",    "Modern Limiter", "Hyrax",
-    "Bloom",     "RS-124",   "CL-1B",   "DuTape",   "VBL",      "L2",       "O3",       "Hybrid EQ",
+    "Bloom",     "RS-124",   "CL-1B",   "DuTape",   "VBL",      "L2",       "O3",       "Hybrid EQ", "Custom EQ",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -706,6 +707,18 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 5: return 0.747;  // High frequency 10 kHz
         case 6: return 0.000;  // High boost 0 dB
         case 7: return 0.000;  // High attenuation 0 dB
+        default: return 0.50;
+      }
+    case ModuleId::CustomEq:
+      switch (control) {
+        case 0: return 0.500;  // Low 120 Hz
+        case 1: return 0.500;  // Low 0 dB
+        case 2: return 0.500;  // Low mid 500 Hz
+        case 3: return 0.500;  // Low mid 0 dB
+        case 4: return 0.500;  // High mid 3 kHz
+        case 5: return 0.500;  // High mid 0 dB
+        case 6: return 0.500;  // High 12 kHz
+        case 7: return 0.500;  // High 0 dB
         default: return 0.50;
       }
     default:

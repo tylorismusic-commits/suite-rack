@@ -60,6 +60,7 @@ public:
     for (auto& l2 : l2_) l2.prepare(sr_);
     for (auto& o3 : o3_) o3.prepare(sr_);
     for (auto& eq : hybridEq_) eq.prepare(sr_);
+    for (auto& eq : customEq_) eq.prepare(sr_);
     for (auto& cleanup : cleanup_) cleanup.prepare(sr_);
     for (auto& reverb : spaceReverb_) reverb.prepare(sr_);
     for (auto& delay : spaceDelay_) delay.prepare(sr_);
@@ -119,6 +120,7 @@ public:
       l2_[i].setControls(l2ControlsFrom(c.slot[i]));
       o3_[i].setControls(o3ControlsFrom(c.slot[i]));
       hybridEq_[i].setControls(hybridEqControlsFrom(c.slot[i]));
+      customEq_[i].setControls(customEqControlsFrom(c.slot[i]));
       cleanup_[i].setControls(cleanupControlsFrom(c.slot[i]));
       spaceReverb_[i].setControls(
           spaceReverbControlsFrom(c.slot[i], spaceReverbMode(c.slot[i].type)));
@@ -249,6 +251,9 @@ public:
             break;
           case ModuleId::HybridEq:
             hybridEq_[s].process(l, r);
+            break;
+          case ModuleId::CustomEq:
+            customEq_[s].process(l, r);
             break;
           case ModuleId::ColourValve:
           case ModuleId::ColourConsole:
@@ -408,6 +413,7 @@ public:
     for (auto& l2 : l2_) l2.reset();
     for (auto& o3 : o3_) o3.reset();
     for (auto& eq : hybridEq_) eq.reset();
+    for (auto& eq : customEq_) eq.reset();
     for (auto& cleanup : cleanup_) cleanup.reset();
     for (auto& reverb : spaceReverb_) reverb.reset();
     for (auto& delay : spaceDelay_) delay.reset();
@@ -488,6 +494,7 @@ private:
   hdsp::modules::L2 l2_[kSlotCount];
   hdsp::modules::O3 o3_[kSlotCount];
   hdsp::modules::HybridEq hybridEq_[kSlotCount];
+  hdsp::modules::CustomEq customEq_[kSlotCount];
   hdsp::modules::Cleanup cleanup_[kSlotCount];
   hdsp::modules::SpaceReverb spaceReverb_[kSlotCount];
   hdsp::modules::SpaceDelay spaceDelay_[kSlotCount];

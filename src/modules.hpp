@@ -202,6 +202,30 @@ inline constexpr const char* kRs124ModelLabels[] = {"60050A", "61010B",
 inline constexpr const char* kRs124ReleaseLabels[] = {"1", "2", "3",
                                                       "4", "5", "6"};
 
+inline constexpr const char* kCustomLowFreqLabels[] = {"60 Hz", "120 Hz",
+                                                       "240 Hz"};
+inline constexpr const char* kCustomLowMidFreqLabels[] = {"250 Hz", "500 Hz",
+                                                          "1 kHz"};
+inline constexpr const char* kCustomHighMidFreqLabels[] = {"1.5 kHz", "3 kHz",
+                                                           "6 kHz"};
+inline constexpr const char* kCustomHighFreqLabels[] = {"8 kHz", "12 kHz",
+                                                        "16 kHz"};
+
+inline constexpr ControlDesc kCustomEqControls[] = {
+    {0, "LOW FREQ", "Low Frequency", ControlFormat::Percent, true,
+     labels(kCustomLowFreqLabels)},
+    {1, "LOW", "Low Gain", ControlFormat::TiltDb},
+    {2, "LO MID FREQ", "Low Mid Frequency", ControlFormat::Percent, true,
+     labels(kCustomLowMidFreqLabels)},
+    {3, "LO MID", "Low Mid Gain", ControlFormat::TiltDb},
+    {4, "HI MID FREQ", "High Mid Frequency", ControlFormat::Percent, true,
+     labels(kCustomHighMidFreqLabels)},
+    {5, "HI MID", "High Mid Gain", ControlFormat::TiltDb},
+    {6, "HIGH FREQ", "High Frequency", ControlFormat::Percent, true,
+     labels(kCustomHighFreqLabels)},
+    {7, "HIGH", "High Gain", ControlFormat::TiltDb},
+};
+
 inline constexpr ControlDesc kHybridEqControls[] = {
     {0, "LOW CUT", "Low Cut", ControlFormat::HybridLowCut},
     {1, "LOW FREQ", "Low Frequency", ControlFormat::HybridLowFreq},
@@ -866,6 +890,11 @@ inline constexpr ModuleDesc kModules[] = {
      static_cast<int>(sizeof(kHybridEqControls) /
                       sizeof(kHybridEqControls[0])),
      kHybridEqControls},
+    {ModuleId::CustomEq, "Custom EQ", "EQ",
+     "Slate Custom Series-inspired broad EQ", true, false, 0,
+     static_cast<int>(sizeof(kCustomEqControls) /
+                      sizeof(kCustomEqControls[0])),
+     kCustomEqControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -943,6 +972,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "JClones",
     "JClones",
     "JClones",
+    "Suite Rack exclusive",
     "Suite Rack exclusive",
 };
 

@@ -271,6 +271,17 @@ int main(int argc, char** argv) {
   s.set(slotParam(2, kSlotOffsetC0 + 6), 0.40);
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-hybrid-eq.png").c_str());
+  applyModuleDefaults(s, 2, static_cast<int>(ModuleId::CustomEq));
+  applyModuleDefaults(s, 3, static_cast<int>(ModuleId::HybridEq));
+  applyModuleDefaults(s, 4, static_cast<int>(ModuleId::Eq4K));
+  applyModuleDefaults(s, 5, static_cast<int>(ModuleId::EqTilt));
+  state.selectedSlot = 2;
+  s.set(slotParam(2, kSlotOffsetC0 + 1), 0.72);
+  s.set(slotParam(2, kSlotOffsetC0 + 3), 0.42);
+  s.set(slotParam(2, kSlotOffsetC0 + 5), 0.60);
+  s.set(slotParam(2, kSlotOffsetC0 + 7), 0.76);
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-custom-eq.png").c_str());
   applyModuleDefaults(s, 0, static_cast<int>(ModuleId::Comp76Blue));
   state.selectedSlot = 0;
   state.browserSlot = 0;

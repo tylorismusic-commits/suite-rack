@@ -205,6 +205,20 @@ inline hdsp::modules::SpaceModControls spaceModControlsFrom(
   return out;
 }
 
+inline hdsp::modules::CustomEqControls customEqControlsFrom(
+    const SlotControls& c) noexcept {
+  hdsp::modules::CustomEqControls out;
+  out.lowFreq = c.c[0];
+  out.lowGain = c.c[1];
+  out.lowMidFreq = c.c[2];
+  out.lowMidGain = c.c[3];
+  out.highMidFreq = c.c[4];
+  out.highMidGain = c.c[5];
+  out.highFreq = c.c[6];
+  out.highGain = c.c[7];
+  return out;
+}
+
 inline hdsp::modules::HybridEqControls hybridEqControlsFrom(
     const SlotControls& c) noexcept {
   hdsp::modules::HybridEqControls out;

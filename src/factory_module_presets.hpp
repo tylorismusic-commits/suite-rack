@@ -101,6 +101,16 @@ inline constexpr FactoryModulePreset kFactoryModulePresets[] = {
     {"Dimension Subtle", "Space Suite", ModuleId::SpaceDimension,
      {0.3038f, 0.40f, 0.00f, 0.80f, 0.35f}},
 
+    // Custom EQ
+    {"Vocal Sheen", "Suite Rack exclusive", ModuleId::CustomEq,
+     {0.500f, 0.350f, 0.500f, 0.400f, 0.667f, 0.430f, 0.500f, 0.780f}},
+    {"Drum Punch", "Suite Rack exclusive", ModuleId::CustomEq,
+     {0.500f, 0.820f, 0.500f, 0.430f, 0.500f, 0.380f, 0.667f, 0.560f}},
+    {"Bass Weight", "Suite Rack exclusive", ModuleId::CustomEq,
+     {0.000f, 0.900f, 0.500f, 0.400f, 0.500f, 0.350f, 0.500f, 0.550f}},
+    {"Mix Air", "Suite Rack exclusive", ModuleId::CustomEq,
+     {0.500f, 0.550f, 0.500f, 0.480f, 0.667f, 0.520f, 0.500f, 0.820f}},
+
     // Trowel — hybrid EQ curves
     {"Vocal Air", "Trowel", ModuleId::HybridEq,
      {0.376f, 0.465f, 0.100f, 0.500f, 0.500f, 0.845f, 0.111f, 0.000f}},

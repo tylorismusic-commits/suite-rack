@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.45.0-m2 — 2026-11-18
+
+- Added Custom EQ: a four-band broad-stroke EQ inspired by the Slate Custom
+  Series. Each band has three fixed frequency choices, separate boost/cut
+  shapes and a gentle line-stage colour.
+- Added Vocal Sheen, Drum Punch, Bass Weight and Mix Air factory presets.
+
 ## 0.44.0-m2 — 2026-11-18
 
 - Fixed the typing cursor shifting the entered text left and right as it
