@@ -361,6 +361,7 @@ struct Plugin {
   // main-thread callback.
   std::atomic<uint32_t> reportedLatency{0xffffffffu};
   std::atomic<bool> rescanQueued{false};
+  std::atomic<bool> latencyQueued{false};
   std::atomic<bool> active{false};
   int reportedTypes[kSlotCount] = {-1, -1, -1, -1, -1, -1};
   float reportedGr[kSlotCount] = {-1, -1, -1, -1, -1, -1};
@@ -786,6 +787,7 @@ bool pluginActivate(const clap_plugin_t* p, double sampleRate, uint32_t,
   // that here (being-activated is the one legal moment) - but only when the
   // value actually changed, so a host that reacts by restarting cannot loop.
   const uint32_t latencyNow = s->engine.latencySamples();
+  s->latencyQueued.store(false, std::memory_order_relaxed);
   if (latencyNow != s->reportedLatency.exchange(latencyNow)) {
     if (s->host && s->host->get_extension) {
       const auto* latency = static_cast<const clap_host_latency_t*>(
@@ -839,6 +841,13 @@ clap_process_status pluginProcess(const clap_plugin_t* p, const clap_process_t* 
   }
 
   s->engine.setControls(controlsFrom(s->shared));
+
+  const uint32_t latencyNow = static_cast<uint32_t>(s->engine.latencySamples());
+  if (latencyNow != s->reportedLatency.load(std::memory_order_relaxed) &&
+      !s->latencyQueued.exchange(true) && s->host &&
+      s->host->request_callback) {
+    s->host->request_callback(s->host);
+  }
 
   bool typesChanged = false;
   for (int i = 0; i < kSlotCount; ++i) {
@@ -909,6 +918,16 @@ const void* pluginGetExtension(const clap_plugin_t*, const char* id) {
 
 void pluginOnMainThread(const clap_plugin_t* p) {
   Plugin* s = self(p);
+  if (s->latencyQueued.exchange(false)) {
+    if (s->host && s->host->get_extension) {
+      const auto* latency = static_cast<const clap_host_latency_t*>(
+          s->host->get_extension(s->host, CLAP_EXT_LATENCY));
+      if (latency && latency->changed) latency->changed(s->host);
+    }
+    s->reportedLatency.store(
+        static_cast<uint32_t>(s->engine.latencySamples()),
+        std::memory_order_relaxed);
+  }
   if (!s->rescanQueued.exchange(false)) return;
   if (!s->host || !s->host->get_extension) return;
   const auto* params = static_cast<const clap_host_params_t*>(

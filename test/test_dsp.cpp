@@ -4,10 +4,12 @@
 #include <cmath>
 #include <cstdio>
 #include <vector>
+#include <random>
 
 #include "dsp/engine.hpp"
 #include "module_ids.hpp"
 #include "params.hpp"
+#include "modules.hpp"
 
 using namespace rack;
 
@@ -264,6 +266,214 @@ int main() {
       peak = std::max(peak, static_cast<double>(std::fabs(wet[i])));
     check(m.slotGrDb[0] > 1.0f, "Peak Limiter reports gain reduction");
     check(peak < 0.95, "Peak Limiter holds the output below the ceiling");
+  }
+
+  {
+    // Every module on its own: finite and audible at 48 and 96 kHz.
+    bool allFinite = true;
+    bool allAudible = true;
+    for (float sr : {48000.0f, 96000.0f}) {
+      Engine e;
+      e.prepare(sr);
+      const int n = static_cast<int>(sr * 0.12f);
+      for (int id = 1; id < kModuleCount; ++id) {
+        Shared s;
+        initializeRack(s);
+        for (int slot = 0; slot < kSlotCount; ++slot) {
+          applyModuleDefaults(s, slot, static_cast<int>(ModuleId::Off), false);
+        }
+        applyModuleDefaults(s, 0, id, false);
+        e.setControls(controlsFrom(s));
+        e.reset();
+        std::vector<float> l(n), r(n);
+        for (int i = 0; i < n; ++i) {
+          l[i] = r[i] = 0.2f * std::sin(2.0f * 3.14159265f * 220.0f * i / sr);
+        }
+        Meters m;
+        e.process(l.data(), r.data(), n, m);
+        for (float v : l) {
+          if (!std::isfinite(v)) allFinite = false;
+        }
+        if (rms(l, static_cast<size_t>(n) / 4, n) < 1.0e-6) {
+          allAudible = false;
+          std::printf("module %d silent at %.0f\n", id, sr);
+        }
+      }
+    }
+    check(allFinite, "every module stays finite at 48/96 kHz");
+    check(allAudible, "every module produces sound at 48/96 kHz");
+  }
+  {
+    // Every module with all controls at 0 and 1.
+    bool ok = true;
+    for (float sr : {48000.0f, 96000.0f}) {
+      Engine e;
+      e.prepare(sr);
+      for (int id = 1; id < kModuleCount; ++id) {
+        for (double extreme : {0.0, 1.0}) {
+          Shared s;
+          initializeRack(s);
+          for (int slot = 0; slot < kSlotCount; ++slot) {
+            applyModuleDefaults(s, slot, static_cast<int>(ModuleId::Off),
+                                false);
+          }
+          applyModuleDefaults(s, 0, id, false);
+          for (int k = 0; k < kRackControlCount; ++k) {
+            s.setFromHost(slotParam(0, kSlotOffsetC0 + k), extreme);
+          }
+          e.setControls(controlsFrom(s));
+          e.reset();
+          const int n = static_cast<int>(sr * 0.05f);
+          std::vector<float> l(n), r(n);
+          for (int i = 0; i < n; ++i) {
+            l[i] = r[i] =
+                0.25f * std::sin(2.0f * 3.14159265f * 220.0f * i / sr);
+          }
+          Meters m;
+          e.process(l.data(), r.data(), n, m);
+          for (float v : l) {
+            if (!std::isfinite(v)) {
+              ok = false;
+              std::printf("extreme nonfinite module %d at %.0f\n", id, sr);
+              break;
+            }
+          }
+        }
+      }
+    }
+    check(ok, "every module survives extreme controls at 48/96 kHz");
+  }
+  {
+    // Every ordered pair of modules with default controls.
+    Engine e;
+    e.prepare(48000.0f);
+    bool finitePairs = true;
+    float worst = 0.0f;
+    int worstA = 0, worstB = 0;
+    const int n = 512;
+    for (int a = 1; a < kModuleCount; ++a) {
+      for (int b = 1; b < kModuleCount; ++b) {
+        Shared s;
+        initializeRack(s);
+        for (int slot = 0; slot < kSlotCount; ++slot) {
+          applyModuleDefaults(s, slot, static_cast<int>(ModuleId::Off), false);
+        }
+        applyModuleDefaults(s, 0, a, false);
+        applyModuleDefaults(s, 1, b, false);
+        e.setControls(controlsFrom(s));
+        e.reset();
+        std::vector<float> l(n), r(n);
+        for (int i = 0; i < n; ++i) {
+          l[i] = r[i] = 0.25f * std::sin(2.0f * 3.14159265f * 220.0f * i /
+                                         48000.0f);
+        }
+        Meters m;
+        e.process(l.data(), r.data(), n, m);
+        for (float v : l) {
+          if (!std::isfinite(v)) finitePairs = false;
+          if (std::fabs(v) > worst) {
+            worst = std::fabs(v);
+            worstA = a;
+            worstB = b;
+          }
+        }
+      }
+    }
+    std::printf("rack pair worst peak %.2f at %d/%d\n", worst, worstA,
+                worstB);
+    check(finitePairs, "every ordered module pair stays finite");
+    check(worst < 50.0f, "every ordered module pair stays bounded");
+  }
+  {
+    // Random six-slot racks.
+    std::mt19937 rng(0x5EED);
+    std::uniform_real_distribution<float> u01(0.0f, 1.0f);
+    Engine e;
+    e.prepare(48000.0f);
+    bool finiteBoards = true;
+    float worst = 0.0f;
+    const int n = 2048;
+    for (int board = 0; board < 200; ++board) {
+      Shared s;
+      initializeRack(s);
+      for (int slot = 0; slot < kSlotCount; ++slot) {
+        const int type = 1 + static_cast<int>(rng() % (kModuleCount - 1));
+        applyModuleDefaults(s, slot, type, false);
+        for (int k = 0; k < kRackControlCount; ++k) {
+          s.setFromHost(slotParam(slot, kSlotOffsetC0 + k), u01(rng));
+        }
+        s.setFromHost(slotParam(slot, kSlotOffsetMix), 100.0 * u01(rng));
+        s.setFromHost(slotParam(slot, kSlotOffsetGain),
+                      -6.0 + 12.0 * u01(rng));
+        s.setFromHost(slotParam(slot, kSlotOffsetBypass),
+                      (board % 7 == 0 && (slot & 1)) ? 1.0 : 0.0);
+      }
+      e.setControls(controlsFrom(s));
+      e.reset();
+      std::vector<float> l(n), r(n);
+      for (int i = 0; i < n; ++i) {
+        const float env = i < 400 ? static_cast<float>(i) / 400.0f : 1.0f;
+        l[i] = r[i] = 0.15f * env *
+                      std::sin(2.0f * 3.14159265f * 220.0f * i / 48000.0f);
+      }
+      Meters m;
+      e.process(l.data(), r.data(), n, m);
+      for (float v : l) {
+        if (!std::isfinite(v)) finiteBoards = false;
+        if (std::fabs(v) > worst) worst = std::fabs(v);
+      }
+    }
+    std::printf("random rack worst peak %.2f\n", worst);
+    check(finiteBoards, "random six-slot racks stay finite");
+    check(worst < 500.0f, "random six-slot racks stay bounded");
+  }
+  {
+    // Bypass is dry and a compressor reports gain reduction.
+    Engine e;
+    e.prepare(48000.0f);
+    Shared s;
+    initializeRack(s);
+    for (int slot = 0; slot < kSlotCount; ++slot) {
+      applyModuleDefaults(s, slot, static_cast<int>(ModuleId::Off), false);
+    }
+    applyModuleDefaults(s, 0, static_cast<int>(ModuleId::Eq4K), false);
+    s.setFromHost(slotParam(0, kSlotOffsetC0 + kCtlHpf), 1.0);
+    s.setFromHost(slotParam(0, kSlotOffsetBypass), 1.0);
+    e.setControls(controlsFrom(s));
+    e.reset();
+    const int n = 4096;
+    std::vector<float> l(n), r(n);
+    for (int i = 0; i < n; ++i) {
+      l[i] = r[i] = 0.2f * std::sin(2.0f * 3.14159265f * 220.0f * i /
+                                    48000.0f);
+    }
+    Meters m;
+    e.process(l.data(), r.data(), n, m);
+    double err = 0.0;
+    for (int i = 0; i < n; ++i) {
+      err = std::max(err, static_cast<double>(std::fabs(
+                              l[i] - 0.2f * std::sin(2.0f * 3.14159265f * 220.0f *
+                                                     i / 48000.0f))));
+    }
+    check(err < 1e-5, "bypassed module is dry");
+
+    Shared c;
+    initializeRack(c);
+    for (int slot = 0; slot < kSlotCount; ++slot) {
+      applyModuleDefaults(c, slot, static_cast<int>(ModuleId::Off), false);
+    }
+    applyModuleDefaults(c, 0, static_cast<int>(ModuleId::Comp76Blue), false);
+    for (int k = 0; k < kRackControlCount; ++k) {
+      c.setFromHost(slotParam(0, kSlotOffsetC0 + k), 0.9);
+    }
+    e.setControls(controlsFrom(c));
+    e.reset();
+    for (int i = 0; i < n; ++i) {
+      l[i] = r[i] = 0.4f * std::sin(2.0f * 3.14159265f * 220.0f * i /
+                                    48000.0f);
+    }
+    e.process(l.data(), r.data(), n, m);
+    check(m.slotGrDb[0] > 0.5f, "compressor reports gain reduction");
   }
 
   std::printf("%d failure(s)\n", fails);

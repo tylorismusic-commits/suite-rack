@@ -2,6 +2,7 @@
 @prefix lv2:  <http://lv2plug.in/ns/lv2core#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix ui:   <http://lv2plug.in/ns/extensions/ui#> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
 
 <https://github.com/tylorismusic-commits/suite-rack>
     a lv2:Plugin , doap:Project ;

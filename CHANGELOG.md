@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.49.0-m2 — 2026-11-18
+
+Full interaction and edge-case audit.
+
+Fixed
+
+- The LV2 manifest was missing its `doap:` prefix; strict hosts and lilv
+  rejected the bundle. Added.
+- Typed values: Clip mode names (Soft / Hard / Diode) now parse, and De-Ess
+  and Crush kHz values convert correctly.
+- Clip mode is a proper 3-position stepped control.
+- The preset list gap above the footer no longer selects a hidden preset,
+  and the list has breathing room above its buttons.
+- CLAP latency changes are queued and reported on the main thread when a
+  module with lookahead is added or removed mid-session.
+
+Audit coverage added
+
+- All 72 modules finite and audible at 48 and 96 kHz.
+- Every module with all controls at 0 and 1.
+- All 5,184 ordered module pairs: finite, worst peak 1.11.
+- 200 random six-slot racks: finite, worst peak 1.89.
+- State round-trip for every module and all 12 controls.
+- Typed-value round-trip for every module control.
+- All 72 modules swept through the LV2 wrapper with tone and silence; no
+  non-finite output. DuTape's intentional tape noise (~-75 dB) is the only
+  idle signal.
+- Compressor GR and bypass transparency tested.
+
 ## 0.48.2-m2 — 2026-11-18
 
 - Implemented the CLAP gain-adjustment-metering extension so REAPER shows the

@@ -283,6 +283,7 @@ std::string buildManifestTtl() {
   out << "@prefix lv2:  <http://lv2plug.in/ns/lv2core#> .\n";
   out << "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n";
   out << "@prefix ui:   <http://lv2plug.in/ns/extensions/ui#> .\n";
+  out << "@prefix doap: <http://usefulinc.com/ns/doap#> .\n";
   out << "\n";
   out << "<" << kUri << ">\n";
   out << "    a lv2:Plugin , doap:Project ;\n";

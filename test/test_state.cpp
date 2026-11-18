@@ -6,6 +6,7 @@
 
 #include "module_ids.hpp"
 #include "params.hpp"
+#include "modules.hpp"
 #include "state.hpp"
 
 using namespace rack;
@@ -28,6 +29,40 @@ bool sameValues(const Shared& a, const Shared& b) {
 
 int main() {
   {
+    bool ok = true;
+    for (int id = 1; id < kModuleCount; ++id) {
+      Shared a;
+      initializeRack(a);
+      for (int slot = 0; slot < kSlotCount; ++slot) {
+        applyModuleDefaults(a, slot, static_cast<int>(ModuleId::Off), false);
+      }
+      applyModuleDefaults(a, 0, id, false);
+      for (int k = 0; k < kRackControlCount; ++k) {
+        a.setFromHost(slotParam(0, kSlotOffsetC0 + k),
+                      0.05 + 0.9 * ((k + 1) / 13.0));
+      }
+      const auto blob = serializeState(a, 1.0);
+      Shared b;
+      if (!deserializeState(blob.data(), blob.size(), b)) {
+        ok = false;
+        continue;
+      }
+      if (static_cast<int>(b.get(slotParam(0, kSlotOffsetType)) + 0.5) !=
+          id) {
+        ok = false;
+        std::printf("module state type mismatch %d\n", id);
+      }
+      for (int k = 0; k < kRackControlCount; ++k) {
+        if (std::fabs(b.get(slotParam(0, kSlotOffsetC0 + k)) -
+                      a.get(slotParam(0, kSlotOffsetC0 + k))) > 1e-9) {
+          ok = false;
+          std::printf("module state control mismatch %d/%d\n", id, k);
+        }
+      }
+    }
+    check(ok, "state round-trips every module and control");
+  }
+  {
     Shared source;
     source.setFromHost(P_INPUT, 3.5);
     source.setFromHost(P_SLOT0_TYPE,
@@ -46,6 +81,40 @@ int main() {
           "state deserializes");
     check(sameValues(source, restored), "state round-trips every parameter");
     check(std::fabs(scale - 1.25) < 1e-9, "state round-trips the UI scale");
+  }
+  {
+    bool ok = true;
+    for (int id = 1; id < kModuleCount; ++id) {
+      Shared a;
+      initializeRack(a);
+      for (int slot = 0; slot < kSlotCount; ++slot) {
+        applyModuleDefaults(a, slot, static_cast<int>(ModuleId::Off), false);
+      }
+      applyModuleDefaults(a, 0, id, false);
+      for (int k = 0; k < kRackControlCount; ++k) {
+        a.setFromHost(slotParam(0, kSlotOffsetC0 + k),
+                      0.05 + 0.9 * ((k + 1) / 13.0));
+      }
+      const auto blob = serializeState(a, 1.0);
+      Shared b;
+      if (!deserializeState(blob.data(), blob.size(), b)) {
+        ok = false;
+        continue;
+      }
+      if (static_cast<int>(b.get(slotParam(0, kSlotOffsetType)) + 0.5) !=
+          id) {
+        ok = false;
+        std::printf("module state type mismatch %d\n", id);
+      }
+      for (int k = 0; k < kRackControlCount; ++k) {
+        if (std::fabs(b.get(slotParam(0, kSlotOffsetC0 + k)) -
+                      a.get(slotParam(0, kSlotOffsetC0 + k))) > 1e-9) {
+          ok = false;
+          std::printf("module state control mismatch %d/%d\n", id, k);
+        }
+      }
+    }
+    check(ok, "state round-trips every module and control");
   }
   {
     Shared source;

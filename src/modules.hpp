@@ -455,7 +455,7 @@ inline constexpr ControlDesc kTransientControls[] = {
 inline constexpr ControlDesc kClipControls[] = {
     {0, "DRIVE", "Drive", ControlFormat::ClipDriveDb},
     {1, "CEIL", "Ceiling", ControlFormat::ClipCeilingDb},
-    {2, "MODE", "Mode", ControlFormat::ClipMode},
+    {2, "MODE", "Mode", ControlFormat::ClipMode, true},
     {3, "MIX", "Mix", ControlFormat::Percent},
 };
 

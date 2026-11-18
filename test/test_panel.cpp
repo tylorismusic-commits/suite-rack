@@ -612,6 +612,48 @@ int main() {
   panel.pointerUp(s, state);
   check(!state.aboutOpen, "ABOUT close button closes the reference");
 
+  // Every control formats to text and parses back without drift.
+  {
+    bool ok = true;
+    Shared values;
+    initializeRack(values);
+    for (int id = 1; id < kModuleCount; ++id) {
+      const ModuleDesc* m = moduleDesc(id);
+      for (int slot = 0; slot < kSlotCount; ++slot) {
+        applyModuleDefaults(values, slot, static_cast<int>(ModuleId::Off),
+                            false);
+      }
+      applyModuleDefaults(values, 0, id, false);
+      for (int k = 0; k < m->controlCount; ++k) {
+        const uint32_t p = slotParam(0, kSlotOffsetC0 + m->controls[k].param);
+        for (double v : {0.0, 0.25, 0.5, 0.75, 1.0}) {
+          const std::string text = formatParamValue(values, p, v);
+          double out = -1.0;
+          if (!parseParamValue(values, p, text, &out)) {
+            ok = false;
+            std::printf("parse failed: %s / %s -> '%s'\n", m->name,
+                        m->controls[k].name, text.c_str());
+            continue;
+          }
+          const bool quantized =
+              m->controls[k].toggled || m->controls[k].stepped ||
+              m->controls[k].labels.count > 0;
+          const bool displayQuantized =
+              m->controls[k].format == ControlFormat::AttackMs ||
+              m->controls[k].format == ControlFormat::ReleaseMs ||
+              m->controls[k].format == ControlFormat::Ratio;
+          const double tolerance = displayQuantized ? 0.13 : 0.04;
+          if (!quantized && std::fabs(out - v) > tolerance) {
+            ok = false;
+            std::printf("round-trip drift: %s / %s %.3f -> '%s' -> %.3f\n",
+                        m->name, m->controls[k].name, v, text.c_str(), out);
+          }
+        }
+      }
+    }
+    check(ok, "every typed control value round-trips");
+  }
+
   cairo_destroy(cr);
   cairo_surface_destroy(surf);
   std::printf("%d failure(s)\n", fails);

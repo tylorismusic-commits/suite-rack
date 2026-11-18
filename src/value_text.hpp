@@ -604,6 +604,21 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
     }
   }
 
+  if (desc && desc->format == ControlFormat::ClipMode) {
+    if (text == "soft") {
+      *out = 0.0;
+      return true;
+    }
+    if (text == "hard") {
+      *out = 0.5;
+      return true;
+    }
+    if (text == "diode") {
+      *out = 1.0;
+      return true;
+    }
+  }
+
   double v = 0.0;
   std::string suffix;
   if (!parseNumberText(text, &v, &suffix)) {
@@ -700,7 +715,7 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
       case ControlFormat::ClipDriveDb: v = v / 24.0; break;
       case ControlFormat::ClipCeilingDb: v = (v + 12.0) / 12.0; break;
       case ControlFormat::DeEssFreqHz:
-        v = std::log(std::max(v, 4.0) / 4.0) / std::log(3.0);
+        v = std::log(std::max(v / 1000.0, 4.0) / 4.0) / std::log(3.0);
         break;
       case ControlFormat::DeEssRangeDb: v = v / 24.0; break;
       case ControlFormat::LimiterCeilingDb: v = (v + 6.0) / 6.0; break;
@@ -713,7 +728,7 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
         break;
       case ControlFormat::CrushBits: v = (v - 1.0) / 15.0; break;
       case ControlFormat::CrushToneHz:
-        v = std::log(std::max(v, 1.0) / 1.0) / std::log(20.0);
+        v = std::log(std::max(v / 1000.0, 1.0) / 1.0) / std::log(20.0);
         break;
       case ControlFormat::FilterCutoffHz:
         v = std::log(std::max(v, 20.0) / 20.0) / std::log(1000.0);

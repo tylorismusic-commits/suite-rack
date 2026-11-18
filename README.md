@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.48.2-m2 — public alpha: CLAP + LV2, seventy-two modules, full preset browsers, drag reorder, browser search and typed values.**
+**Status: 0.49.0-m2 — interaction-audited: 72 modules, CLAP + LV2, presets, typed values.**
 More factory module presets are next.
 
 A virtual 500 series mix rack in the Suite visual language: six serial slots, each
@@ -160,7 +160,7 @@ but a few areas are still intentionally limited:
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.48.2-m2 slice
+## Current 0.49.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.

@@ -25,6 +25,7 @@ constexpr double kPresetListX = 72.0;
 constexpr double kPresetListY = 54.0;
 constexpr double kPresetListW = 380.0;
 constexpr double kPresetRowH = 20.0;
+constexpr double kPresetBottomGap = 8.0;
 constexpr int kPresetVisibleRows = 12;
 constexpr double kPresetHeaderH = 46.0;
 constexpr double kPresetFooterH = 34.0;
@@ -872,8 +873,8 @@ void Panel::drawPresetList(cairo_t* cr, const Shared& /*shared*/,
   const int rows = presetRowsFor(count);
   const int maxScroll = std::max(0, count - rows);
   const int scroll = std::clamp(state.presetScroll, 0, maxScroll);
-  const double h =
-      kPresetHeaderH + rows * kPresetRowH + kPresetFooterH;
+  const double h = kPresetHeaderH + rows * kPresetRowH +
+                   kPresetBottomGap + kPresetFooterH;
 
   setRgb(cr, {0.02, 0.02, 0.03}, 0.55);
   roundRect(cr, kPresetListX + 4, kPresetListY + 5, kPresetListW, h, 6);
@@ -920,7 +921,8 @@ void Panel::drawPresetList(cairo_t* cr, const Shared& /*shared*/,
     }
   }
 
-  const double footerY = kPresetListY + h - kPresetFooterH + 4;
+  const double footerY =
+      kPresetListY + kPresetHeaderH + rows * kPresetRowH + kPresetBottomGap + 4;
   if (maxScroll > 0) {
     roundRect(cr, kPresetListX + 14, footerY, 54, 24, 4);
     setRgb(cr, scroll > 0 ? Rgb{0.20, 0.17, 0.14} : Rgb{0.12, 0.11, 0.10});
@@ -1528,8 +1530,8 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
     const int rows = presetRowsFor(count);
     const int maxScroll = std::max(0, count - rows);
     const int scroll = std::clamp(state.presetScroll, 0, maxScroll);
-    const double h = kPresetHeaderH + rows * kPresetRowH + kPresetFooterH;
-    const double footerY = kPresetListY + h - kPresetFooterH + 4;
+    const double footerY =
+      kPresetListY + kPresetHeaderH + rows * kPresetRowH + kPresetBottomGap + 4;
     if (x >= kPresetListX + 14 && x <= kPresetListX + 68 &&
         y >= footerY && y <= footerY + 24) {
       state.presetScroll = std::max(0, scroll - 1);
@@ -1575,7 +1577,8 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
       return true;
     }
     if (x >= kPresetListX && x <= kPresetListX + kPresetListW &&
-        y >= kPresetListY + kPresetHeaderH && y < footerY - 4) {
+        y >= kPresetListY + kPresetHeaderH &&
+        y < kPresetListY + kPresetHeaderH + rows * kPresetRowH) {
       const int row = static_cast<int>((y - kPresetListY - kPresetHeaderH) /
                                        kPresetRowH);
       const int index = scroll + row;
