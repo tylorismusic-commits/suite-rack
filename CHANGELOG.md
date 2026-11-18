@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.1-m2 — 2026-11-17
+
+- Moved knob labels and values further from the knob body for the larger text.
+- Double-clicking a knob resets it to the active module's default value.
+- Right-click text entry remains reserved for the full-catalog pass.
+
 ## 0.5.0-m2 — 2026-11-17
 
 - Added Gate, Transient, Clip and De-Ess modules.

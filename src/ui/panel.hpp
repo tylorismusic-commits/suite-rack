@@ -4,6 +4,8 @@
 
 #include <cairo.h>
 
+#include <chrono>
+
 #include <string>
 #include <vector>
 
@@ -110,6 +112,8 @@ private:
 
   std::vector<Widget> widgets_;
   int dragParam_ = -1;
+  int lastClickParam_ = -1;
+  std::chrono::steady_clock::time_point lastClickTime_{};
   double dragStartY_ = 0.0;
   double dragStartValue_ = 0.0;
   int dragSteps_ = 0;

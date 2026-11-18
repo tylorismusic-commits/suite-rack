@@ -599,11 +599,11 @@ void Panel::drawKnob(cairo_t* cr, const Widget& w, const Shared& shared,
   cairo_line_to(cr, w.x + std::cos(a) * w.r * 0.65, w.y + std::sin(a) * w.r * 0.65);
   cairo_stroke(cr);
   const double labelY = w.labelBelow ? w.y + w.r * 1.5 + 20
-                                     : w.y - w.r * 1.5 - (w.compact ? 6.0 : 14.0);
+                                     : w.y - w.r * 1.5 - (w.compact ? 9.0 : 16.0);
   text(cr, w.label, w.x, labelY, w.compact ? 8.5 : 10.0, 1,
        kText.r, kText.g, kText.b);
   const std::string val = formatParamValue(shared, w.param, value);
-  text(cr, val.c_str(), w.x, w.y + w.r + (w.compact ? 9.5 : 14.0),
+  text(cr, val.c_str(), w.x, w.y + w.r + (w.compact ? 11.0 : 15.0),
        w.compact ? 8.5 : 8.5, 1, st.accent.r, st.accent.g, st.accent.b);
 }
 
@@ -743,13 +743,39 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
         shared.set(w.param, w.value);
         state.presetDirty = true;
         return true;
-      case Kind::Knob:
+      case Kind::Knob: {
+        const auto now = std::chrono::steady_clock::now();
+        if (lastClickParam_ == static_cast<int>(w.param) &&
+            now - lastClickTime_ <= std::chrono::milliseconds(350)) {
+          double reset = kParamSpecs[w.param].def;
+          if (w.param >= P_SLOT0_TYPE) {
+            const int slot =
+                static_cast<int>((w.param - P_SLOT0_TYPE) / kSlotStride);
+            const int offset =
+                static_cast<int>((w.param - P_SLOT0_TYPE) % kSlotStride);
+            if (slot >= 0 && slot < kSlotCount && offset >= kSlotOffsetC0) {
+              const int control = offset - kSlotOffsetC0;
+              const int type = static_cast<int>(
+                  shared.get(slotParam(slot, kSlotOffsetType)) + 0.5);
+              reset = defaultControlValue(moduleDesc(type)->id, control);
+            }
+          }
+          shared.set(w.param, reset);
+          state.presetDirty = true;
+          lastClickParam_ = -1;
+          dragParam_ = -1;
+          return true;
+        }
+        lastClickParam_ = static_cast<int>(w.param);
+        lastClickTime_ = now;
         dragParam_ = static_cast<int>(w.param);
         dragSteps_ = w.steps;
         dragStartY_ = y;
         dragStartValue_ = shared.get(w.param);
-        if (dragSteps_ > 1) dragStartValue_ = std::min(dragStartValue_, dragSteps_ - 1.0);
+        if (dragSteps_ > 1)
+          dragStartValue_ = std::min(dragStartValue_, dragSteps_ - 1.0);
         return false;
+      }
     }
   }
   return false;

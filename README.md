@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.5.0-m2 — CLAP + LV2, module registry and eighteen modules.**
+**Status: 0.5.1-m2 — CLAP + LV2, module registry and eighteen modules.**
 The rest of the catalog, drag/reorder, module presets, browser search and user
 presets are next.
 
@@ -58,13 +58,14 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.5.0-m2 slice
+## Current 0.5.1-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
 - Six vertical 500-series-style module columns, each with its own background and
   knob colour.
 - Per-slot bypass, mix and gain.
+- Double-click a knob to reset it to the active module's default.
 - Module browser with **ALL / EQ / COMP / COLOUR / DYN** categories.
 - Generic per-slot controls: twelve control slots plus type, bypass, mix and
   gain. Host automation follows the slot, not the module.

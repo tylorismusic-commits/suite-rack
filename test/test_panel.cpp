@@ -123,6 +123,17 @@ int main() {
     if (r.param == slotParam(0, kSlotOffsetGain)) gainFound = true;
   }
   check(gainFound, "per-slot gain is present");
+
+  // Double-clicking a knob resets it to the active module's default.
+  const uint32_t lowParam = slotParam(0, kSlotOffsetC0 + kCtlLow);
+  s.set(lowParam, 0.90);
+  panel.draw(cr, s, state);
+  check(clickParam(panel, s, state, lowParam), "EQ low knob is clickable");
+  check(clickParam(panel, s, state, lowParam),
+        "EQ low knob accepts a double-click");
+  check(std::fabs(s.get(lowParam) - 0.60) < 1e-6,
+        "double-click resets the control to its module default");
+
   check(!panel.widgetRects().empty(), "panel reports widget geometry");
 
   cairo_destroy(cr);
