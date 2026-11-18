@@ -26,6 +26,17 @@ enum class ControlFormat {
   AirFreqHz,
   TiltDb,
   AirDb,
+  GateThresholdDb,
+  RangeDb,
+  GateAttackMs,
+  GateReleaseMs,
+  HoldMs,
+  BipolarPercent,
+  ClipDriveDb,
+  ClipCeilingDb,
+  ClipMode,
+  DeEssFreqHz,
+  DeEssRangeDb,
 };
 
 struct ControlDesc {
@@ -112,6 +123,34 @@ inline constexpr ControlDesc kColourControls[] = {
     {3, "MIX", "Mix", ControlFormat::Percent},
 };
 
+inline constexpr ControlDesc kGateControls[] = {
+    {0, "THR", "Threshold", ControlFormat::GateThresholdDb},
+    {1, "RANGE", "Range", ControlFormat::RangeDb},
+    {2, "ATK", "Attack", ControlFormat::GateAttackMs},
+    {3, "REL", "Release", ControlFormat::GateReleaseMs},
+    {4, "HOLD", "Hold", ControlFormat::HoldMs},
+};
+
+inline constexpr ControlDesc kTransientControls[] = {
+    {0, "ATTACK", "Attack", ControlFormat::BipolarPercent},
+    {1, "SUSTAIN", "Sustain", ControlFormat::BipolarPercent},
+    {2, "MIX", "Mix", ControlFormat::Percent},
+};
+
+inline constexpr ControlDesc kClipControls[] = {
+    {0, "DRIVE", "Drive", ControlFormat::ClipDriveDb},
+    {1, "CEIL", "Ceiling", ControlFormat::ClipCeilingDb},
+    {2, "MODE", "Mode", ControlFormat::ClipMode},
+    {3, "MIX", "Mix", ControlFormat::Percent},
+};
+
+inline constexpr ControlDesc kDeEssControls[] = {
+    {0, "FREQ", "Frequency", ControlFormat::DeEssFreqHz},
+    {1, "THR", "Threshold", ControlFormat::ThresholdDb},
+    {2, "RANGE", "Range", ControlFormat::DeEssRangeDb},
+    {3, "MIX", "Mix", ControlFormat::Percent},
+};
+
 inline constexpr ModuleDesc kModules[] = {
     {ModuleId::Off, "Off", "Off", "Empty slot", false, false, 0, 0, nullptr},
     {ModuleId::Eq4K, "4K EQ", "EQ", "Four-band console EQ", true, false, 0,
@@ -164,6 +203,21 @@ inline constexpr ModuleDesc kModules[] = {
      "Transformer saturation", false, false, 0,
      static_cast<int>(sizeof(kColourControls) / sizeof(kColourControls[0])),
      kColourControls},
+    {ModuleId::DynGate, "Gate", "Dyn", "Expander / gate", false, false, 0,
+     static_cast<int>(sizeof(kGateControls) / sizeof(kGateControls[0])),
+     kGateControls},
+    {ModuleId::DynTransient, "Transient", "Dyn", "Transient shaper", false,
+     false, 0,
+     static_cast<int>(sizeof(kTransientControls) /
+                      sizeof(kTransientControls[0])),
+     kTransientControls},
+    {ModuleId::DynClip, "Clip", "Dyn", "Soft / hard / diode clipper", false,
+     false, 0,
+     static_cast<int>(sizeof(kClipControls) / sizeof(kClipControls[0])),
+     kClipControls},
+    {ModuleId::DynDeEss, "De-Ess", "Dyn", "High-band de-esser", false, false,
+     0, static_cast<int>(sizeof(kDeEssControls) / sizeof(kDeEssControls[0])),
+     kDeEssControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,

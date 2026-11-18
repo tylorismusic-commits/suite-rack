@@ -133,6 +133,10 @@ int main() {
         static_cast<int>(ModuleId::ColourBus),
         static_cast<int>(ModuleId::ColourTape),
         static_cast<int>(ModuleId::ColourTransformer),
+        static_cast<int>(ModuleId::DynGate),
+        static_cast<int>(ModuleId::DynTransient),
+        static_cast<int>(ModuleId::DynClip),
+        static_cast<int>(ModuleId::DynDeEss),
     };
     for (int id : ids) {
       Engine e;

@@ -9,10 +9,14 @@
 #include <hdsp/smoother.hpp>
 
 #include "colour_module.hpp"
+#include "clip_module.hpp"
 #include "comp_module.hpp"
+#include "deess_module.hpp"
 #include "controls.hpp"
 #include "eq_module.hpp"
+#include "gate_module.hpp"
 #include "module_ids.hpp"
+#include "transient_module.hpp"
 
 namespace rack {
 
@@ -23,6 +27,10 @@ public:
     for (auto& eq : eq_) eq.prepare(sr_);
     for (auto& comp : comp_) comp.prepare(sr_);
     for (auto& colour : colour_) colour.prepare(sr_);
+    for (auto& gate : gate_) gate.prepare(sr_);
+    for (auto& transient : transient_) transient.prepare(sr_);
+    for (auto& clip : clip_) clip.prepare(sr_);
+    for (auto& deess : deess_) deess.prepare(sr_);
     input_.setTime(15.0f, sr_);
     output_.setTime(15.0f, sr_);
     power_.setTime(20.0f, sr_);
@@ -40,6 +48,10 @@ public:
       eq_[i].setControls(c.slot[i]);
       comp_[i].setControls(c.slot[i]);
       colour_[i].setControls(c.slot[i]);
+      gate_[i].setControls(c.slot[i]);
+      transient_[i].setControls(c.slot[i]);
+      clip_[i].setControls(c.slot[i]);
+      deess_[i].setControls(c.slot[i]);
       slotGain_[i].setTarget(hdsp::dbToGain(c.slot[i].gainDb));
     }
     input_.setTarget(hdsp::dbToGain(c.inputDb));
@@ -69,6 +81,18 @@ public:
           gr = comp_[s].process(l, r);
         } else if (moduleIsColour(type)) {
           colour_[s].process(l, r);
+        } else if (moduleIsDynamics(type)) {
+          if (type == static_cast<int>(ModuleId::DynGate)) {
+            gate_[s].process(l, r);
+            gr = gate_[s].lastGrDb();
+          } else if (type == static_cast<int>(ModuleId::DynTransient)) {
+            transient_[s].process(l, r);
+          } else if (type == static_cast<int>(ModuleId::DynClip)) {
+            clip_[s].process(l, r);
+          } else if (type == static_cast<int>(ModuleId::DynDeEss)) {
+            deess_[s].process(l, r);
+            gr = deess_[s].lastGrDb();
+          }
         } else {
           continue;
         }
@@ -106,6 +130,10 @@ public:
     for (auto& eq : eq_) eq.reset();
     for (auto& comp : comp_) comp.reset();
     for (auto& colour : colour_) colour.reset();
+    for (auto& gate : gate_) gate.reset();
+    for (auto& transient : transient_) transient.reset();
+    for (auto& clip : clip_) clip.reset();
+    for (auto& deess : deess_) deess.reset();
     input_.snap();
     output_.snap();
     power_.snap();
@@ -120,6 +148,10 @@ private:
   EqModule eq_[kSlotCount];
   CompModule comp_[kSlotCount];
   ColourModule colour_[kSlotCount];
+  GateModule gate_[kSlotCount];
+  TransientModule transient_[kSlotCount];
+  ClipModule clip_[kSlotCount];
+  DeEssModule deess_[kSlotCount];
   hdsp::Smoothed input_, output_, power_;
   hdsp::Smoothed slotGain_[kSlotCount];
 };

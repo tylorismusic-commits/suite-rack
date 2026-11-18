@@ -93,6 +93,45 @@ inline std::string formatControlValue(const ModuleDesc& module,
     case ControlFormat::AirDb:
       std::snprintf(buf, sizeof(buf), "%+.1f dB", (v - 0.5f) * 24.0f);
       return buf;
+    case ControlFormat::GateThresholdDb:
+      std::snprintf(buf, sizeof(buf), "%.0f dB", -60.0f + 60.0f * v);
+      return buf;
+    case ControlFormat::RangeDb:
+      std::snprintf(buf, sizeof(buf), "%.0f dB", v * 80.0f);
+      return buf;
+    case ControlFormat::GateAttackMs: {
+      const float ms = 0.1f * std::pow(500.0f, v);
+      std::snprintf(buf, sizeof(buf), ms < 10.0f ? "%.1f ms" : "%.0f ms", ms);
+      return buf;
+    }
+    case ControlFormat::GateReleaseMs: {
+      const float ms = 10.0f * std::pow(100.0f, v);
+      std::snprintf(buf, sizeof(buf), "%.0f ms", ms);
+      return buf;
+    }
+    case ControlFormat::HoldMs:
+      std::snprintf(buf, sizeof(buf), "%.0f ms", v * 500.0f);
+      return buf;
+    case ControlFormat::BipolarPercent:
+      std::snprintf(buf, sizeof(buf), "%+.0f%%", (v - 0.5f) * 200.0f);
+      return buf;
+    case ControlFormat::ClipDriveDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", v * 24.0f);
+      return buf;
+    case ControlFormat::ClipCeilingDb:
+      std::snprintf(buf, sizeof(buf), "%.1f dB", -12.0f + 12.0f * v);
+      return buf;
+    case ControlFormat::ClipMode: {
+      static const char* names[3] = {"Soft", "Hard", "Diode"};
+      const int mode = std::clamp(static_cast<int>(std::lround(v * 2.0f)), 0, 2);
+      return names[mode];
+    }
+    case ControlFormat::DeEssFreqHz:
+      std::snprintf(buf, sizeof(buf), "%.1f kHz", 4.0f * std::pow(3.0f, v));
+      return buf;
+    case ControlFormat::DeEssRangeDb:
+      std::snprintf(buf, sizeof(buf), "%.0f dB", v * 24.0f);
+      return buf;
   }
   std::snprintf(buf, sizeof(buf), "%.2f", v);
   return buf;
@@ -206,6 +245,22 @@ inline bool parseParamValue(const Shared& shared, uint32_t id,
             break;
           case ControlFormat::TiltDb:
           case ControlFormat::AirDb: v = v / 24.0 + 0.5; break;
+          case ControlFormat::GateThresholdDb: v = (v + 60.0) / 60.0; break;
+          case ControlFormat::RangeDb: v = v / 80.0; break;
+          case ControlFormat::GateAttackMs:
+            v = std::log(std::max(v, 0.1) / 0.1) / std::log(500.0);
+            break;
+          case ControlFormat::GateReleaseMs:
+            v = std::log(std::max(v, 10.0) / 10.0) / std::log(100.0);
+            break;
+          case ControlFormat::HoldMs: v = v / 500.0; break;
+          case ControlFormat::BipolarPercent: v = v / 200.0 + 0.5; break;
+          case ControlFormat::ClipDriveDb: v = v / 24.0; break;
+          case ControlFormat::ClipCeilingDb: v = (v + 12.0) / 12.0; break;
+          case ControlFormat::DeEssFreqHz:
+            v = std::log(std::max(v, 4.0) / 4.0) / std::log(3.0);
+            break;
+          case ControlFormat::DeEssRangeDb: v = v / 24.0; break;
           default: break;
         }
       }

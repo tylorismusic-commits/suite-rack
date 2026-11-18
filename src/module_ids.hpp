@@ -22,6 +22,10 @@ enum class ModuleId : int {
   ColourBus,
   ColourTape,
   ColourTransformer,
+  DynGate,
+  DynTransient,
+  DynClip,
+  DynDeEss,
   Count
 };
 
@@ -31,6 +35,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Off",       "4K EQ",    "Hearth EQ", "Tilt",      "Air",
     "76 Blue",   "76 Black", "2A",        "3A",        "VCA",
     "Valve",     "Console",  "Bus",       "Tape",      "Transformer",
+    "Gate",      "Transient", "Clip",     "De-Ess",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -80,6 +85,18 @@ inline constexpr bool moduleIsColour(int id) noexcept {
          id == static_cast<int>(ModuleId::ColourBus) ||
          id == static_cast<int>(ModuleId::ColourTape) ||
          id == static_cast<int>(ModuleId::ColourTransformer);
+}
+
+inline constexpr bool moduleIsDynamics(int id) noexcept {
+  return id == static_cast<int>(ModuleId::DynGate) ||
+         id == static_cast<int>(ModuleId::DynTransient) ||
+         id == static_cast<int>(ModuleId::DynClip) ||
+         id == static_cast<int>(ModuleId::DynDeEss);
+}
+
+inline constexpr bool moduleHasGr(int id) noexcept {
+  return moduleIsComp(id) || id == static_cast<int>(ModuleId::DynGate) ||
+         id == static_cast<int>(ModuleId::DynDeEss);
 }
 
 // All controls are normalised to 0..1. The module descriptor maps them to
@@ -161,6 +178,38 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 0: return 0.45;  // Drive
         case 1: return 0.50;  // Character
         case 2: return 0.50;  // Tone
+        case 3: return 1.00;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::DynGate:
+      switch (control) {
+        case 0: return 0.50;  // Threshold
+        case 1: return 0.50;  // Range
+        case 2: return 0.15;  // Attack
+        case 3: return 0.35;  // Release
+        case 4: return 0.20;  // Hold
+        default: return 0.50;
+      }
+    case ModuleId::DynTransient:
+      switch (control) {
+        case 0: return 0.50;  // Attack
+        case 1: return 0.50;  // Sustain
+        case 2: return 1.00;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::DynClip:
+      switch (control) {
+        case 0: return 0.45;  // Drive
+        case 1: return 0.75;  // Ceiling
+        case 2: return 0.00;  // Mode: Soft
+        case 3: return 1.00;  // Mix
+        default: return 0.50;
+      }
+    case ModuleId::DynDeEss:
+      switch (control) {
+        case 0: return 0.60;  // Frequency
+        case 1: return 0.60;  // Threshold
+        case 2: return 0.50;  // Range
         case 3: return 1.00;  // Mix
         default: return 0.50;
       }

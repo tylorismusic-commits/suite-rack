@@ -93,6 +93,18 @@ ModuleStyle styleFor(int type) {
     case ModuleId::ColourTransformer:
       return {{0.20, 0.14, 0.10}, {0.44, 0.30, 0.18},
               {0.86, 0.56, 0.30}, {0.94, 0.84, 0.70}};
+    case ModuleId::DynGate:
+      return {{0.16, 0.10, 0.20}, {0.34, 0.20, 0.42},
+              {0.78, 0.52, 0.96}, {0.92, 0.86, 0.94}};
+    case ModuleId::DynTransient:
+      return {{0.24, 0.14, 0.07}, {0.50, 0.30, 0.12},
+              {0.98, 0.64, 0.26}, {0.95, 0.87, 0.72}};
+    case ModuleId::DynClip:
+      return {{0.26, 0.08, 0.07}, {0.54, 0.18, 0.14},
+              {0.98, 0.34, 0.24}, {0.95, 0.82, 0.74}};
+    case ModuleId::DynDeEss:
+      return {{0.23, 0.12, 0.18}, {0.48, 0.24, 0.34},
+              {0.98, 0.54, 0.72}, {0.95, 0.84, 0.88}};
     default:
       return {{0.105, 0.10, 0.095}, {0.24, 0.22, 0.19},
               {0.55, 0.50, 0.44}, {0.72, 0.70, 0.66}};
@@ -103,6 +115,7 @@ bool browserCategoryMatches(int id, int category) {
   if (category == 1) return d->isEq;
   if (category == 2) return d->isComp;
   if (category == 3) return moduleIsColour(id);
+  if (category == 4) return moduleIsDynamics(id);
   return true;
 }
 
@@ -167,7 +180,7 @@ void Panel::tick(const Shared& shared, PanelState& state) const {
 void Panel::layout(const Shared& shared, const PanelState& state) {
   widgets_.clear();
   Widget p{};
-  p.kind = Kind::Power; p.param = P_POWER; p.x = 34; p.y = 32; p.r = 14;
+  p.kind = Kind::Power; p.param = P_POWER; p.x = 34; p.y = 30; p.r = 14;
   widgets_.push_back(p);
 
   auto knob = [&](uint32_t param, double x, double y, double r,
@@ -222,7 +235,7 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
       for (int k = 0; k < module->controlCount; ++k) {
         const ControlDesc& control = module->controls[k];
         const double kx = (k & 1) ? cx2 : cx1;
-        const double ky = y + 155.0 + (k / 2) * rowH;
+        const double ky = y + 165.0 + (k / 2) * rowH;
         knob(slotParam(i, kSlotOffsetC0 + control.param), kx, ky, 18,
              control.label, i, true, control.param);
       }
@@ -235,17 +248,20 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
 
   if (state.browserSlot >= 0 && state.browserSlot < kSlotCount) {
     const double bx = 240, by = 140, bw = 560, bh = 420;
-    for (int tab = 0; tab < 4; ++tab) {
+    for (int tab = 0; tab < 5; ++tab) {
       Widget t{};
       t.kind = Kind::BrowserTab;
       t.param = slotParam(state.browserSlot, kSlotOffsetType);
       t.value = tab;
-      t.x = bx + 32 + tab * 102.0;
+      t.x = bx + 18 + tab * 100.0;
       t.y = by + 46;
       t.w = 94.0;
       t.h = 24.0;
       t.label = tab == 0 ? "ALL"
-                         : (tab == 1 ? "EQ" : (tab == 2 ? "COMP" : "COLOUR"));
+                         : (tab == 1 ? "EQ"
+                                     : (tab == 2 ? "COMP"
+                                                 : (tab == 3 ? "COLOUR"
+                                                             : "DYN")));
       widgets_.push_back(t);
     }
 
@@ -369,11 +385,8 @@ void Panel::drawRack(cairo_t* cr, const Shared& shared,
     char num[16];
     std::snprintf(num, sizeof(num), "SLOT %d", i + 1);
     text(cr, num, x + 10, y + 22, 8, 0, st.accent.r, st.accent.g, st.accent.b);
-    if (moduleIsComp(type)) {
-      char gr[32];
-      std::snprintf(gr, sizeof(gr), "GR %.1f dB", state.slotGrDb[i]);
-      text(cr, gr, x + colW - 10, y + 108, 7, 2, st.accent.r, st.accent.g,
-           st.accent.b);
+    if (moduleHasGr(type)) {
+      drawGrMeter(cr, x + 10, y + 96, colW - 20, 8, state.slotGrDb[i]);
     }
     if (type == static_cast<int>(ModuleId::Off)) {
       text(cr, "EMPTY", x + colW * 0.5, y + 205, 15, 1, st.accent.r,
@@ -384,8 +397,8 @@ void Panel::drawRack(cairo_t* cr, const Shared& shared,
            st.accent.g, st.accent.b);
     }
   }
-  text(cr, "VIRTUAL MIX RACK · 500-SERIES", 520, 84, 9, 1, kDim.r, kDim.g,
-       kDim.b);
+  text(cr, "VIRTUAL MIX RACK · 500-SERIES", 520, 88.5, 8.5, 1, kDim.r,
+       kDim.g, kDim.b);
 }
 
 void Panel::drawBrowser(cairo_t* cr, const Shared& shared,
@@ -407,7 +420,7 @@ void Panel::drawBrowser(cairo_t* cr, const Shared& shared,
        by + 86, 8.5, 1, kDim.r, kDim.g, kDim.b);
   const double tx = bx + 24, ty = by + 46;
   cairo_set_source_rgba(cr, 0.20, 0.17, 0.14, 0.7);
-  cairo_rectangle(cr, tx, ty, 430, 24);
+  cairo_rectangle(cr, tx, ty, 500, 24);
   cairo_fill(cr);
 }
 
@@ -448,15 +461,19 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
   const ModuleStyle st = styleFor(type);
   switch (w.kind) {
     case Kind::Power: {
+      // Shared Comp Suite power button, unchanged.
       const bool on = shared.get(P_POWER) > 0.5;
       cairo_arc(cr, w.x, w.y, w.r, 0, 2 * kPi);
-      setRgb(cr, {0.10, 0.09, 0.08}); cairo_fill(cr);
+      setRgb(cr, {0.12, 0.12, 0.12});
+      cairo_fill(cr);
       cairo_arc(cr, w.x, w.y, w.r - 1.5, 0, 2 * kPi);
-      setRgb(cr, on ? Rgb{0.38, 0.86, 0.46} : Rgb{0.42, 0.40, 0.38});
+      setRgb(cr, on ? Rgb{0.36, 0.86, 0.46} : Rgb{0.42, 0.42, 0.42});
       cairo_set_line_width(cr, 2.2);
+      cairo_new_path(cr);
       cairo_arc(cr, w.x, w.y, 7, -kPi / 2 + 0.6, -kPi / 2 + 2 * kPi - 0.6);
       cairo_stroke(cr);
-      cairo_move_to(cr, w.x, w.y - 9); cairo_line_to(cr, w.x, w.y - 1);
+      cairo_move_to(cr, w.x, w.y - 9);
+      cairo_line_to(cr, w.x, w.y - 1);
       cairo_stroke(cr);
       break;
     }
@@ -583,11 +600,11 @@ void Panel::drawKnob(cairo_t* cr, const Widget& w, const Shared& shared,
   cairo_stroke(cr);
   const double labelY = w.labelBelow ? w.y + w.r * 1.5 + 20
                                      : w.y - w.r * 1.5 - (w.compact ? 6.0 : 14.0);
-  text(cr, w.label, w.x, labelY, w.compact ? 7.0 : 10.0, 1,
+  text(cr, w.label, w.x, labelY, w.compact ? 8.5 : 10.0, 1,
        kText.r, kText.g, kText.b);
   const std::string val = formatParamValue(shared, w.param, value);
-  text(cr, val.c_str(), w.x, w.y + w.r + (w.compact ? 8.0 : 14.0),
-       w.compact ? 6.5 : 8.5, 1, st.accent.r, st.accent.g, st.accent.b);
+  text(cr, val.c_str(), w.x, w.y + w.r + (w.compact ? 9.5 : 14.0),
+       w.compact ? 8.5 : 8.5, 1, st.accent.r, st.accent.g, st.accent.b);
 }
 
 void Panel::drawPill(cairo_t* cr, const Widget& w, bool on, const char* label) const {
@@ -617,6 +634,38 @@ void Panel::drawLevelMeter(cairo_t* cr, double x, double y, double w, double h,
   }
 }
 
+void Panel::drawGrMeter(cairo_t* cr, double x, double y, double w, double h,
+                       double grDb) const {
+  roundRect(cr, x, y, w, h, 2.5);
+  setRgb(cr, {0.055, 0.052, 0.048});
+  cairo_fill(cr);
+  const int segments = 12;
+  const double gap = 1.0;
+  const double segW = (w - 2.0 - gap * (segments - 1)) / segments;
+  const double db = std::clamp(grDb, 0.0, 12.0);
+  for (int i = 0; i < segments; ++i) {
+    const double sx = x + 1.0 + i * (segW + gap);
+    const bool on = db >= static_cast<double>(i + 1);
+    Rgb c = {0.16, 0.14, 0.12};
+    if (on) {
+      if (i < 3) c = {0.36, 0.80, 0.42};
+      else if (i < 6) c = {0.94, 0.62, 0.20};
+      else c = {0.95, 0.26, 0.18};
+    }
+    setRgb(cr, c, on ? 1.0 : 0.55);
+    cairo_rectangle(cr, sx, y + 1.5, segW, h - 3.0);
+    cairo_fill(cr);
+  }
+  text(cr, "GR", x, y - 3.0, 7.0, 0, kDim.r, kDim.g, kDim.b);
+  const double ticks[5] = {0.0, 3.0, 6.0, 9.0, 12.0};
+  for (double t : ticks) {
+    const double tx = x + 1.0 + (w - 2.0) * (t / 12.0);
+    char label[8];
+    std::snprintf(label, sizeof(label), "%.0f", t);
+    text(cr, label, tx, y + h + 6.0, 7.0, 1, kDim.r, kDim.g, kDim.b);
+  }
+}
+
 bool Panel::hitWidget(const Widget& w, double x, double y) const {
   if (w.kind == Kind::Knob) {
     const double dx = x - w.x, dy = y - w.y;
@@ -624,7 +673,7 @@ bool Panel::hitWidget(const Widget& w, double x, double y) const {
   }
   if (w.kind == Kind::Power) {
     const double dx = x - w.x, dy = y - w.y;
-    return dx * dx + dy * dy <= w.r * w.r * 1.4;
+    return dx * dx + dy * dy <= w.r * w.r * 1.3;
   }
   return x >= w.x && x <= w.x + w.w && y >= w.y && y <= w.y + w.h;
 }

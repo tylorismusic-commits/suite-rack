@@ -102,6 +102,8 @@ private:
   void drawButton(cairo_t* cr, const Widget& w, bool lit) const;
   void drawLevelMeter(cairo_t* cr, double x, double y, double w, double h,
                       double dbL, double dbR) const;
+  void drawGrMeter(cairo_t* cr, double x, double y, double w, double h,
+                   double grDb) const;
   void text(cairo_t* cr, const char* s, double x, double y, double size,
             int align, double r, double g, double b) const;
   bool hitWidget(const Widget& w, double x, double y) const;

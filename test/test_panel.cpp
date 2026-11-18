@@ -94,6 +94,18 @@ int main() {
   check(s.get(P_SLOT2_TYPE) == static_cast<double>(ModuleId::ColourValve),
         "Valve module selects into slot 3");
 
+  // Slot 4: DYN category and the Gate module.
+  panel.draw(cr, s, state);
+  panel.pointerDown(s, state, 596, 134, false);
+  panel.pointerUp();
+  panel.draw(cr, s, state);
+  check(clickLabel(panel, s, state, "DYN"), "DYN category tab is clickable");
+  check(state.browserCategory == 4, "DYN tab filters the browser");
+  panel.draw(cr, s, state);
+  check(clickLabel(panel, s, state, "Gate"), "filtered browser offers Gate");
+  check(s.get(P_SLOT3_TYPE) == static_cast<double>(ModuleId::DynGate),
+        "Gate module selects into slot 4");
+
   // Bypass pill for slot 2.
   panel.draw(cr, s, state);
   check(clickParam(panel, s, state, P_SLOT1_BYPASS),

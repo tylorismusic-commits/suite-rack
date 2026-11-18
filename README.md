@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.4.0-m2 — CLAP + LV2, module registry and fourteen modules.**
+**Status: 0.5.0-m2 — CLAP + LV2, module registry and eighteen modules.**
 The rest of the catalog, drag/reorder, module presets, browser search and user
 presets are next.
 
@@ -58,18 +58,19 @@ standalone plugins remain the full versions.
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.4.0-m2 slice
+## Current 0.5.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.
 - Six vertical 500-series-style module columns, each with its own background and
   knob colour.
 - Per-slot bypass, mix and gain.
-- Module browser with **ALL / EQ / COMP / COLOUR** categories.
+- Module browser with **ALL / EQ / COMP / COLOUR / DYN** categories.
 - Generic per-slot controls: twelve control slots plus type, bypass, mix and
   gain. Host automation follows the slot, not the module.
 - **Available modules:** 4K EQ, Hearth EQ, Tilt, Air, 76 Blue, 76 Black, 2A,
-  3A, VCA, Valve, Console, Bus, Tape and Transformer.
+  3A, VCA, Valve, Console, Bus, Tape, Transformer, Gate, Transient, Clip and
+  De-Ess.
 - Serial engine and per-slot meters in place; DSP and panel tests pass.
 - **CLAP and LV2 builds** load in REAPER with the six-column editor and process
   audio.
@@ -122,8 +123,7 @@ cp -r build/lv2/suite-rack.lv2 ~/.lv2/
 1. Browser search and module descriptions.
 2. Drag/reorder and module presets.
 3. Suite core modules: Hearth Comp, Glue, Space, Bleed Out, Trowel
-   Smoothing/Tame, Gate, Peak Limiter, Ember, Reel, Transient, Clip, De-Ess,
-   Cleanup, Density.
+   Smoothing/Tame, Peak Limiter, Ember, Reel, Cleanup, Density.
 4. New extras: Image, Dynamic EQ, Multiband, Sub, Double, Filter, Crush, Motion,
    Rider.
 5. JClones ports, 510 and Pultec.
