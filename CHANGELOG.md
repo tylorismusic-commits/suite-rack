@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.48.0-m2 — 2026-11-18
+
+- User rack presets can be renamed and deleted from the rack preset browser.
+- Right-clicking a user module preset opens RENAME / DELETE / CANCEL actions,
+  with a confirmation step before deleting.
+- CLAP automation now shows module-aware control names, hides unused controls,
+  numbers slots from 1, and rescans after module changes.
+- LV2 module groups use one-based slot names and clearer "Module Control N"
+  names.
+- Gain reduction is available to hosts through LV2 slot GR output ports and
+  read-only CLAP Slot GR parameters. LV2 GR ports are no longer marked
+  not-on-GUI.
+
 ## 0.47.0-m2 — 2026-11-18
 
 - Typed knob values now recognise units (`12k`, `250ms`, `1.5s`, `7.5dB`,

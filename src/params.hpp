@@ -77,51 +77,51 @@ struct ParamSpec {
   (n == 0 ? defaultControlValue(ModuleId::Eq4K, c)                            \
           : (n == 1 ? defaultControlValue(ModuleId::Comp76Blue, c) : 0.5))
 
-#define SLOT_SPECS(n)                                                         \
-  {"slot" #n "_type", "Module", "Slot " #n, 0.0,                              \
+#define SLOT_SPECS(n, display)                                               \
+  {"slot" #n "_type", "Module", "Slot " #display, 0.0,                         \
    static_cast<double>(kModuleCount - 1), SLOT_DEFAULT_TYPE(n), true, false,  \
    false, nullptr, labels(kModuleLabels)},                                    \
-      {"slot" #n "_bypass", "Bypass", "Slot " #n, 0.0, 1.0, 0.0, true, false, \
-       true, nullptr, {}},                                                    \
-      {"slot" #n "_mix", "Mix", "Slot " #n, 0.0, 100.0, 100.0, false, false,  \
-       false, "%", {}},                                                       \
-      {"slot" #n "_gain", "Gain", "Slot " #n, -12.0, 12.0, 0.0, false, false, \
-       false, "dB", {}},                                                      \
-      {"slot" #n "_c0", "Control 1", "Slot " #n, 0.0, 1.0,                    \
+      {"slot" #n "_bypass", "Bypass", "Slot " #display, 0.0, 1.0, 0.0, true,   \
+       false, true, nullptr, {}},                                             \
+      {"slot" #n "_mix", "Mix", "Slot " #display, 0.0, 100.0, 100.0, false,  \
+       false, false, "%", {}},                                                \
+      {"slot" #n "_gain", "Gain", "Slot " #display, -12.0, 12.0, 0.0, false,  \
+       false, false, "dB", {}},                                               \
+      {"slot" #n "_c0", "Module Control 1", "Slot " #display, 0.0, 1.0,       \
        SLOT_DEFAULT_CTL(n, 0), false, false, false, nullptr, {}},             \
-      {"slot" #n "_c1", "Control 2", "Slot " #n, 0.0, 1.0,                    \
+      {"slot" #n "_c1", "Module Control 2", "Slot " #display, 0.0, 1.0,                    \
        SLOT_DEFAULT_CTL(n, 1), false, false, false, nullptr, {}},             \
-      {"slot" #n "_c2", "Control 3", "Slot " #n, 0.0, 1.0,                    \
+      {"slot" #n "_c2", "Module Control 3", "Slot " #display, 0.0, 1.0,                    \
        SLOT_DEFAULT_CTL(n, 2), false, false, false, nullptr, {}},             \
-      {"slot" #n "_c3", "Control 4", "Slot " #n, 0.0, 1.0,                    \
+      {"slot" #n "_c3", "Module Control 4", "Slot " #display, 0.0, 1.0,                    \
        SLOT_DEFAULT_CTL(n, 3), false, false, false, nullptr, {}},             \
-      {"slot" #n "_c4", "Control 5", "Slot " #n, 0.0, 1.0,                    \
+      {"slot" #n "_c4", "Module Control 5", "Slot " #display, 0.0, 1.0,                    \
        SLOT_DEFAULT_CTL(n, 4), false, false, false, nullptr, {}},             \
-      {"slot" #n "_c5", "Control 6", "Slot " #n, 0.0, 1.0,                    \
+      {"slot" #n "_c5", "Module Control 6", "Slot " #display, 0.0, 1.0,                    \
        SLOT_DEFAULT_CTL(n, 5), false, false, false, nullptr, {}},             \
-      {"slot" #n "_c6", "Control 7", "Slot " #n, 0.0, 1.0,                    \
+      {"slot" #n "_c6", "Module Control 7", "Slot " #display, 0.0, 1.0,                    \
        SLOT_DEFAULT_CTL(n, 6), false, false, false, nullptr, {}},             \
-      {"slot" #n "_c7", "Control 8", "Slot " #n, 0.0, 1.0,                    \
+      {"slot" #n "_c7", "Module Control 8", "Slot " #display, 0.0, 1.0,                    \
        SLOT_DEFAULT_CTL(n, 7), false, false, false, nullptr, {}},             \
-      {"slot" #n "_c8", "Control 9", "Slot " #n, 0.0, 1.0,                    \
+      {"slot" #n "_c8", "Module Control 9", "Slot " #display, 0.0, 1.0,                    \
        SLOT_DEFAULT_CTL(n, 8), false, false, false, nullptr, {}},             \
-      {"slot" #n "_c9", "Control 10", "Slot " #n, 0.0, 1.0,                   \
+      {"slot" #n "_c9", "Module Control 10", "Slot " #display, 0.0, 1.0,                   \
        SLOT_DEFAULT_CTL(n, 9), false, false, false, nullptr, {}},             \
-      {"slot" #n "_c10", "Control 11", "Slot " #n, 0.0, 1.0,                  \
+      {"slot" #n "_c10", "Module Control 11", "Slot " #display, 0.0, 1.0,                  \
        SLOT_DEFAULT_CTL(n, 10), false, false, false, nullptr, {}},            \
-      {"slot" #n "_c11", "Control 12", "Slot " #n, 0.0, 1.0,                  \
+      {"slot" #n "_c11", "Module Control 12", "Slot " #display, 0.0, 1.0,                  \
        SLOT_DEFAULT_CTL(n, 11), false, false, false, nullptr, {}}
 
 inline constexpr ParamSpec kParamSpecs[P_COUNT] = {
     {"power", "Power", "Global", 0.0, 1.0, 1.0, true, false, true, nullptr, {}},
     {"input", "Input", "Global", -18.0, 18.0, 0.0, false, false, false, "dB", {}},
     {"output", "Output", "Global", -18.0, 18.0, 0.0, false, false, false, "dB", {}},
-    SLOT_SPECS(0),
-    SLOT_SPECS(1),
-    SLOT_SPECS(2),
-    SLOT_SPECS(3),
-    SLOT_SPECS(4),
-    SLOT_SPECS(5),
+    SLOT_SPECS(0, 1),
+    SLOT_SPECS(1, 2),
+    SLOT_SPECS(2, 3),
+    SLOT_SPECS(3, 4),
+    SLOT_SPECS(4, 5),
+    SLOT_SPECS(5, 6),
 };
 
 #undef SLOT_SPECS

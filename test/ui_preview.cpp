@@ -5,6 +5,7 @@
 #include <string>
 #include "modules.hpp"
 #include "params.hpp"
+#include "presets.hpp"
 #include "ui/panel.hpp"
 using namespace rack;
 int main(int argc, char** argv) {
@@ -12,6 +13,7 @@ int main(int argc, char** argv) {
   const std::string font = argv[1], out = argv[2];
   Shared s;
   initializeRack(s);
+  saveUserPreset(userPresetDir(), "Preview Rack", s);
   Panel panel;
   panel.loadFont(font);
   PanelState state;
@@ -237,6 +239,7 @@ int main(int argc, char** argv) {
   state.textParam = -1;
   state.presetOpen = 1;
   state.presetScroll = 0;
+  state.presetIndex = kPresetCount;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-presets.png").c_str());
   state.presetOpen = 0;
@@ -258,6 +261,10 @@ int main(int argc, char** argv) {
   state.browserSearch = false;
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-browser-user.png").c_str());
+  state.modulePresetMenu = 0;
+  panel.draw(cr, s, state);
+  cairo_surface_write_to_png(surf, (out + "/rack-module-preset-menu.png").c_str());
+  state.modulePresetMenu = -1;
   state.browserSlot = -1;
   state.browserCategory = 0;
   applyModuleDefaults(s, 2, static_cast<int>(ModuleId::HybridEq));

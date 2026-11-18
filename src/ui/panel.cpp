@@ -821,6 +821,50 @@ int Panel::aboutMaxScroll() const {
   return (total - visible + 1) / 2;
 }
 
+void Panel::drawBrowserMenu(cairo_t* cr, const PanelState& state) const {
+  if (state.modulePresetMenu < 0 ||
+      state.modulePresetMenu >= static_cast<int>(modulePresets_.size())) {
+    return;
+  }
+  const ModulePreset& preset =
+      modulePresets_[static_cast<size_t>(state.modulePresetMenu)];
+  const double x = 340.0, y = 252.0, w = 300.0, h = 150.0;
+  setRgb(cr, {0.0, 0.0, 0.0}, 0.45);
+  cairo_paint(cr);
+  setRgb(cr, {0.02, 0.02, 0.03}, 0.55);
+  roundRect(cr, x + 4, y + 5, w, h, 6);
+  cairo_fill(cr);
+  setRgb(cr, {0.12, 0.105, 0.09});
+  roundRect(cr, x, y, w, h, 6);
+  cairo_fill(cr);
+  setRgb(cr, kAccent, 0.9);
+  cairo_set_line_width(cr, 1.3);
+  roundRect(cr, x + 0.5, y + 0.5, w - 1, h - 1, 6);
+  cairo_stroke(cr);
+
+  text(cr, "MODULE PRESET", x + w * 0.5, y + 24, 11, 1, kText.r, kText.g,
+       kText.b);
+  text(cr, preset.name.c_str(), x + w * 0.5, y + 50, 10, 1, kAccent.r,
+       kAccent.g, kAccent.b);
+
+  const double by = y + 84;
+  roundRect(cr, x + 16, by, 80, 26, 4);
+  setRgb(cr, {0.20, 0.17, 0.14});
+  cairo_fill(cr);
+  text(cr, "RENAME", x + 56, by + 17, 8, 1, kText.r, kText.g, kText.b);
+  roundRect(cr, x + 104, by, 92, 26, 4);
+  setRgb(cr, state.deleteModuleConfirm ? kAccent : Rgb{0.20, 0.17, 0.14});
+  cairo_fill(cr);
+  text(cr, state.deleteModuleConfirm ? "CONFIRM" : "DELETE", x + 150, by + 17,
+       8, 1, state.deleteModuleConfirm ? 0.10 : kText.r,
+       state.deleteModuleConfirm ? 0.08 : kText.g,
+       state.deleteModuleConfirm ? 0.05 : kText.b);
+  roundRect(cr, x + 204, by, 80, 26, 4);
+  setRgb(cr, {0.12, 0.11, 0.10});
+  cairo_fill(cr);
+  text(cr, "CANCEL", x + 244, by + 17, 8, 1, kText.r, kText.g, kText.b);
+}
+
 void Panel::drawPresetList(cairo_t* cr, const Shared& /*shared*/,
                            const PanelState& state) const {
   if (!state.presetOpen) return;
@@ -889,6 +933,23 @@ void Panel::drawPresetList(cairo_t* cr, const Shared& /*shared*/,
     cairo_fill(cr);
     text(cr, "DOWN", kPresetListX + 101, footerY + 16, 8, 1, kText.r,
          kText.g, kText.b);
+  }
+  const bool userCurrent = state.presetIndex >= kPresetCount &&
+                           state.presetIndex < count;
+  if (userCurrent) {
+    roundRect(cr, kPresetListX + 140, footerY, 68, 24, 4);
+    setRgb(cr, {0.20, 0.17, 0.14});
+    cairo_fill(cr);
+    text(cr, "RENAME", kPresetListX + 174, footerY + 16, 7.5, 1, kText.r,
+         kText.g, kText.b);
+    roundRect(cr, kPresetListX + 214, footerY, 72, 24, 4);
+    setRgb(cr, state.deletePresetConfirm ? kAccent : Rgb{0.20, 0.17, 0.14});
+    cairo_fill(cr);
+    text(cr, state.deletePresetConfirm ? "CONFIRM" : "DELETE",
+         kPresetListX + 250, footerY + 16, 7.5, 1,
+         state.deletePresetConfirm ? 0.10 : kText.r,
+         state.deletePresetConfirm ? 0.08 : kText.g,
+         state.deletePresetConfirm ? 0.05 : kText.b);
   }
   roundRect(cr, kPresetListX + kPresetListW - 84, footerY, 70, 24, 4);
   setRgb(cr, {0.20, 0.17, 0.14});
@@ -1002,6 +1063,7 @@ void Panel::draw(cairo_t* cr, Shared& shared, const PanelState& state) {
       drawWidget(cr, w, shared, state);
     }
   }
+  if (state.modulePresetMenu >= 0) drawBrowserMenu(cr, state);
   if (slotDragging_) drawDragGhost(cr, shared);
   drawLevelMeter(cr, 20, 100, 14, 520, state.inLevelL, state.inLevelR);
   drawLevelMeter(cr, 1006, 100, 14, 520, state.outLevelL, state.outLevelR);
@@ -1450,6 +1512,7 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
   if (x >= 706 && x <= 802 && y >= 20 && y <= 48) {
     state.presetOpen = state.presetOpen ? 0 : 1;
     state.browserSlot = -1;
+    state.deletePresetConfirm = false;
     if (state.presetOpen) {
       const int rows = presetRowsFor(presetCount());
       const int maxScroll = std::max(0, presetCount() - rows);
@@ -1477,6 +1540,34 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
       state.presetScroll = std::min(maxScroll, scroll + 1);
       return true;
     }
+    const bool userCurrent = state.presetIndex >= kPresetCount &&
+                             state.presetIndex < count;
+    if (userCurrent && x >= kPresetListX + 140 && x <= kPresetListX + 208 &&
+        y >= footerY && y <= footerY + 24) {
+      state.renamePreset = true;
+      state.textBuffer = presetName(state.presetIndex);
+      state.textFresh = true;
+      state.deletePresetConfirm = false;
+      state.presetOpen = 0;
+      return true;
+    }
+    if (userCurrent && x >= kPresetListX + 214 && x <= kPresetListX + 286 &&
+        y >= footerY && y <= footerY + 24) {
+      if (!state.deletePresetConfirm) {
+        state.deletePresetConfirm = true;
+        return true;
+      }
+      const std::string name = presetName(state.presetIndex);
+      if (deleteUserPreset(userPresetDir(), name)) {
+        userPresets_ = loadUserPresets(userPresetDir());
+        state.presetIndex = -1;
+        state.presetDirty = true;
+      }
+      state.deletePresetConfirm = false;
+      state.presetOpen = 0;
+      return true;
+    }
+    state.deletePresetConfirm = false;
     if (x >= kPresetListX + kPresetListW - 84 &&
         x <= kPresetListX + kPresetListW - 14 && y >= footerY &&
         y <= footerY + 24) {
@@ -1496,6 +1587,7 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
     }
     if (y >= kPresetListY) {
       state.presetOpen = 0;
+      state.deletePresetConfirm = false;
       return true;
     }
   }
@@ -1512,6 +1604,51 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
   }
   if (handlePresetClick(shared, state, x, y)) return true;
   if (state.browserSlot >= 0) {
+    if (state.modulePresetMenu >= 0) {
+      const double mx = 340.0, my = 252.0;
+      const double by = my + 84.0;
+      if (x >= mx + 16 && x <= mx + 96 && y >= by && y <= by + 26) {
+        const int idx = state.modulePresetMenu;
+        if (idx >= 0 && idx < static_cast<int>(modulePresets_.size())) {
+          state.renameModulePreset = true;
+          state.renameModuleIndex = idx;
+          state.textBuffer = modulePresets_[static_cast<size_t>(idx)].name;
+          state.textFresh = true;
+          state.modulePresetMenu = -1;
+          state.deleteModuleConfirm = false;
+          state.browserSlot = -1;
+          state.browserQuery.clear();
+          state.browserSearch = false;
+          state.browserPresetFilter = false;
+        }
+        return true;
+      }
+      if (x >= mx + 104 && x <= mx + 196 && y >= by && y <= by + 26) {
+        if (!state.deleteModuleConfirm) {
+          state.deleteModuleConfirm = true;
+          return true;
+        }
+        const int idx = state.modulePresetMenu;
+        if (idx >= 0 && idx < static_cast<int>(modulePresets_.size())) {
+          const std::string name =
+              modulePresets_[static_cast<size_t>(idx)].name;
+          if (deleteModulePreset(modulePresetDir(), name)) {
+            modulePresets_ = loadModulePresets(modulePresetDir());
+          }
+        }
+        state.modulePresetMenu = -1;
+        state.deleteModuleConfirm = false;
+        return true;
+      }
+      if (x >= mx + 204 && x <= mx + 284 && y >= by && y <= by + 26) {
+        state.modulePresetMenu = -1;
+        state.deleteModuleConfirm = false;
+        return true;
+      }
+      state.modulePresetMenu = -1;
+      state.deleteModuleConfirm = false;
+      return true;
+    }
     for (const Widget& w : widgets_) {
       if (w.kind == Kind::BrowserTab && hitWidget(w, x, y)) {
         state.browserCategory = static_cast<int>(w.value);
@@ -1781,6 +1918,7 @@ bool Panel::handlePresetClick(Shared& shared, PanelState& state, double x,
   if (x >= 110 && x <= 365) {
     state.presetOpen = state.presetOpen ? 0 : 1;
     state.browserSlot = -1;
+    state.deletePresetConfirm = false;
     if (state.presetOpen) {
       const int rows = presetRowsFor(presetCount());
       const int maxScroll = std::max(0, presetCount() - rows);
@@ -1836,6 +1974,19 @@ void Panel::applyPreset(Shared& shared, PanelState& state, int index) const {
 
 void Panel::beginTextEntry(Shared& shared, PanelState& state, double x,
                            double y) {
+  if (state.browserSlot >= 0) {
+    for (const Widget& w : widgets_) {
+      if (w.kind != Kind::BrowserOption || !hitWidget(w, x, y)) continue;
+      if (w.value <= -2000) {
+        const int idx = -2000 - w.value;
+        if (idx >= 0 && idx < static_cast<int>(modulePresets_.size())) {
+          state.modulePresetMenu = idx;
+          state.deleteModuleConfirm = false;
+        }
+      }
+      return;
+    }
+  }
   for (const Widget& w : widgets_) {
     if (w.kind != Kind::Knob || !hitWidget(w, x, y)) continue;
     state.textParam = static_cast<int>(w.param);
@@ -1861,6 +2012,94 @@ void Panel::beginTextEntry(Shared& shared, PanelState& state, double x,
 }
 
 bool Panel::textKey(Shared& shared, PanelState& state, int key, char ch) {
+  if (state.renameModulePreset) {
+    if (key == kTextEscape) {
+      state.renameModulePreset = false;
+      state.renameModuleIndex = -1;
+      state.textBuffer.clear();
+      return true;
+    }
+    if (key == kTextEnter) {
+      const int index = state.renameModuleIndex;
+      if (index >= 0 && index < static_cast<int>(modulePresets_.size())) {
+        const ModulePreset old = modulePresets_[static_cast<size_t>(index)];
+        const std::string newName = sanitizePresetName(state.textBuffer);
+        if (!newName.empty() &&
+            renameModulePreset(modulePresetDir(), old.name, newName, old.type,
+                               old.controls)) {
+          modulePresets_ = loadModulePresets(modulePresetDir());
+          state.renameModulePreset = false;
+          state.renameModuleIndex = -1;
+          state.textBuffer.clear();
+        }
+      }
+      return true;
+    }
+    if (key == kTextBackspace) {
+      if (state.textFresh) {
+        state.textBuffer.clear();
+        state.textFresh = false;
+      } else if (!state.textBuffer.empty()) {
+        state.textBuffer.pop_back();
+      }
+      return true;
+    }
+    if (ch >= 32 && ch < 127 && state.textBuffer.size() < 60) {
+      if (state.textFresh) {
+        state.textBuffer.clear();
+        state.textFresh = false;
+      }
+      state.textBuffer.push_back(ch);
+    }
+    return true;
+  }
+  if (state.renamePreset) {
+    if (key == kTextEscape) {
+      state.renamePreset = false;
+      state.textBuffer.clear();
+      return true;
+    }
+    if (key == kTextEnter) {
+      const int index = state.presetIndex;
+      if (index >= kPresetCount &&
+          index < kPresetCount + static_cast<int>(userPresets_.size())) {
+        const std::string oldName = presetName(index);
+        const auto& values =
+            userPresets_[static_cast<size_t>(index - kPresetCount)].values;
+        const std::string newName = sanitizePresetName(state.textBuffer);
+        if (!newName.empty() &&
+            renameUserPreset(userPresetDir(), oldName, newName, values)) {
+          userPresets_ = loadUserPresets(userPresetDir());
+          for (int i = 0; i < static_cast<int>(userPresets_.size()); ++i) {
+            if (userPresets_[static_cast<size_t>(i)].name == newName) {
+              state.presetIndex = kPresetCount + i;
+              break;
+            }
+          }
+          state.renamePreset = false;
+          state.textBuffer.clear();
+        }
+      }
+      return true;
+    }
+    if (key == kTextBackspace) {
+      if (state.textFresh) {
+        state.textBuffer.clear();
+        state.textFresh = false;
+      } else if (!state.textBuffer.empty()) {
+        state.textBuffer.pop_back();
+      }
+      return true;
+    }
+    if (ch >= 32 && ch < 127 && state.textBuffer.size() < 60) {
+      if (state.textFresh) {
+        state.textBuffer.clear();
+        state.textFresh = false;
+      }
+      state.textBuffer.push_back(ch);
+    }
+    return true;
+  }
   if (state.presetOpen && key == kTextEscape) {
     state.presetOpen = 0;
     return true;
@@ -2021,9 +2260,12 @@ bool Panel::textKey(Shared& shared, PanelState& state, int key, char ch) {
 }
 
 void Panel::drawTextEntry(cairo_t* cr, const PanelState& state) const {
-  if (state.textParam < 0 && !state.savePreset && !state.saveModule) return;
+  if (state.textParam < 0 && !state.savePreset && !state.saveModule &&
+      !state.renamePreset && !state.renameModulePreset) {
+    return;
+  }
   const Widget* target = nullptr;
-  if (!state.savePreset && !state.saveModule) {
+  if (state.textParam >= 0) {
     for (const Widget& w : widgets_) {
       if (w.kind == Kind::Knob &&
           static_cast<int>(w.param) == state.textParam) {
@@ -2047,11 +2289,16 @@ void Panel::drawTextEntry(cairo_t* cr, const PanelState& state) const {
   roundRect(cr, x + 0.7, y + 0.7, w - 1.4, h - 1.4, 7);
   cairo_stroke(cr);
 
-  const char* name = state.savePreset
-                         ? "SAVE PRESET"
-                         : (state.saveModule
-                                ? "SAVE MODULE PRESET"
-                                : (target ? target->label : "Value"));
+  const char* name =
+      state.renamePreset
+          ? "RENAME PRESET"
+          : (state.renameModulePreset
+                 ? "RENAME MODULE PRESET"
+                 : (state.savePreset
+                        ? "SAVE PRESET"
+                        : (state.saveModule
+                               ? "SAVE MODULE PRESET"
+                               : (target ? target->label : "Value"))));
   text(cr, name, x + 14, y + 16, 8.5, 0, 0.72, 0.78, 0.74);
   text(cr, (state.savePreset || state.saveModule) ? "TYPE NAME" : "TYPE VALUE",
        x + 14, y + 33, 7.0, 0, 0.50, 0.56, 0.52);

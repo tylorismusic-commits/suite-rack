@@ -38,6 +38,12 @@ struct PanelState {
   bool savePreset = false;
   bool saveModule = false;
   int saveModuleSlot = -1;
+  bool renamePreset = false;
+  bool deletePresetConfirm = false;
+  bool renameModulePreset = false;
+  int renameModuleIndex = -1;
+  int modulePresetMenu = -1;
+  bool deleteModuleConfirm = false;
   float inLevelL = -120.0f;
   float inLevelR = -120.0f;
   float outLevelL = -120.0f;
@@ -122,6 +128,7 @@ private:
                  const PanelState& state) const;
   void drawPresetList(cairo_t* cr, const Shared& shared,
                       const PanelState& state) const;
+  void drawBrowserMenu(cairo_t* cr, const PanelState& state) const;
   void drawTextEntry(cairo_t* cr, const PanelState& state) const;
   std::vector<UserPreset> userPresets_;
   std::vector<ModulePreset> modulePresets_;

@@ -361,6 +361,8 @@ struct Plugin {
   std::atomic<uint32_t> reportedLatency{0xffffffffu};
   std::atomic<bool> rescanQueued{false};
   std::atomic<bool> active{false};
+  int reportedTypes[kSlotCount] = {-1, -1, -1, -1, -1, -1};
+  float reportedGr[kSlotCount] = {-1, -1, -1, -1, -1, -1};
 };
 
 const char* const kFeatures[] = {CLAP_PLUGIN_FEATURE_AUDIO_EFFECT,
@@ -389,22 +391,36 @@ Plugin* self(const clap_plugin_t* p) { return static_cast<Plugin*>(p->plugin_dat
 
 // --- Parameters -------------------------------------------------------------
 
-uint32_t paramsCount(const clap_plugin_t*) { return P_COUNT; }
+constexpr uint32_t kClapGrBase = P_COUNT;
+constexpr uint32_t kClapParamCount = P_COUNT + kSlotCount;
 
-bool paramsInfo(const clap_plugin_t*, uint32_t index, clap_param_info_t* info) {
-  if (index >= P_COUNT) {
+uint32_t paramsCount(const clap_plugin_t*) { return kClapParamCount; }
+
+bool paramsInfo(const clap_plugin_t* p, uint32_t index,
+                clap_param_info_t* info) {
+  if (index >= kClapParamCount) {
     return false;
   }
-  const ParamSpec& s = kParamSpecs[index];
   std::memset(info, 0, sizeof(*info));
   info->id = index;
+
+  if (index >= kClapGrBase) {
+    const int slot = static_cast<int>(index - kClapGrBase) + 1;
+    char name[32];
+    std::snprintf(name, sizeof(name), "Slot %d GR", slot);
+    writeName(info->name, sizeof(info->name), name);
+    writeName(info->module, sizeof(info->module), "Meter");
+    info->flags = CLAP_PARAM_IS_READONLY;
+    info->min_value = 0.0;
+    info->max_value = 60.0;
+    info->default_value = 0.0;
+    return true;
+  }
+
+  const ParamSpec& s = kParamSpecs[index];
   info->flags = CLAP_PARAM_IS_AUTOMATABLE;
-  if (s.stepped) {
-    info->flags |= CLAP_PARAM_IS_STEPPED;
-  }
-  if (s.hidden) {
-    info->flags |= CLAP_PARAM_IS_HIDDEN;
-  }
+  if (s.stepped) info->flags |= CLAP_PARAM_IS_STEPPED;
+  if (s.hidden) info->flags |= CLAP_PARAM_IS_HIDDEN;
   // Power is a normal parameter.  It must NOT be flagged CLAP_PARAM_IS_BYPASS:
   // hosts then treat it with inverted semantics (0 = not bypassed) and write 0
   // at load, which would switch the effect off.  Host FX bypass is
@@ -414,15 +430,61 @@ bool paramsInfo(const clap_plugin_t*, uint32_t index, clap_param_info_t* info) {
   info->min_value = s.min;
   info->max_value = s.max;
   info->default_value = s.def;
+
+  if (index >= P_SLOT0_TYPE) {
+    const int slot =
+        static_cast<int>((index - P_SLOT0_TYPE) / kSlotStride);
+    const int offset =
+        static_cast<int>((index - P_SLOT0_TYPE) % kSlotStride);
+    char slotName[32];
+    std::snprintf(slotName, sizeof(slotName), "Slot %d", slot + 1);
+    if (offset == kSlotOffsetType) {
+      writeName(info->name, sizeof(info->name), "Module Type");
+      writeName(info->module, sizeof(info->module), slotName);
+      info->flags |= CLAP_PARAM_IS_STEPPED;
+    } else if (offset >= kSlotOffsetC0) {
+      const int control = offset - kSlotOffsetC0;
+      const int type = static_cast<int>(
+          self(p)->shared.get(slotParam(slot, kSlotOffsetType)) + 0.5);
+      const ModuleDesc* module = moduleDesc(type);
+      const ControlDesc* desc = controlFor(*module, control);
+      char moduleName[96];
+      if (desc) {
+        std::snprintf(moduleName, sizeof(moduleName), "Slot %d · %s",
+                      slot + 1, module->name);
+        writeName(info->name, sizeof(info->name), desc->name);
+        info->flags &= ~CLAP_PARAM_IS_HIDDEN;
+        if (desc->stepped || desc->toggled) {
+          info->flags |= CLAP_PARAM_IS_STEPPED;
+        }
+        info->default_value = defaultControlValue(module->id, control);
+      } else {
+        char unused[40];
+        std::snprintf(unused, sizeof(unused), "Unused Control %d", control + 1);
+        std::snprintf(moduleName, sizeof(moduleName), "Slot %d · %s",
+                      slot + 1, module->name);
+        writeName(info->name, sizeof(info->name), unused);
+        info->flags |= CLAP_PARAM_IS_HIDDEN;
+      }
+      writeName(info->module, sizeof(info->module), moduleName);
+    } else {
+      writeName(info->module, sizeof(info->module), slotName);
+    }
+  }
   return true;
 }
 
 bool paramsValue(const clap_plugin_t* p, clap_id id, double* value) {
-  if (id >= P_COUNT) {
-    return false;
+  if (id < P_COUNT) {
+    *value = self(p)->shared.get(id);
+    return true;
   }
-  *value = self(p)->shared.get(id);
-  return true;
+  if (id >= kClapGrBase && id < kClapParamCount) {
+    *value = self(p)->shared.slotGrDb[id - kClapGrBase].load(
+        std::memory_order_relaxed);
+    return true;
+  }
+  return false;
 }
 
 namespace {
@@ -434,9 +496,11 @@ namespace {
 // are selecting.
 bool paramsValueToText(const clap_plugin_t* p, clap_id id, double value,
                        char* out, uint32_t size) {
-  if (id >= P_COUNT) {
-    return false;
+  if (id >= kClapGrBase && id < kClapParamCount) {
+    std::snprintf(out, size, "%.1f dB", value);
+    return true;
   }
+  if (id >= P_COUNT) return false;
   const std::string text = formatParamValue(self(p)->shared, id, value);
   std::snprintf(out, size, "%s", text.c_str());
   return true;
@@ -491,6 +555,27 @@ void emitDirty(Plugin* s, const clap_output_events_t* out) {
     ev.channel = -1;
     ev.key = -1;
     ev.value = s->shared.get(p);
+    out->try_push(out, &ev.header);
+  }
+}
+
+void emitGr(Plugin* s, const clap_output_events_t* out) {
+  if (!out) return;
+  for (int i = 0; i < kSlotCount; ++i) {
+    const float gr = s->meters.slotGrDb[i];
+    if (std::fabs(gr - s->reportedGr[i]) < 0.05f) continue;
+    s->reportedGr[i] = gr;
+    clap_event_param_value_t ev{};
+    ev.header.size = sizeof(ev);
+    ev.header.time = 0;
+    ev.header.space_id = CLAP_CORE_EVENT_SPACE_ID;
+    ev.header.type = CLAP_EVENT_PARAM_VALUE;
+    ev.param_id = kClapGrBase + static_cast<uint32_t>(i);
+    ev.note_id = -1;
+    ev.port_index = -1;
+    ev.channel = -1;
+    ev.key = -1;
+    ev.value = gr;
     out->try_push(out, &ev.header);
   }
 }
@@ -691,6 +776,10 @@ bool pluginActivate(const clap_plugin_t* p, double sampleRate, uint32_t,
   s->sampleRate = sampleRate;
   s->engine.prepare(static_cast<float>(sampleRate));
   s->engine.setControls(controlsFrom(s->shared));
+  for (int i = 0; i < kSlotCount; ++i) {
+    s->reportedTypes[i] = static_cast<int>(
+        s->shared.get(slotParam(i, kSlotOffsetType)) + 0.5);
+  }
   s->active.store(true, std::memory_order_relaxed);
   // REAPER only picks up a new latency when the plugin calls changed(), so do
   // that here (being-activated is the one legal moment) - but only when the
@@ -750,7 +839,22 @@ clap_process_status pluginProcess(const clap_plugin_t* p, const clap_process_t* 
 
   s->engine.setControls(controlsFrom(s->shared));
 
+  bool typesChanged = false;
+  for (int i = 0; i < kSlotCount; ++i) {
+    const int type = static_cast<int>(
+        s->shared.get(slotParam(i, kSlotOffsetType)) + 0.5);
+    if (type != s->reportedTypes[i]) {
+      s->reportedTypes[i] = type;
+      typesChanged = true;
+    }
+  }
+  if (typesChanged && s->host && s->host->request_callback &&
+      !s->rescanQueued.exchange(true)) {
+    s->host->request_callback(s->host);
+  }
+
   s->engine.process(left, right, static_cast<int>(frames), s->meters);
+  emitGr(s, proc->out_events);
 
   s->shared.inPeakDb.store(s->meters.inPeakDb, std::memory_order_relaxed);
   s->shared.outPeakDb.store(s->meters.outPeakDb, std::memory_order_relaxed);
@@ -788,7 +892,13 @@ const void* pluginGetExtension(const clap_plugin_t*, const char* id) {
 
 void pluginOnMainThread(const clap_plugin_t* p) {
   Plugin* s = self(p);
-  s->rescanQueued.store(false, std::memory_order_relaxed);
+  if (!s->rescanQueued.exchange(false)) return;
+  if (!s->host || !s->host->get_extension) return;
+  const auto* params = static_cast<const clap_host_params_t*>(
+      s->host->get_extension(s->host, CLAP_EXT_PARAMS));
+  if (params && params->rescan) {
+    params->rescan(s->host, CLAP_PARAM_RESCAN_ALL);
+  }
 }
 
 Plugin* createPlugin(const clap_host_t* host) {

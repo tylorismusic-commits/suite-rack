@@ -23,7 +23,7 @@
     ] ;
     doap:homepage <https://github.com/tylorismusic-commits/suite-rack> ;
     lv2:majorVersion 0 ;
-    lv2:minorVersion 47 ;
+    lv2:minorVersion 48 ;
     lv2:microVersion 0 ;
     lv2:binary <suite_rack.so> ;
     rdfs:seeAlso <manifest.ttl> ;
@@ -171,7 +171,7 @@
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
             [ rdf:value 72 ; rdfs:label "Custom EQ" ] ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -183,7 +183,7 @@
         lv2:maximum 1 ;
         lv2:integer true ;
         lv2:toggled true ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -194,7 +194,7 @@
         lv2:minimum 0 ;
         lv2:maximum 100 ;
         units:unit units:pc ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -205,127 +205,127 @@
         lv2:minimum -12 ;
         lv2:maximum 12 ;
         units:unit units:db ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 11 ;
         lv2:symbol "slot0_c0" ;
-        lv2:name "Control 1" ;
+        lv2:name "Module Control 1" ;
         lv2:default 0.6 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 12 ;
         lv2:symbol "slot0_c1" ;
-        lv2:name "Control 2" ;
+        lv2:name "Module Control 2" ;
         lv2:default 0.45 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 13 ;
         lv2:symbol "slot0_c2" ;
-        lv2:name "Control 3" ;
+        lv2:name "Module Control 3" ;
         lv2:default 0.55 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 14 ;
         lv2:symbol "slot0_c3" ;
-        lv2:name "Control 4" ;
+        lv2:name "Module Control 4" ;
         lv2:default 0.57 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 15 ;
         lv2:symbol "slot0_c4" ;
-        lv2:name "Control 5" ;
+        lv2:name "Module Control 5" ;
         lv2:default 0.1 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 16 ;
         lv2:symbol "slot0_c5" ;
-        lv2:name "Control 6" ;
+        lv2:name "Module Control 6" ;
         lv2:default 1 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 17 ;
         lv2:symbol "slot0_c6" ;
-        lv2:name "Control 7" ;
+        lv2:name "Module Control 7" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 18 ;
         lv2:symbol "slot0_c7" ;
-        lv2:name "Control 8" ;
+        lv2:name "Module Control 8" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 19 ;
         lv2:symbol "slot0_c8" ;
-        lv2:name "Control 9" ;
+        lv2:name "Module Control 9" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 20 ;
         lv2:symbol "slot0_c9" ;
-        lv2:name "Control 10" ;
+        lv2:name "Module Control 10" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 21 ;
         lv2:symbol "slot0_c10" ;
-        lv2:name "Control 11" ;
+        lv2:name "Module Control 11" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 22 ;
         lv2:symbol "slot0_c11" ;
-        lv2:name "Control 12" ;
+        lv2:name "Module Control 12" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot0> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -409,7 +409,7 @@
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
             [ rdf:value 72 ; rdfs:label "Custom EQ" ] ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -421,7 +421,7 @@
         lv2:maximum 1 ;
         lv2:integer true ;
         lv2:toggled true ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -432,7 +432,7 @@
         lv2:minimum 0 ;
         lv2:maximum 100 ;
         units:unit units:pc ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -443,127 +443,127 @@
         lv2:minimum -12 ;
         lv2:maximum 12 ;
         units:unit units:db ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 27 ;
         lv2:symbol "slot1_c0" ;
-        lv2:name "Control 1" ;
+        lv2:name "Module Control 1" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 28 ;
         lv2:symbol "slot1_c1" ;
-        lv2:name "Control 2" ;
+        lv2:name "Module Control 2" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 29 ;
         lv2:symbol "slot1_c2" ;
-        lv2:name "Control 3" ;
+        lv2:name "Module Control 3" ;
         lv2:default 0.25 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 30 ;
         lv2:symbol "slot1_c3" ;
-        lv2:name "Control 4" ;
+        lv2:name "Module Control 4" ;
         lv2:default 0.35 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 31 ;
         lv2:symbol "slot1_c4" ;
-        lv2:name "Control 5" ;
+        lv2:name "Module Control 5" ;
         lv2:default 0.8 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 32 ;
         lv2:symbol "slot1_c5" ;
-        lv2:name "Control 6" ;
+        lv2:name "Module Control 6" ;
         lv2:default 1 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 33 ;
         lv2:symbol "slot1_c6" ;
-        lv2:name "Control 7" ;
+        lv2:name "Module Control 7" ;
         lv2:default 0.05 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 34 ;
         lv2:symbol "slot1_c7" ;
-        lv2:name "Control 8" ;
+        lv2:name "Module Control 8" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 35 ;
         lv2:symbol "slot1_c8" ;
-        lv2:name "Control 9" ;
+        lv2:name "Module Control 9" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 36 ;
         lv2:symbol "slot1_c9" ;
-        lv2:name "Control 10" ;
+        lv2:name "Module Control 10" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 37 ;
         lv2:symbol "slot1_c10" ;
-        lv2:name "Control 11" ;
+        lv2:name "Module Control 11" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 38 ;
         lv2:symbol "slot1_c11" ;
-        lv2:name "Control 12" ;
+        lv2:name "Module Control 12" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -647,7 +647,7 @@
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
             [ rdf:value 72 ; rdfs:label "Custom EQ" ] ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -659,7 +659,7 @@
         lv2:maximum 1 ;
         lv2:integer true ;
         lv2:toggled true ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -670,7 +670,7 @@
         lv2:minimum 0 ;
         lv2:maximum 100 ;
         units:unit units:pc ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -681,127 +681,127 @@
         lv2:minimum -12 ;
         lv2:maximum 12 ;
         units:unit units:db ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 43 ;
         lv2:symbol "slot2_c0" ;
-        lv2:name "Control 1" ;
+        lv2:name "Module Control 1" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 44 ;
         lv2:symbol "slot2_c1" ;
-        lv2:name "Control 2" ;
+        lv2:name "Module Control 2" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 45 ;
         lv2:symbol "slot2_c2" ;
-        lv2:name "Control 3" ;
+        lv2:name "Module Control 3" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 46 ;
         lv2:symbol "slot2_c3" ;
-        lv2:name "Control 4" ;
+        lv2:name "Module Control 4" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 47 ;
         lv2:symbol "slot2_c4" ;
-        lv2:name "Control 5" ;
+        lv2:name "Module Control 5" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 48 ;
         lv2:symbol "slot2_c5" ;
-        lv2:name "Control 6" ;
+        lv2:name "Module Control 6" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 49 ;
         lv2:symbol "slot2_c6" ;
-        lv2:name "Control 7" ;
+        lv2:name "Module Control 7" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 50 ;
         lv2:symbol "slot2_c7" ;
-        lv2:name "Control 8" ;
+        lv2:name "Module Control 8" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 51 ;
         lv2:symbol "slot2_c8" ;
-        lv2:name "Control 9" ;
+        lv2:name "Module Control 9" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 52 ;
         lv2:symbol "slot2_c9" ;
-        lv2:name "Control 10" ;
+        lv2:name "Module Control 10" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 53 ;
         lv2:symbol "slot2_c10" ;
-        lv2:name "Control 11" ;
+        lv2:name "Module Control 11" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 54 ;
         lv2:symbol "slot2_c11" ;
-        lv2:name "Control 12" ;
+        lv2:name "Module Control 12" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -885,7 +885,7 @@
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
             [ rdf:value 72 ; rdfs:label "Custom EQ" ] ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -897,7 +897,7 @@
         lv2:maximum 1 ;
         lv2:integer true ;
         lv2:toggled true ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -908,7 +908,7 @@
         lv2:minimum 0 ;
         lv2:maximum 100 ;
         units:unit units:pc ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -919,127 +919,127 @@
         lv2:minimum -12 ;
         lv2:maximum 12 ;
         units:unit units:db ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 59 ;
         lv2:symbol "slot3_c0" ;
-        lv2:name "Control 1" ;
+        lv2:name "Module Control 1" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 60 ;
         lv2:symbol "slot3_c1" ;
-        lv2:name "Control 2" ;
+        lv2:name "Module Control 2" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 61 ;
         lv2:symbol "slot3_c2" ;
-        lv2:name "Control 3" ;
+        lv2:name "Module Control 3" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 62 ;
         lv2:symbol "slot3_c3" ;
-        lv2:name "Control 4" ;
+        lv2:name "Module Control 4" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 63 ;
         lv2:symbol "slot3_c4" ;
-        lv2:name "Control 5" ;
+        lv2:name "Module Control 5" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 64 ;
         lv2:symbol "slot3_c5" ;
-        lv2:name "Control 6" ;
+        lv2:name "Module Control 6" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 65 ;
         lv2:symbol "slot3_c6" ;
-        lv2:name "Control 7" ;
+        lv2:name "Module Control 7" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 66 ;
         lv2:symbol "slot3_c7" ;
-        lv2:name "Control 8" ;
+        lv2:name "Module Control 8" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 67 ;
         lv2:symbol "slot3_c8" ;
-        lv2:name "Control 9" ;
+        lv2:name "Module Control 9" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 68 ;
         lv2:symbol "slot3_c9" ;
-        lv2:name "Control 10" ;
+        lv2:name "Module Control 10" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 69 ;
         lv2:symbol "slot3_c10" ;
-        lv2:name "Control 11" ;
+        lv2:name "Module Control 11" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 70 ;
         lv2:symbol "slot3_c11" ;
-        lv2:name "Control 12" ;
+        lv2:name "Module Control 12" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -1123,7 +1123,7 @@
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
             [ rdf:value 72 ; rdfs:label "Custom EQ" ] ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -1135,7 +1135,7 @@
         lv2:maximum 1 ;
         lv2:integer true ;
         lv2:toggled true ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -1146,7 +1146,7 @@
         lv2:minimum 0 ;
         lv2:maximum 100 ;
         units:unit units:pc ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -1157,127 +1157,127 @@
         lv2:minimum -12 ;
         lv2:maximum 12 ;
         units:unit units:db ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 75 ;
         lv2:symbol "slot4_c0" ;
-        lv2:name "Control 1" ;
+        lv2:name "Module Control 1" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 76 ;
         lv2:symbol "slot4_c1" ;
-        lv2:name "Control 2" ;
+        lv2:name "Module Control 2" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 77 ;
         lv2:symbol "slot4_c2" ;
-        lv2:name "Control 3" ;
+        lv2:name "Module Control 3" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 78 ;
         lv2:symbol "slot4_c3" ;
-        lv2:name "Control 4" ;
+        lv2:name "Module Control 4" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 79 ;
         lv2:symbol "slot4_c4" ;
-        lv2:name "Control 5" ;
+        lv2:name "Module Control 5" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 80 ;
         lv2:symbol "slot4_c5" ;
-        lv2:name "Control 6" ;
+        lv2:name "Module Control 6" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 81 ;
         lv2:symbol "slot4_c6" ;
-        lv2:name "Control 7" ;
+        lv2:name "Module Control 7" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 82 ;
         lv2:symbol "slot4_c7" ;
-        lv2:name "Control 8" ;
+        lv2:name "Module Control 8" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 83 ;
         lv2:symbol "slot4_c8" ;
-        lv2:name "Control 9" ;
+        lv2:name "Module Control 9" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 84 ;
         lv2:symbol "slot4_c9" ;
-        lv2:name "Control 10" ;
+        lv2:name "Module Control 10" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 85 ;
         lv2:symbol "slot4_c10" ;
-        lv2:name "Control 11" ;
+        lv2:name "Module Control 11" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 86 ;
         lv2:symbol "slot4_c11" ;
-        lv2:name "Control 12" ;
+        lv2:name "Module Control 12" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -1361,7 +1361,7 @@
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
             [ rdf:value 72 ; rdfs:label "Custom EQ" ] ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -1373,7 +1373,7 @@
         lv2:maximum 1 ;
         lv2:integer true ;
         lv2:toggled true ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -1384,7 +1384,7 @@
         lv2:minimum 0 ;
         lv2:maximum 100 ;
         units:unit units:pc ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
@@ -1395,127 +1395,127 @@
         lv2:minimum -12 ;
         lv2:maximum 12 ;
         units:unit units:db ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 91 ;
         lv2:symbol "slot5_c0" ;
-        lv2:name "Control 1" ;
+        lv2:name "Module Control 1" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 92 ;
         lv2:symbol "slot5_c1" ;
-        lv2:name "Control 2" ;
+        lv2:name "Module Control 2" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 93 ;
         lv2:symbol "slot5_c2" ;
-        lv2:name "Control 3" ;
+        lv2:name "Module Control 3" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 94 ;
         lv2:symbol "slot5_c3" ;
-        lv2:name "Control 4" ;
+        lv2:name "Module Control 4" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 95 ;
         lv2:symbol "slot5_c4" ;
-        lv2:name "Control 5" ;
+        lv2:name "Module Control 5" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 96 ;
         lv2:symbol "slot5_c5" ;
-        lv2:name "Control 6" ;
+        lv2:name "Module Control 6" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 97 ;
         lv2:symbol "slot5_c6" ;
-        lv2:name "Control 7" ;
+        lv2:name "Module Control 7" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 98 ;
         lv2:symbol "slot5_c7" ;
-        lv2:name "Control 8" ;
+        lv2:name "Module Control 8" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 99 ;
         lv2:symbol "slot5_c8" ;
-        lv2:name "Control 9" ;
+        lv2:name "Module Control 9" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 100 ;
         lv2:symbol "slot5_c9" ;
-        lv2:name "Control 10" ;
+        lv2:name "Module Control 10" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 101 ;
         lv2:symbol "slot5_c10" ;
-        lv2:name "Control 11" ;
+        lv2:name "Module Control 11" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:InputPort , lv2:ControlPort ;
         lv2:index 102 ;
         lv2:symbol "slot5_c11" ;
-        lv2:name "Control 12" ;
+        lv2:name "Module Control 12" ;
         lv2:default 0.5 ;
         lv2:minimum 0 ;
         lv2:maximum 1 ;
-        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
         a lv2:OutputPort , lv2:ControlPort ;
@@ -1598,7 +1598,6 @@
         lv2:minimum -120 ;
         lv2:maximum 24 ;
         units:unit units:db ;
-        lv2:portProperty pprops:notOnGUI ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
     ] ,
     [
@@ -1610,7 +1609,6 @@
         lv2:minimum -120 ;
         lv2:maximum 24 ;
         units:unit units:db ;
-        lv2:portProperty pprops:notOnGUI ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
     ] ,
     [
@@ -1622,7 +1620,6 @@
         lv2:minimum -120 ;
         lv2:maximum 24 ;
         units:unit units:db ;
-        lv2:portProperty pprops:notOnGUI ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
     ] ,
     [
@@ -1634,7 +1631,6 @@
         lv2:minimum -120 ;
         lv2:maximum 24 ;
         units:unit units:db ;
-        lv2:portProperty pprops:notOnGUI ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
     ] ,
     [
@@ -1646,7 +1642,6 @@
         lv2:minimum -120 ;
         lv2:maximum 24 ;
         units:unit units:db ;
-        lv2:portProperty pprops:notOnGUI ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
     ] ,
     [
@@ -1658,7 +1653,6 @@
         lv2:minimum -120 ;
         lv2:maximum 24 ;
         units:unit units:db ;
-        lv2:portProperty pprops:notOnGUI ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
     ] ,
     [
@@ -1677,8 +1671,6 @@
 
 <https://github.com/tylorismusic-commits/suite-rack#global> a pg:Group ; lv2:name "Global" .
 
-<https://github.com/tylorismusic-commits/suite-rack#slot0> a pg:Group ; lv2:name "Slot 0" .
-
 <https://github.com/tylorismusic-commits/suite-rack#slot1> a pg:Group ; lv2:name "Slot 1" .
 
 <https://github.com/tylorismusic-commits/suite-rack#slot2> a pg:Group ; lv2:name "Slot 2" .
@@ -1688,6 +1680,8 @@
 <https://github.com/tylorismusic-commits/suite-rack#slot4> a pg:Group ; lv2:name "Slot 4" .
 
 <https://github.com/tylorismusic-commits/suite-rack#slot5> a pg:Group ; lv2:name "Slot 5" .
+
+<https://github.com/tylorismusic-commits/suite-rack#slot6> a pg:Group ; lv2:name "Slot 6" .
 
 <https://github.com/tylorismusic-commits/suite-rack#meter> a pg:Group ; lv2:name "Meter" .
 

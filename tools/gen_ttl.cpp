@@ -48,6 +48,7 @@ struct MeterPort {
   const char* symbol;
   const char* name;
   bool latency = false;
+  bool gr = false;
 };
 
 constexpr MeterPort kMeters[] = {
@@ -57,12 +58,12 @@ constexpr MeterPort kMeters[] = {
     {"out_peak_r", "Output Peak Right"},
     {"in_peak", "Input Peak"},
     {"out_peak", "Output Peak"},
-    {"slot1_gr", "Slot 1 Gain Reduction"},
-    {"slot2_gr", "Slot 2 Gain Reduction"},
-    {"slot3_gr", "Slot 3 Gain Reduction"},
-    {"slot4_gr", "Slot 4 Gain Reduction"},
-    {"slot5_gr", "Slot 5 Gain Reduction"},
-    {"slot6_gr", "Slot 6 Gain Reduction"},
+    {"slot1_gr", "Slot 1 Gain Reduction", false, true},
+    {"slot2_gr", "Slot 2 Gain Reduction", false, true},
+    {"slot3_gr", "Slot 3 Gain Reduction", false, true},
+    {"slot4_gr", "Slot 4 Gain Reduction", false, true},
+    {"slot5_gr", "Slot 5 Gain Reduction", false, true},
+    {"slot6_gr", "Slot 6 Gain Reduction", false, true},
     {"latency", "Latency", true},
 };
 
@@ -117,7 +118,7 @@ std::string slug(const std::string& s) {
 std::string portBlock(int index, const char* symbol, const char* name,
                       double minimum, double maximum, double def, bool integer,
                       bool toggled, const rack::Labels& labels, const char* unit,
-                      const char* group, bool output) {
+                      const char* group, bool output, bool notOnGui = true) {
   std::ostringstream out;
   out << "    [\n";
   out << "        a lv2:" << (output ? "OutputPort" : "InputPort")
@@ -156,7 +157,7 @@ std::string portBlock(int index, const char* symbol, const char* name,
   if (unitUri) {
     out << "        units:unit units:" << unitUri << " ;\n";
   }
-  if (output) {
+  if (output && notOnGui) {
     out << "        lv2:portProperty pprops:notOnGUI ;\n";
   }
   out << "        pg:group <" << group << "> ;\n";
@@ -248,7 +249,7 @@ std::string buildPluginTtl() {
     } else {
       ports.push_back(portBlock(index++, m.symbol, m.name, -120.0, 24.0, 0.0,
                                 false, false, {}, "dB",
-                                groupUri("Meter").c_str(), true));
+                                groupUri("Meter").c_str(), true, !m.gr));
     }
   }
 

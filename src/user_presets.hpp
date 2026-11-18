@@ -63,8 +63,9 @@ inline std::string sanitizePresetName(const std::string& raw) {
   return out;
 }
 
-inline bool saveUserPreset(const std::filesystem::path& dir,
-                           const std::string& rawName, const Shared& shared) {
+inline bool writeUserPreset(const std::filesystem::path& dir,
+                            const std::string& rawName,
+                            const std::vector<double>& values) {
   const std::string name = sanitizePresetName(rawName);
   if (name.empty()) return false;
   std::error_code ec;
@@ -78,8 +79,8 @@ inline bool saveUserPreset(const std::filesystem::path& dir,
   out << "SuiteRackPreset 1\n";
   out << "name " << name << "\n";
   out.precision(17);
-  for (uint32_t i = 0; i < P_COUNT; ++i) {
-    out << i << ' ' << shared.get(i) << '\n';
+  for (uint32_t i = 0; i < values.size(); ++i) {
+    out << i << ' ' << values[i] << '\n';
   }
   out.close();
   if (!out) return false;
@@ -92,9 +93,43 @@ inline bool saveUserPreset(const std::filesystem::path& dir,
   return !ec;
 }
 
-inline bool saveModulePreset(const std::filesystem::path& dir,
-                             const std::string& rawName, int type,
-                             const std::array<float, 12>& controls) {
+inline bool saveUserPreset(const std::filesystem::path& dir,
+                           const std::string& rawName, const Shared& shared) {
+  std::vector<double> values;
+  values.reserve(P_COUNT);
+  for (uint32_t i = 0; i < P_COUNT; ++i) values.push_back(shared.get(i));
+  return writeUserPreset(dir, rawName, values);
+}
+
+inline bool deleteUserPreset(const std::filesystem::path& dir,
+                             const std::string& rawName) {
+  const std::string name = sanitizePresetName(rawName);
+  if (name.empty()) return false;
+  std::error_code ec;
+  return std::filesystem::remove(dir / (name + ".suite-rack"), ec) && !ec;
+}
+
+inline bool renameUserPreset(const std::filesystem::path& dir,
+                             const std::string& oldName,
+                             const std::string& newName,
+                             const std::vector<double>& values) {
+  const std::string oldClean = sanitizePresetName(oldName);
+  const std::string newClean = sanitizePresetName(newName);
+  if (oldClean.empty() || newClean.empty()) return false;
+  if (oldClean != newClean) {
+    std::error_code ec;
+    if (std::filesystem::exists(dir / (newClean + ".suite-rack"), ec) && !ec) {
+      return false;
+    }
+  }
+  if (!writeUserPreset(dir, newClean, values)) return false;
+  if (oldClean != newClean) deleteUserPreset(dir, oldClean);
+  return true;
+}
+
+inline bool writeModulePreset(const std::filesystem::path& dir,
+                              const std::string& rawName, int type,
+                              const std::array<float, 12>& controls) {
   const std::string name = sanitizePresetName(rawName);
   if (name.empty()) return false;
   std::error_code ec;
@@ -120,6 +155,39 @@ inline bool saveModulePreset(const std::filesystem::path& dir,
     std::filesystem::rename(tempPath, finalPath, ec);
   }
   return !ec;
+}
+
+inline bool saveModulePreset(const std::filesystem::path& dir,
+                             const std::string& rawName, int type,
+                             const std::array<float, 12>& controls) {
+  return writeModulePreset(dir, rawName, type, controls);
+}
+
+inline bool deleteModulePreset(const std::filesystem::path& dir,
+                               const std::string& rawName) {
+  const std::string name = sanitizePresetName(rawName);
+  if (name.empty()) return false;
+  std::error_code ec;
+  return std::filesystem::remove(dir / (name + ".suite-module"), ec) && !ec;
+}
+
+inline bool renameModulePreset(const std::filesystem::path& dir,
+                               const std::string& oldName,
+                               const std::string& newName, int type,
+                               const std::array<float, 12>& controls) {
+  const std::string oldClean = sanitizePresetName(oldName);
+  const std::string newClean = sanitizePresetName(newName);
+  if (oldClean.empty() || newClean.empty()) return false;
+  if (oldClean != newClean) {
+    std::error_code ec;
+    if (std::filesystem::exists(dir / (newClean + ".suite-module"), ec) &&
+        !ec) {
+      return false;
+    }
+  }
+  if (!writeModulePreset(dir, newClean, type, controls)) return false;
+  if (oldClean != newClean) deleteModulePreset(dir, oldClean);
+  return true;
 }
 
 inline std::vector<ModulePreset> loadModulePresets(

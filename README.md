@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.47.0-m2 — public alpha: CLAP + LV2, seventy-two modules, full preset browsers, drag reorder, browser search and typed values.**
+**Status: 0.48.0-m2 — public alpha: CLAP + LV2, seventy-two modules, full preset browsers, drag reorder, browser search and typed values.**
 More factory module presets are next.
 
 A virtual 500 series mix rack in the Suite visual language: six serial slots, each
@@ -90,6 +90,8 @@ standalone plugins remain the full versions.
 
 ![Suite Rack — module presets filtered from a module card](docs/rack-browser-module-presets.png)
 
+![Suite Rack — module preset actions](docs/rack-module-preset-menu.png)
+
 ![Suite Rack — rack preset browser](docs/rack-presets.png)
 
 ![Suite Rack — Hybrid EQ](docs/rack-hybrid-eq.png)
@@ -140,21 +142,24 @@ but a few areas are still intentionally limited:
   their default/Init setting only.
 - User rack presets are stored in `$XDG_CONFIG_HOME/SuiteRack/presets` or
   `~/.config/SuiteRack/presets`. User module presets use the sibling
-  `module-presets` directory. Saving the same name replaces the file; rename
-  and delete are done in the file manager for now.
+  `module-presets` directory. Rack presets can be renamed or deleted from the
+  preset browser; right-click a saved module preset for its actions.
 - Automation is per slot: type, bypass, mix, gain and twelve generic module
-  controls. Host automation does not expose per-module control names.
+  controls. The CLAP build shows module-aware control names and hides controls
+  that the active module does not use; LV2 port names remain generic by design.
+- Gain reduction is exposed to hosts as LV2 `slotN_gr` output ports and as
+  read-only CLAP Slot GR parameters.
 - Trowel smoothing is represented by **Tame** inside the rack. The standalone
   Trowel remains the full version.
 - Linux CLAP and LV2 builds are tested in REAPER. macOS and Windows packaging
   are not available yet.
-- There is no undo, A/B compare, or in-plugin preset rename/delete UI yet.
+- There is no undo or A/B compare yet.
 
 **Not in the rack:** Common Sense EQ, Amp Suite, Bass Suite, and the deep Repair
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
 the 500-series format; Cleanup is the lightweight repair representative.
 
-## Current 0.47.0-m2 slice
+## Current 0.48.0-m2 slice
 
 - 1040×720 panel with the Comp Suite-family header: power, preset bar, centered
   title, utility pills.

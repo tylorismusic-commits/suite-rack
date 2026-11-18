@@ -292,6 +292,32 @@ int main() {
   check(std::fabs(s.get(savedControl) - 0.33) < 1e-6,
         "user rack restores its stored values");
 
+  // Rename and delete the current user rack preset.
+  panel.pointerDown(s, state, 237, 34, false);
+  panel.pointerUp(s, state);
+  panel.pointerDown(s, state, 240, 356, false);
+  panel.pointerUp(s, state);
+  check(state.renamePreset, "rack preset browser offers rename");
+  for (const char* c = "Renamed Rack"; *c; ++c) panel.textKey(s, state, 0, *c);
+  panel.textKey(s, state, Panel::kTextEnter, 0);
+  check(std::string(panel.presetName(kPresetCount)) == "Renamed Rack",
+        "rack preset rename updates the name");
+  check(std::filesystem::exists(userPresetDir() / "Renamed Rack.suite-rack") &&
+            !std::filesystem::exists(userPresetDir() / "Test Rack.suite-rack"),
+        "rack preset rename moves the file");
+
+  panel.pointerDown(s, state, 237, 34, false);
+  panel.pointerUp(s, state);
+  panel.pointerDown(s, state, 320, 356, false);  // DELETE arms confirmation
+  panel.pointerUp(s, state);
+  check(state.deletePresetConfirm, "rack preset delete asks for confirmation");
+  panel.pointerDown(s, state, 320, 356, false);  // CONFIRM
+  panel.pointerUp(s, state);
+  check(panel.presetCount() == kPresetCount &&
+            !std::filesystem::exists(userPresetDir() /
+                                     "Renamed Rack.suite-rack"),
+        "rack preset delete removes the file");
+
   // 2A factory presets use the makeup/mix control indices.
   const FactoryModulePreset* twoA = nullptr;
   for (const auto& f : kFactoryModulePresets) {
@@ -339,6 +365,62 @@ int main() {
   check(std::fabs(s.get(savedControl) - 0.42) < 1e-6 &&
             std::fabs(s.get(highParam) - 0.66) < 1e-6,
         "module preset restores the module controls");
+
+  // Right-click a user module preset for rename/delete actions.
+  panel.draw(cr, s, state);
+  panel.pointerDown(s, state, 130, 134, false);
+  panel.pointerUp(s, state);
+  panel.draw(cr, s, state);
+  check(clickLabel(panel, s, state, "PRESETS"),
+        "module preset tab reopens for management");
+  panel.draw(cr, s, state);
+  for (const auto& r : panel.widgetRects()) {
+    if (std::string(r.label) != "SEARCH") continue;
+    panel.pointerDown(s, state, r.x + r.w * 0.5, r.y + r.h * 0.5, false);
+    break;
+  }
+  for (const char* c = "Crunch EQ"; *c; ++c) panel.textKey(s, state, 0, *c);
+  panel.textKey(s, state, Panel::kTextEnter, 0);
+  panel.draw(cr, s, state);
+  bool rightClicked = false;
+  for (const auto& r : panel.widgetRects()) {
+    if (std::string(r.label) != "Crunch EQ") continue;
+    panel.beginTextEntry(s, state, r.x + r.w * 0.5, r.y + r.h * 0.5);
+    rightClicked = true;
+    break;
+  }
+  check(rightClicked && state.modulePresetMenu >= 0,
+        "right-click opens module preset actions");
+  panel.draw(cr, s, state);
+  panel.pointerDown(s, state, 584, 349, false);  // CANCEL
+  panel.pointerUp(s, state);
+  check(state.modulePresetMenu < 0, "module preset actions can be cancelled");
+
+  const auto loadedModules = loadModulePresets(modulePresetDir());
+  bool moduleManagementOk = false;
+  for (const auto& p : loadedModules) {
+    if (p.name != "Crunch EQ") continue;
+    if (!renameModulePreset(modulePresetDir(), p.name, "Crunch Renamed",
+                            p.type, p.controls)) {
+      break;
+    }
+    moduleManagementOk =
+        std::filesystem::exists(modulePresetDir() / "Crunch Renamed.suite-module") &&
+        !std::filesystem::exists(modulePresetDir() / "Crunch EQ.suite-module");
+    moduleManagementOk =
+        moduleManagementOk &&
+        deleteModulePreset(modulePresetDir(), "Crunch Renamed") &&
+        !std::filesystem::exists(modulePresetDir() /
+                                 "Crunch Renamed.suite-module");
+    break;
+  }
+  check(moduleManagementOk, "module presets can be renamed and deleted");
+  state.browserSlot = -1;
+  state.browserPresetFilter = false;
+  state.browserQuery.clear();
+  state.browserSearch = false;
+  state.modulePresetMenu = -1;
+  panel.draw(cr, s, state);
 
   // A factory preset modelled on Comp Suite.
   panel.draw(cr, s, state);
@@ -483,6 +565,18 @@ int main() {
     }
   }
   check(rackPresetsOk, "factory rack presets reference valid parameters");
+
+  const ParamSpec& slot1Type = kParamSpecs[slotParam(0, kSlotOffsetType)];
+  const ParamSpec& slot1Ctl = kParamSpecs[slotParam(0, kSlotOffsetC0)];
+  check(std::string(slot1Type.module) == "Slot 1" &&
+            std::string(slot1Type.name) == "Module",
+        "automation names use one-based slot numbers");
+  check(std::string(slot1Ctl.name) == "Module Control 1",
+        "automation names generic module controls clearly");
+  check(slot1Type.labels.count == kModuleCount &&
+            std::string(slot1Type.labels.names[0]) == "Off" &&
+            std::string(moduleName(static_cast<int>(ModuleId::Off))) == "Off",
+        "module automation options include Off and every module");
 
   // Drag slot 1 onto slot 2 and check the rack reorders.
   Shared dragS;
