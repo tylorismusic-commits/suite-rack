@@ -538,18 +538,18 @@ inline constexpr ControlDesc kMultibandControls[] = {
 };
 
 inline constexpr ControlDesc kMultibandCompControls[] = {
-    {0, "LOWT", "Low Threshold", ControlFormat::GateThresholdDb},
-    {1, "MIDT", "Mid Threshold", ControlFormat::GateThresholdDb},
-    {2, "HIGHT", "High Threshold", ControlFormat::GateThresholdDb},
-    {3, "LOWR", "Low Ratio", ControlFormat::DynRatio},
-    {4, "MIDR", "Mid Ratio", ControlFormat::DynRatio},
-    {5, "HIGHR", "High Ratio", ControlFormat::DynRatio},
-    {6, "LOWA", "Low Attack", ControlFormat::GateAttackMs},
-    {7, "MIDA", "Mid Attack", ControlFormat::GateAttackMs},
-    {8, "HIGHA", "High Attack", ControlFormat::GateAttackMs},
-    {9, "LOWREL", "Low Release", ControlFormat::GateReleaseMs},
-    {10, "MIDREL", "Mid Release", ControlFormat::GateReleaseMs},
-    {11, "HIGHREL", "High Release", ControlFormat::GateReleaseMs},
+    {0, "LOW THRESH", "Low Threshold", ControlFormat::GateThresholdDb},
+    {1, "MID THRESH", "Mid Threshold", ControlFormat::GateThresholdDb},
+    {2, "HIGH THRESH", "High Threshold", ControlFormat::GateThresholdDb},
+    {3, "LOW RATIO", "Low Ratio", ControlFormat::DynRatio},
+    {4, "MID RATIO", "Mid Ratio", ControlFormat::DynRatio},
+    {5, "HIGH RATIO", "High Ratio", ControlFormat::DynRatio},
+    {6, "LOW ATTACK", "Low Attack", ControlFormat::GateAttackMs},
+    {7, "MID ATTACK", "Mid Attack", ControlFormat::GateAttackMs},
+    {8, "HIGH ATTACK", "High Attack", ControlFormat::GateAttackMs},
+    {9, "LOW RELEASE", "Low Release", ControlFormat::GateReleaseMs},
+    {10, "MID RELEASE", "Mid Release", ControlFormat::GateReleaseMs},
+    {11, "HIGH RELEASE", "High Release", ControlFormat::GateReleaseMs},
 };
 
 inline constexpr ControlDesc kSubControls[] = {

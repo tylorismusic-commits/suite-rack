@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.51.1 — 73 modules, CLAP + LV2, external side-chain, presets, typed values.**
+**Status: 0.51.2 — 73 modules, CLAP + LV2, external side-chain, presets, typed values.**
 More factory module presets are next.
 
 A virtual 500 series mix rack in the Suite visual language: six serial slots, each

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.51.2 — 2026-11-19
+
+- **MB Comp** faders now use readable labels: `LOW THRESH`, `MID THRESH`,
+  `HIGH THRESH`, then the corresponding `RATIO`, `ATTACK` and `RELEASE`
+  controls. The old `LOWT / MIDT / HIGHT` abbreviations were easy to misread
+  as “LOW 1 / MID 1 / HIGH 1”.
+
 ## 0.51.1 — 2026-11-19
 
 - **MB Comp** now draws its twelve controls plus MIX and GAIN as horizontal
