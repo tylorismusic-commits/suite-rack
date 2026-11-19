@@ -662,19 +662,19 @@ void Panel::drawHeader(cairo_t* cr, const Shared& shared, const PanelState& stat
   text(cr, presetName(state.presetIndex), 237, 39, 13, 1, kText.r, kText.g,
        kText.b);
 
-  // Whole-rack A/B compare: one pill toggles, COPY duplicates the active
-  // side into the other.
+  // Wordmark stays centered; the compact A/B and COPY controls sit to its
+  // right, before the PRESETS / SAVE / ABOUT strip.
+  text(cr, "SUITE RACK", 520, 44, 21, 1, kText.r, kText.g, kText.b);
+
   const int ab = shared.abActiveSlot();
-  roundRect(cr, 408, 20, 46, 28, 4);
+  roundRect(cr, 600, 20, 34, 28, 4);
   setRgb(cr, kAccent);
   cairo_fill(cr);
-  text(cr, ab == 0 ? "A" : "B", 431, 39, 12, 1, 0.10, 0.08, 0.05);
-  roundRect(cr, 460, 20, 50, 28, 4);
+  text(cr, ab == 0 ? "A" : "B", 617, 39, 12, 1, 0.10, 0.08, 0.05);
+  roundRect(cr, 640, 20, 56, 28, 4);
   setRgb(cr, Rgb{0.20, 0.17, 0.14});
   cairo_fill(cr);
-  text(cr, "COPY", 485, 39, 7.5, 1, kDim.r, kDim.g, kDim.b);
-
-  text(cr, "SUITE RACK", 610, 44, 24, 1, kText.r, kText.g, kText.b);
+  text(cr, "COPY", 668, 39, 7.5, 1, kDim.r, kDim.g, kDim.b);
 
   struct Pill { const char* label; double x; };
   const Pill pills[] = {{"PRESETS", 706}, {"SAVE", 812}, {"ABOUT", 918}};
@@ -1531,12 +1531,12 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
     }
     return true;
   }
-  if (x >= 408 && x <= 454 && y >= 20 && y <= 48) {
+  if (x >= 600 && x <= 634 && y >= 20 && y <= 48) {
     shared.abSwitch(1 - shared.abActiveSlot());
     state.presetDirty = true;
     return true;
   }
-  if (x >= 460 && x <= 510 && y >= 20 && y <= 48) {
+  if (x >= 640 && x <= 696 && y >= 20 && y <= 48) {
     const int active = shared.abActiveSlot();
     shared.abCopy(active, 1 - active);
     state.presetDirty = true;

@@ -661,17 +661,17 @@ int main() {
     Panel p;
     p.draw(cr, ab, st);
     ab.set(P_INPUT, 2.0);
-    p.pointerDown(ab, st, 431, 34, false);
+    p.pointerDown(ab, st, 617, 34, false);
     p.pointerUp(ab, st);
     check(ab.abActiveSlot() == 1, "A/B pill switches to B");
     ab.set(P_INPUT, 6.0);
-    p.pointerDown(ab, st, 431, 34, false);
+    p.pointerDown(ab, st, 617, 34, false);
     p.pointerUp(ab, st);
     check(ab.abActiveSlot() == 0 && std::fabs(ab.get(P_INPUT) - 2.0) < 1e-9,
           "A/B pill returns to A");
-    p.pointerDown(ab, st, 485, 34, false);
+    p.pointerDown(ab, st, 668, 34, false);
     p.pointerUp(ab, st);
-    p.pointerDown(ab, st, 431, 34, false);
+    p.pointerDown(ab, st, 617, 34, false);
     p.pointerUp(ab, st);
     check(ab.abActiveSlot() == 1 && std::fabs(ab.get(P_INPUT) - 2.0) < 1e-9,
           "COPY copies A into B");
