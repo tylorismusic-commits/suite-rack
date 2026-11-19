@@ -35,6 +35,11 @@ constexpr const char* kUiUri =
     "https://github.com/tylorismusic-commits/suite-rack#ui";
 constexpr uint32_t kFirstParam = 4;
 constexpr uint32_t kMeterBase = kFirstParam + rack::P_COUNT;
+constexpr uint32_t kSlotMeterBase = kMeterBase + 13;  // after latency
+constexpr uint32_t kSpectrumBase =
+    kSlotMeterBase + rack::kSlotCount * rack::kSlotMeterFieldCount;
+constexpr uint32_t kSidechainBase = kSpectrumBase + rack::kMeterSpectrumBins;
+constexpr uint32_t kMeterResetPort = kSidechainBase + 2;
 constexpr auto kFrameInterval = std::chrono::milliseconds(33);
 
 struct Ui {
@@ -57,6 +62,7 @@ struct Ui {
   uint32_t height = rack::kPanelHeight;
 
   bool dirty = true;
+  uint32_t meterResetSerial = 0;
   std::chrono::steady_clock::time_point lastFrame{};
 
   double layoutScale() const {
@@ -214,6 +220,11 @@ struct Ui {
       XNextEvent(dpy, &ev);
       handleEvent(ev);
     }
+    if (write && shared.takeMeterReset()) {
+      ++meterResetSerial;
+      const float serial = static_cast<float>(meterResetSerial);
+      write(controller, kMeterResetPort, sizeof(float), 0, &serial);
+    }
     const auto now = std::chrono::steady_clock::now();
     if (dirty || now - lastFrame >= kFrameInterval) {
       draw();
@@ -336,6 +347,19 @@ void uiPortEvent(LV2UI_Handle handle, uint32_t port, uint32_t size,
   const float v = *static_cast<const float*>(buffer);
   if (port >= kFirstParam && port < kFirstParam + rack::P_COUNT) {
     ui->shared.setFromHost(port - kFirstParam, static_cast<double>(v));
+    ui->dirty = true;
+    return;
+  }
+  if (port >= kSlotMeterBase && port < kSpectrumBase) {
+    const uint32_t offset = port - kSlotMeterBase;
+    const uint32_t slot = offset / rack::kSlotMeterFieldCount;
+    const uint32_t field = offset % rack::kSlotMeterFieldCount;
+    ui->shared.slotMeter[slot].field[field].store(v);
+    ui->dirty = true;
+    return;
+  }
+  if (port >= kSpectrumBase && port < kSpectrumBase + rack::kMeterSpectrumBins) {
+    ui->shared.meterSpectrum[port - kSpectrumBase].store(v);
     ui->dirty = true;
     return;
   }

@@ -253,6 +253,50 @@ std::string buildPluginTtl() {
   }
 
   {
+    const char* const fields[rack::kSlotMeterFieldCount] = {
+        "peak_l", "peak_r", "hold_l", "hold_r", "rms_l", "rms_r",
+        "vu",     "corr",   "gr",     "lufs_m", "lufs_s"};
+    const char* const names[rack::kSlotMeterFieldCount] = {
+        "Peak Left", "Peak Right", "Peak Hold Left", "Peak Hold Right",
+        "RMS Left",  "RMS Right",  "VU",             "Correlation",
+        "Gain Reduction", "Momentary LUFS", "Short-Term LUFS"};
+    for (int slot = 0; slot < rack::kSlotCount; ++slot) {
+      for (int f = 0; f < rack::kSlotMeterFieldCount; ++f) {
+        const std::string symbol =
+            std::string("meter_s") + std::to_string(slot + 1) + "_" + fields[f];
+        const std::string name =
+            std::string("Slot ") + std::to_string(slot + 1) + " " + names[f];
+        double minimum = -120.0;
+        double maximum = 24.0;
+        const char* unit = "dB";
+        if (f == rack::kMeterCorrelation) {
+          minimum = -1.0;
+          maximum = 1.0;
+          unit = nullptr;
+        } else if (f == rack::kMeterGr) {
+          minimum = 0.0;
+          maximum = 48.0;
+        } else if (f == rack::kMeterVu) {
+          minimum = -20.0;
+          maximum = 3.0;
+        }
+        ports.push_back(portBlock(index++, symbol.c_str(), name.c_str(),
+                                  minimum, maximum, 0.0, false, false, {},
+                                  unit, groupUri("Meter").c_str(), true));
+      }
+    }
+    for (int i = 0; i < rack::kMeterSpectrumBins; ++i) {
+      const std::string symbol =
+          std::string("meter_spectrum_") + std::to_string(i);
+      const std::string name =
+          std::string("Meter Spectrum ") + std::to_string(i);
+      ports.push_back(portBlock(index++, symbol.c_str(), name.c_str(), -120.0,
+                                24.0, 0.0, false, false, {}, "dB",
+                                groupUri("Meter").c_str(), true));
+    }
+  }
+
+  {
     const char* const scAudio[2][2] = {
         {"sc_in_l", "Sidechain Left"},
         {"sc_in_r", "Sidechain Right"},
@@ -267,6 +311,22 @@ std::string buildPluginTtl() {
       p << "    ]";
       ports.push_back(p.str());
     }
+  }
+
+  {
+    std::ostringstream p;
+    p << "    [\n";
+    p << "        a lv2:InputPort , lv2:ControlPort ;\n";
+    p << "        lv2:index " << index++ << " ;\n";
+    p << "        lv2:symbol \"meter_reset\" ;\n";
+    p << "        lv2:name \"Meter Reset\" ;\n";
+    p << "        lv2:default 0 ;\n";
+    p << "        lv2:minimum 0 ;\n";
+    p << "        lv2:maximum 1000000 ;\n";
+    p << "        lv2:portProperty pprops:notOnGUI ;\n";
+    p << "        pg:group <" << groupUri("Meter") << "> ;\n";
+    p << "    ]";
+    ports.push_back(p.str());
   }
 
   for (size_t i = 0; i < ports.size(); ++i) {

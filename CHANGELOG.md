@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.52.0 — 2026-11-19
+
+- New **Meter** module: a pass-through rack unit that measures the signal
+  where it is inserted. Views are **Peak**, **VU**, **Spectrum**,
+  **Stereo/correlation**, **Gain Reduction** from earlier dynamics slots, and
+  **Loudness** (K-weighted momentary/short-term).
+- The meter card has **VIEW**, **PEAK HOLD**, **SCALE** and **RESET** controls
+  and hides the slot MIX/GAIN controls.
+- CLAP and LV2 publish per-slot meter values and the spectrum; LV2 adds the
+  meter ports and a meter-reset control port. The module is bit-transparent
+  and does not change latency.
+
 ## 0.51.2 — 2026-11-19
 
 - **MB Comp** faders now use readable labels: `LOW THRESH`, `MID THRESH`,

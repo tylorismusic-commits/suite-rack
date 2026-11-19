@@ -519,6 +519,120 @@ int main() {
           "loud external side-chain compresses a quiet signal");
   }
 
+
+  // Meter module: transparent audio and the main measurements.
+  {
+    Engine engine;
+    engine.prepare(48000.0f);
+    Controls c;
+    for (int slot = 0; slot < kSlotCount; ++slot) {
+      c.slot[slot].type = static_cast<int>(ModuleId::Off);
+    }
+    c.slot[0].type = static_cast<int>(ModuleId::Meter);
+    c.slot[0].c[0] = 0.0f;   // peak view
+    c.slot[0].c[1] = 0.5f;   // standard scale
+    c.slot[0].c[2] = 0.0f;   // hold off
+    engine.setControls(c);
+    Meters m;
+    std::vector<float> l(256), r(256);
+    double passthroughError = 0.0;
+    for (int b = 0; b < 120; ++b) {
+      for (int i = 0; i < 256; ++i) {
+        const float t = static_cast<float>(b * 256 + i) / 48000.0f;
+        l[i] = r[i] = 0.18f * std::sin(2.0f * 3.14159265f * 1000.0f * t);
+      }
+      std::vector<float> dryL = l;
+      engine.process(l.data(), r.data(), 256, m);
+      if (b > 100) {
+        for (int i = 0; i < 256; ++i) {
+          passthroughError = std::max(
+              passthroughError,
+              std::fabs(static_cast<double>(l[i] - dryL[i])));
+        }
+      }
+    }
+    check(passthroughError < 1.0e-6,
+          "meter module is bit-transparent");
+    check(std::fabs(m.slotMeter[0].peakLDb + 14.9f) < 0.5f,
+          "meter peak reads the input level");
+    check(std::fabs(m.slotMeter[0].holdLDb + 14.9f) < 0.5f,
+          "meter hold follows the peak when hold is off");
+    check(std::fabs(m.slotMeter[0].vu) < 1.2f,
+          "meter VU is calibrated near 0 for -18 dBFS RMS");
+    check(m.slotMeter[0].correlation > 0.99f,
+          "meter correlation reads +1 for identical channels");
+    check(m.slotMeter[0].lufsM > -20.0f && m.slotMeter[0].lufsM < -10.0f,
+          "meter momentary loudness is populated");
+    bool spectrum = false;
+    for (int i = 0; i < kMeterSpectrumBins; ++i) {
+      if (m.meterSpectrum[i] > -100.0f) spectrum = true;
+    }
+    check(spectrum, "meter spectrum is populated");
+  }
+
+  // Hold keeps the transient and reset clears it.
+  {
+    Engine engine;
+    engine.prepare(48000.0f);
+    Controls c;
+    for (int slot = 0; slot < kSlotCount; ++slot) {
+      c.slot[slot].type = static_cast<int>(ModuleId::Off);
+    }
+    c.slot[0].type = static_cast<int>(ModuleId::Meter);
+    c.slot[0].c[2] = 1.0f;  // hold on
+    engine.setControls(c);
+    Meters m;
+    std::vector<float> l(256), r(256);
+    for (int i = 0; i < 256; ++i) {
+      l[i] = r[i] = 0.5f * std::sin(2.0f * 3.14159265f * 1000.0f *
+                                    static_cast<float>(i) / 48000.0f);
+    }
+    engine.process(l.data(), r.data(), 256, m);
+    const float held = m.slotMeter[0].holdLDb;
+    for (int b = 0; b < 20; ++b) {
+      for (int i = 0; i < 256; ++i) {
+        l[i] = r[i] = 0.01f * std::sin(2.0f * 3.14159265f * 1000.0f *
+                                       static_cast<float>(i) / 48000.0f);
+      }
+      engine.process(l.data(), r.data(), 256, m);
+    }
+    check(held > -7.0f && std::fabs(m.slotMeter[0].holdLDb - held) < 0.1f,
+          "meter hold keeps the earlier peak");
+    engine.resetMeters();
+    engine.process(l.data(), r.data(), 256, m);
+    check(m.slotMeter[0].holdLDb < -30.0f,
+          "meter reset clears the peak hold");
+  }
+
+  // A meter after a compressor reports that compressor's gain reduction.
+  {
+    Engine engine;
+    engine.prepare(48000.0f);
+    Controls c;
+    for (int slot = 0; slot < kSlotCount; ++slot) {
+      c.slot[slot].type = static_cast<int>(ModuleId::Off);
+    }
+    c.slot[0].type = static_cast<int>(ModuleId::Comp76Blue);
+    for (int k = 0; k < 12; ++k) c.slot[0].c[k] = 0.5f;
+    c.slot[0].c[0] = 0.10f;
+    c.slot[0].c[1] = 0.70f;
+    c.slot[0].c[2] = 0.85f;
+    c.slot[1].type = static_cast<int>(ModuleId::Meter);
+    engine.setControls(c);
+    Meters m;
+    std::vector<float> l(256), r(256);
+    float maxGr = 0.0f;
+    for (int b = 0; b < 40; ++b) {
+      for (int i = 0; i < 256; ++i) {
+        const float t = static_cast<float>(b * 256 + i) / 48000.0f;
+        l[i] = r[i] = 0.8f * std::sin(2.0f * 3.14159265f * 220.0f * t);
+      }
+      engine.process(l.data(), r.data(), 256, m);
+      maxGr = std::max(maxGr, m.slotMeter[1].grDb);
+    }
+    check(maxGr > 0.3f, "meter shows gain reduction from earlier slots");
+  }
+
   std::printf("%d failure(s)\n", fails);
   return fails == 0 ? 0 : 1;
 }

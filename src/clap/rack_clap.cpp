@@ -887,19 +887,14 @@ clap_process_status pluginProcess(const clap_plugin_t* p, const clap_process_t* 
     s->host->request_callback(s->host);
   }
 
+  if (s->shared.takeMeterReset()) {
+    s->engine.resetMeters();
+  }
   s->engine.process(left, right, static_cast<int>(frames), s->meters, scL,
                     scR);
   emitGr(s, proc->out_events);
 
-  s->shared.inPeakDb.store(s->meters.inPeakDb, std::memory_order_relaxed);
-  s->shared.outPeakDb.store(s->meters.outPeakDb, std::memory_order_relaxed);
-  s->shared.inPeakLDb.store(s->meters.inPeakLDb, std::memory_order_relaxed);
-  s->shared.inPeakRDb.store(s->meters.inPeakRDb, std::memory_order_relaxed);
-  s->shared.outPeakLDb.store(s->meters.outPeakLDb, std::memory_order_relaxed);
-  s->shared.outPeakRDb.store(s->meters.outPeakRDb, std::memory_order_relaxed);
-  for (int i = 0; i < kSlotCount; ++i)
-    s->shared.slotGrDb[i].store(s->meters.slotGrDb[i],
-                                std::memory_order_relaxed);
+  s->shared.storeMeters(s->meters);
   return CLAP_PROCESS_CONTINUE;
 }
 

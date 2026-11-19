@@ -11,6 +11,7 @@
 
 #include "controls.hpp"
 #include "module_ids.hpp"
+#include "meter_module.hpp"
 #include "module_map.hpp"
 #include "multiband_comp.hpp"
 
@@ -23,6 +24,7 @@ public:
     for (auto& eq : eq_) eq.prepare(sr_);
     for (auto& comp : comp_) comp.prepare(sr_);
     for (auto& mb : multibandComp_) mb.prepare(sr_);
+    for (auto& meter : meter_) meter.prepare(sr_);
     for (auto& colour : colour_) colour.prepare(sr_);
     for (auto& gate : gate_) gate.prepare(sr_);
     for (auto& transient : transient_) transient.prepare(sr_);
@@ -102,6 +104,7 @@ public:
       dynamicEq_[i].setControls(dynamicEqControlsFrom(c.slot[i]));
       multiband_[i].setControls(multibandControlsFrom(c.slot[i]));
       multibandComp_[i].setControls(multibandCompControlsFrom(c.slot[i]));
+      meter_[i].setControls(meterControlsFrom(c.slot[i]));
       rider_[i].setControls(riderControlsFrom(c.slot[i]));
       reel_[i].setControls(reelControlsFrom(c.slot[i]));
       ember_[i].setControls(emberControlsFrom(c.slot[i]));
@@ -330,6 +333,15 @@ public:
             multibandComp_[s].process(l, r, sc);
             gr = multibandComp_[s].lastGrDb();
             break;
+          case ModuleId::Meter: {
+            float earlierGr = 0.0f;
+            for (int j = 0; j < s; ++j) {
+              earlierGr = std::max(earlierGr, slotGr[j]);
+            }
+            meter_[s].setGainReductionDb(earlierGr);
+            meter_[s].processSample(l, r);
+            continue;
+          }
           case ModuleId::Rider:
             rider_[s].process(l, r);
             gr = rider_[s].lastGrDb();
@@ -386,6 +398,29 @@ public:
     meters.outPeakRDb = hdsp::gainToDb(outR);
     meters.outPeakDb = std::max(meters.outPeakLDb, meters.outPeakRDb);
     for (int s = 0; s < kSlotCount; ++s) meters.slotGrDb[s] = slotGr[s];
+
+    const float* meterSpectrum = nullptr;
+    for (int s = 0; s < kSlotCount; ++s) {
+      const SlotControls& c = controls_.slot[s];
+      if (c.bypass ||
+          static_cast<ModuleId>(c.type) != ModuleId::Meter) {
+        meters.slotMeter[s] = SlotMeterValues{};
+        continue;
+      }
+      meter_[s].finishBlock(meters.slotMeter[s]);
+      meterSpectrum = meter_[s].spectrumBins();
+    }
+    if (meterSpectrum) {
+      for (int i = 0; i < kMeterSpectrumBins; ++i) {
+        meters.meterSpectrum[i] = meterSpectrum[i];
+      }
+    } else {
+      for (float& bin : meters.meterSpectrum) bin = -120.0f;
+    }
+  }
+
+  void resetMeters() noexcept {
+    for (auto& meter : meter_) meter.resetHolds();
   }
 
   void reset() noexcept {
@@ -408,6 +443,7 @@ public:
     for (auto& dynEq : dynamicEq_) dynEq.reset();
     for (auto& multiband : multiband_) multiband.reset();
     for (auto& mb : multibandComp_) mb.reset();
+    for (auto& meter : meter_) meter.reset();
     for (auto& rider : rider_) rider.reset();
     for (auto& reel : reel_) reel.reset();
     for (auto& ember : ember_) ember.reset();
@@ -490,6 +526,7 @@ private:
   hdsp::modules::DynamicEq dynamicEq_[kSlotCount];
   hdsp::modules::Multiband multiband_[kSlotCount];
   MultibandComp multibandComp_[kSlotCount];
+  MeterModule meter_[kSlotCount];
   hdsp::modules::Rider rider_[kSlotCount];
   hdsp::modules::Reel reel_[kSlotCount];
   hdsp::modules::Ember ember_[kSlotCount];

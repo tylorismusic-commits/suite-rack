@@ -155,6 +155,55 @@ public:
     outPeakLDb.store(-120.0f);
     outPeakRDb.store(-120.0f);
     for (auto& g : slotGrDb) g.store(0.0f);
+    for (auto& slot : slotMeter) {
+      for (auto& field : slot.field) field.store(-120.0f);
+    }
+    for (auto& bin : meterSpectrum) bin.store(-120.0f);
+  }
+
+  // Copies the audio-thread meter snapshot into the editor-facing atomics.
+  void storeMeters(const Meters& m) noexcept {
+    inPeakDb.store(m.inPeakDb, std::memory_order_relaxed);
+    outPeakDb.store(m.outPeakDb, std::memory_order_relaxed);
+    inPeakLDb.store(m.inPeakLDb, std::memory_order_relaxed);
+    inPeakRDb.store(m.inPeakRDb, std::memory_order_relaxed);
+    outPeakLDb.store(m.outPeakLDb, std::memory_order_relaxed);
+    outPeakRDb.store(m.outPeakRDb, std::memory_order_relaxed);
+    for (int i = 0; i < kSlotCount; ++i) {
+      slotGrDb[i].store(m.slotGrDb[i], std::memory_order_relaxed);
+      slotMeter[i].field[0].store(m.slotMeter[i].peakLDb,
+                                  std::memory_order_relaxed);
+      slotMeter[i].field[1].store(m.slotMeter[i].peakRDb,
+                                  std::memory_order_relaxed);
+      slotMeter[i].field[2].store(m.slotMeter[i].holdLDb,
+                                  std::memory_order_relaxed);
+      slotMeter[i].field[3].store(m.slotMeter[i].holdRDb,
+                                  std::memory_order_relaxed);
+      slotMeter[i].field[4].store(m.slotMeter[i].rmsLDb,
+                                  std::memory_order_relaxed);
+      slotMeter[i].field[5].store(m.slotMeter[i].rmsRDb,
+                                  std::memory_order_relaxed);
+      slotMeter[i].field[6].store(m.slotMeter[i].vu,
+                                  std::memory_order_relaxed);
+      slotMeter[i].field[7].store(m.slotMeter[i].correlation,
+                                  std::memory_order_relaxed);
+      slotMeter[i].field[8].store(m.slotMeter[i].grDb,
+                                  std::memory_order_relaxed);
+      slotMeter[i].field[9].store(m.slotMeter[i].lufsM,
+                                  std::memory_order_relaxed);
+      slotMeter[i].field[10].store(m.slotMeter[i].lufsS,
+                                   std::memory_order_relaxed);
+    }
+    for (int i = 0; i < kMeterSpectrumBins; ++i) {
+      meterSpectrum[i].store(m.meterSpectrum[i], std::memory_order_relaxed);
+    }
+  }
+
+  void requestMeterReset() noexcept {
+    meterReset.store(true, std::memory_order_relaxed);
+  }
+  bool takeMeterReset() noexcept {
+    return meterReset.exchange(false, std::memory_order_acquire);
   }
 
   int abActiveSlot() const noexcept {
@@ -238,6 +287,12 @@ public:
   std::atomic<float> inPeakLDb, inPeakRDb;
   std::atomic<float> outPeakLDb, outPeakRDb;
   std::atomic<float> slotGrDb[kSlotCount];
+  struct AtomicSlotMeter {
+    std::atomic<float> field[kSlotMeterFieldCount];
+  };
+  AtomicSlotMeter slotMeter[kSlotCount];
+  std::atomic<float> meterSpectrum[kMeterSpectrumBins];
+  std::atomic<bool> meterReset{false};
 
   AbSlot abSlots[2];
   std::atomic<int> abActive{0};

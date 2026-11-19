@@ -22,8 +22,8 @@
         foaf:homepage <https://github.com/tylorismusic-commits/suite-rack> ;
     ] ;
     doap:homepage <https://github.com/tylorismusic-commits/suite-rack> ;
-    lv2:minorVersion 51 ;
-    lv2:microVersion 2 ;
+    lv2:minorVersion 52 ;
+    lv2:microVersion 0 ;
     lv2:binary <suite_rack.so> ;
     rdfs:seeAlso <manifest.ttl> ;
     ui:ui <https://github.com/tylorismusic-commits/suite-rack#ui> ;
@@ -95,7 +95,7 @@
         lv2:name "Module" ;
         lv2:default 1 ;
         lv2:minimum 0 ;
-        lv2:maximum 73 ;
+        lv2:maximum 74 ;
         lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -170,7 +170,8 @@
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
             [ rdf:value 72 ; rdfs:label "Custom EQ" ] ,
-            [ rdf:value 73 ; rdfs:label "MB Comp" ] ;
+            [ rdf:value 73 ; rdfs:label "MB Comp" ] ,
+            [ rdf:value 74 ; rdfs:label "Meter" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
@@ -334,7 +335,7 @@
         lv2:name "Module" ;
         lv2:default 5 ;
         lv2:minimum 0 ;
-        lv2:maximum 73 ;
+        lv2:maximum 74 ;
         lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -409,7 +410,8 @@
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
             [ rdf:value 72 ; rdfs:label "Custom EQ" ] ,
-            [ rdf:value 73 ; rdfs:label "MB Comp" ] ;
+            [ rdf:value 73 ; rdfs:label "MB Comp" ] ,
+            [ rdf:value 74 ; rdfs:label "Meter" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
@@ -573,7 +575,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 73 ;
+        lv2:maximum 74 ;
         lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -648,7 +650,8 @@
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
             [ rdf:value 72 ; rdfs:label "Custom EQ" ] ,
-            [ rdf:value 73 ; rdfs:label "MB Comp" ] ;
+            [ rdf:value 73 ; rdfs:label "MB Comp" ] ,
+            [ rdf:value 74 ; rdfs:label "Meter" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
@@ -812,7 +815,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 73 ;
+        lv2:maximum 74 ;
         lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -887,7 +890,8 @@
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
             [ rdf:value 72 ; rdfs:label "Custom EQ" ] ,
-            [ rdf:value 73 ; rdfs:label "MB Comp" ] ;
+            [ rdf:value 73 ; rdfs:label "MB Comp" ] ,
+            [ rdf:value 74 ; rdfs:label "Meter" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
@@ -1051,7 +1055,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 73 ;
+        lv2:maximum 74 ;
         lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -1126,7 +1130,8 @@
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
             [ rdf:value 72 ; rdfs:label "Custom EQ" ] ,
-            [ rdf:value 73 ; rdfs:label "MB Comp" ] ;
+            [ rdf:value 73 ; rdfs:label "MB Comp" ] ,
+            [ rdf:value 74 ; rdfs:label "Meter" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
@@ -1290,7 +1295,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 73 ;
+        lv2:maximum 74 ;
         lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -1365,7 +1370,8 @@
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
             [ rdf:value 72 ; rdfs:label "Custom EQ" ] ,
-            [ rdf:value 73 ; rdfs:label "MB Comp" ] ;
+            [ rdf:value 73 ; rdfs:label "MB Comp" ] ,
+            [ rdf:value 74 ; rdfs:label "Meter" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
@@ -1685,16 +1691,2349 @@
         pg:group <https://github.com/tylorismusic-commits/suite-rack#latency> ;
     ] ,
     [
-        a lv2:AudioPort , lv2:InputPort ;
+        a lv2:OutputPort , lv2:ControlPort ;
         lv2:index 117 ;
+        lv2:symbol "meter_s1_peak_l" ;
+        lv2:name "Slot 1 Peak Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 118 ;
+        lv2:symbol "meter_s1_peak_r" ;
+        lv2:name "Slot 1 Peak Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 119 ;
+        lv2:symbol "meter_s1_hold_l" ;
+        lv2:name "Slot 1 Peak Hold Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 120 ;
+        lv2:symbol "meter_s1_hold_r" ;
+        lv2:name "Slot 1 Peak Hold Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 121 ;
+        lv2:symbol "meter_s1_rms_l" ;
+        lv2:name "Slot 1 RMS Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 122 ;
+        lv2:symbol "meter_s1_rms_r" ;
+        lv2:name "Slot 1 RMS Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 123 ;
+        lv2:symbol "meter_s1_vu" ;
+        lv2:name "Slot 1 VU" ;
+        lv2:default 0 ;
+        lv2:minimum -20 ;
+        lv2:maximum 3 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 124 ;
+        lv2:symbol "meter_s1_corr" ;
+        lv2:name "Slot 1 Correlation" ;
+        lv2:default 0 ;
+        lv2:minimum -1 ;
+        lv2:maximum 1 ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 125 ;
+        lv2:symbol "meter_s1_gr" ;
+        lv2:name "Slot 1 Gain Reduction" ;
+        lv2:default 0 ;
+        lv2:minimum 0 ;
+        lv2:maximum 48 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 126 ;
+        lv2:symbol "meter_s1_lufs_m" ;
+        lv2:name "Slot 1 Momentary LUFS" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 127 ;
+        lv2:symbol "meter_s1_lufs_s" ;
+        lv2:name "Slot 1 Short-Term LUFS" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 128 ;
+        lv2:symbol "meter_s2_peak_l" ;
+        lv2:name "Slot 2 Peak Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 129 ;
+        lv2:symbol "meter_s2_peak_r" ;
+        lv2:name "Slot 2 Peak Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 130 ;
+        lv2:symbol "meter_s2_hold_l" ;
+        lv2:name "Slot 2 Peak Hold Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 131 ;
+        lv2:symbol "meter_s2_hold_r" ;
+        lv2:name "Slot 2 Peak Hold Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 132 ;
+        lv2:symbol "meter_s2_rms_l" ;
+        lv2:name "Slot 2 RMS Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 133 ;
+        lv2:symbol "meter_s2_rms_r" ;
+        lv2:name "Slot 2 RMS Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 134 ;
+        lv2:symbol "meter_s2_vu" ;
+        lv2:name "Slot 2 VU" ;
+        lv2:default 0 ;
+        lv2:minimum -20 ;
+        lv2:maximum 3 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 135 ;
+        lv2:symbol "meter_s2_corr" ;
+        lv2:name "Slot 2 Correlation" ;
+        lv2:default 0 ;
+        lv2:minimum -1 ;
+        lv2:maximum 1 ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 136 ;
+        lv2:symbol "meter_s2_gr" ;
+        lv2:name "Slot 2 Gain Reduction" ;
+        lv2:default 0 ;
+        lv2:minimum 0 ;
+        lv2:maximum 48 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 137 ;
+        lv2:symbol "meter_s2_lufs_m" ;
+        lv2:name "Slot 2 Momentary LUFS" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 138 ;
+        lv2:symbol "meter_s2_lufs_s" ;
+        lv2:name "Slot 2 Short-Term LUFS" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 139 ;
+        lv2:symbol "meter_s3_peak_l" ;
+        lv2:name "Slot 3 Peak Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 140 ;
+        lv2:symbol "meter_s3_peak_r" ;
+        lv2:name "Slot 3 Peak Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 141 ;
+        lv2:symbol "meter_s3_hold_l" ;
+        lv2:name "Slot 3 Peak Hold Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 142 ;
+        lv2:symbol "meter_s3_hold_r" ;
+        lv2:name "Slot 3 Peak Hold Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 143 ;
+        lv2:symbol "meter_s3_rms_l" ;
+        lv2:name "Slot 3 RMS Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 144 ;
+        lv2:symbol "meter_s3_rms_r" ;
+        lv2:name "Slot 3 RMS Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 145 ;
+        lv2:symbol "meter_s3_vu" ;
+        lv2:name "Slot 3 VU" ;
+        lv2:default 0 ;
+        lv2:minimum -20 ;
+        lv2:maximum 3 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 146 ;
+        lv2:symbol "meter_s3_corr" ;
+        lv2:name "Slot 3 Correlation" ;
+        lv2:default 0 ;
+        lv2:minimum -1 ;
+        lv2:maximum 1 ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 147 ;
+        lv2:symbol "meter_s3_gr" ;
+        lv2:name "Slot 3 Gain Reduction" ;
+        lv2:default 0 ;
+        lv2:minimum 0 ;
+        lv2:maximum 48 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 148 ;
+        lv2:symbol "meter_s3_lufs_m" ;
+        lv2:name "Slot 3 Momentary LUFS" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 149 ;
+        lv2:symbol "meter_s3_lufs_s" ;
+        lv2:name "Slot 3 Short-Term LUFS" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 150 ;
+        lv2:symbol "meter_s4_peak_l" ;
+        lv2:name "Slot 4 Peak Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 151 ;
+        lv2:symbol "meter_s4_peak_r" ;
+        lv2:name "Slot 4 Peak Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 152 ;
+        lv2:symbol "meter_s4_hold_l" ;
+        lv2:name "Slot 4 Peak Hold Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 153 ;
+        lv2:symbol "meter_s4_hold_r" ;
+        lv2:name "Slot 4 Peak Hold Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 154 ;
+        lv2:symbol "meter_s4_rms_l" ;
+        lv2:name "Slot 4 RMS Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 155 ;
+        lv2:symbol "meter_s4_rms_r" ;
+        lv2:name "Slot 4 RMS Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 156 ;
+        lv2:symbol "meter_s4_vu" ;
+        lv2:name "Slot 4 VU" ;
+        lv2:default 0 ;
+        lv2:minimum -20 ;
+        lv2:maximum 3 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 157 ;
+        lv2:symbol "meter_s4_corr" ;
+        lv2:name "Slot 4 Correlation" ;
+        lv2:default 0 ;
+        lv2:minimum -1 ;
+        lv2:maximum 1 ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 158 ;
+        lv2:symbol "meter_s4_gr" ;
+        lv2:name "Slot 4 Gain Reduction" ;
+        lv2:default 0 ;
+        lv2:minimum 0 ;
+        lv2:maximum 48 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 159 ;
+        lv2:symbol "meter_s4_lufs_m" ;
+        lv2:name "Slot 4 Momentary LUFS" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 160 ;
+        lv2:symbol "meter_s4_lufs_s" ;
+        lv2:name "Slot 4 Short-Term LUFS" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 161 ;
+        lv2:symbol "meter_s5_peak_l" ;
+        lv2:name "Slot 5 Peak Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 162 ;
+        lv2:symbol "meter_s5_peak_r" ;
+        lv2:name "Slot 5 Peak Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 163 ;
+        lv2:symbol "meter_s5_hold_l" ;
+        lv2:name "Slot 5 Peak Hold Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 164 ;
+        lv2:symbol "meter_s5_hold_r" ;
+        lv2:name "Slot 5 Peak Hold Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 165 ;
+        lv2:symbol "meter_s5_rms_l" ;
+        lv2:name "Slot 5 RMS Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 166 ;
+        lv2:symbol "meter_s5_rms_r" ;
+        lv2:name "Slot 5 RMS Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 167 ;
+        lv2:symbol "meter_s5_vu" ;
+        lv2:name "Slot 5 VU" ;
+        lv2:default 0 ;
+        lv2:minimum -20 ;
+        lv2:maximum 3 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 168 ;
+        lv2:symbol "meter_s5_corr" ;
+        lv2:name "Slot 5 Correlation" ;
+        lv2:default 0 ;
+        lv2:minimum -1 ;
+        lv2:maximum 1 ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 169 ;
+        lv2:symbol "meter_s5_gr" ;
+        lv2:name "Slot 5 Gain Reduction" ;
+        lv2:default 0 ;
+        lv2:minimum 0 ;
+        lv2:maximum 48 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 170 ;
+        lv2:symbol "meter_s5_lufs_m" ;
+        lv2:name "Slot 5 Momentary LUFS" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 171 ;
+        lv2:symbol "meter_s5_lufs_s" ;
+        lv2:name "Slot 5 Short-Term LUFS" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 172 ;
+        lv2:symbol "meter_s6_peak_l" ;
+        lv2:name "Slot 6 Peak Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 173 ;
+        lv2:symbol "meter_s6_peak_r" ;
+        lv2:name "Slot 6 Peak Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 174 ;
+        lv2:symbol "meter_s6_hold_l" ;
+        lv2:name "Slot 6 Peak Hold Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 175 ;
+        lv2:symbol "meter_s6_hold_r" ;
+        lv2:name "Slot 6 Peak Hold Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 176 ;
+        lv2:symbol "meter_s6_rms_l" ;
+        lv2:name "Slot 6 RMS Left" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 177 ;
+        lv2:symbol "meter_s6_rms_r" ;
+        lv2:name "Slot 6 RMS Right" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 178 ;
+        lv2:symbol "meter_s6_vu" ;
+        lv2:name "Slot 6 VU" ;
+        lv2:default 0 ;
+        lv2:minimum -20 ;
+        lv2:maximum 3 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 179 ;
+        lv2:symbol "meter_s6_corr" ;
+        lv2:name "Slot 6 Correlation" ;
+        lv2:default 0 ;
+        lv2:minimum -1 ;
+        lv2:maximum 1 ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 180 ;
+        lv2:symbol "meter_s6_gr" ;
+        lv2:name "Slot 6 Gain Reduction" ;
+        lv2:default 0 ;
+        lv2:minimum 0 ;
+        lv2:maximum 48 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 181 ;
+        lv2:symbol "meter_s6_lufs_m" ;
+        lv2:name "Slot 6 Momentary LUFS" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 182 ;
+        lv2:symbol "meter_s6_lufs_s" ;
+        lv2:name "Slot 6 Short-Term LUFS" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 183 ;
+        lv2:symbol "meter_spectrum_0" ;
+        lv2:name "Meter Spectrum 0" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 184 ;
+        lv2:symbol "meter_spectrum_1" ;
+        lv2:name "Meter Spectrum 1" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 185 ;
+        lv2:symbol "meter_spectrum_2" ;
+        lv2:name "Meter Spectrum 2" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 186 ;
+        lv2:symbol "meter_spectrum_3" ;
+        lv2:name "Meter Spectrum 3" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 187 ;
+        lv2:symbol "meter_spectrum_4" ;
+        lv2:name "Meter Spectrum 4" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 188 ;
+        lv2:symbol "meter_spectrum_5" ;
+        lv2:name "Meter Spectrum 5" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 189 ;
+        lv2:symbol "meter_spectrum_6" ;
+        lv2:name "Meter Spectrum 6" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 190 ;
+        lv2:symbol "meter_spectrum_7" ;
+        lv2:name "Meter Spectrum 7" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 191 ;
+        lv2:symbol "meter_spectrum_8" ;
+        lv2:name "Meter Spectrum 8" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 192 ;
+        lv2:symbol "meter_spectrum_9" ;
+        lv2:name "Meter Spectrum 9" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 193 ;
+        lv2:symbol "meter_spectrum_10" ;
+        lv2:name "Meter Spectrum 10" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 194 ;
+        lv2:symbol "meter_spectrum_11" ;
+        lv2:name "Meter Spectrum 11" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 195 ;
+        lv2:symbol "meter_spectrum_12" ;
+        lv2:name "Meter Spectrum 12" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 196 ;
+        lv2:symbol "meter_spectrum_13" ;
+        lv2:name "Meter Spectrum 13" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 197 ;
+        lv2:symbol "meter_spectrum_14" ;
+        lv2:name "Meter Spectrum 14" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 198 ;
+        lv2:symbol "meter_spectrum_15" ;
+        lv2:name "Meter Spectrum 15" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 199 ;
+        lv2:symbol "meter_spectrum_16" ;
+        lv2:name "Meter Spectrum 16" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 200 ;
+        lv2:symbol "meter_spectrum_17" ;
+        lv2:name "Meter Spectrum 17" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 201 ;
+        lv2:symbol "meter_spectrum_18" ;
+        lv2:name "Meter Spectrum 18" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 202 ;
+        lv2:symbol "meter_spectrum_19" ;
+        lv2:name "Meter Spectrum 19" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 203 ;
+        lv2:symbol "meter_spectrum_20" ;
+        lv2:name "Meter Spectrum 20" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 204 ;
+        lv2:symbol "meter_spectrum_21" ;
+        lv2:name "Meter Spectrum 21" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 205 ;
+        lv2:symbol "meter_spectrum_22" ;
+        lv2:name "Meter Spectrum 22" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 206 ;
+        lv2:symbol "meter_spectrum_23" ;
+        lv2:name "Meter Spectrum 23" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 207 ;
+        lv2:symbol "meter_spectrum_24" ;
+        lv2:name "Meter Spectrum 24" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 208 ;
+        lv2:symbol "meter_spectrum_25" ;
+        lv2:name "Meter Spectrum 25" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 209 ;
+        lv2:symbol "meter_spectrum_26" ;
+        lv2:name "Meter Spectrum 26" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 210 ;
+        lv2:symbol "meter_spectrum_27" ;
+        lv2:name "Meter Spectrum 27" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 211 ;
+        lv2:symbol "meter_spectrum_28" ;
+        lv2:name "Meter Spectrum 28" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 212 ;
+        lv2:symbol "meter_spectrum_29" ;
+        lv2:name "Meter Spectrum 29" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 213 ;
+        lv2:symbol "meter_spectrum_30" ;
+        lv2:name "Meter Spectrum 30" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 214 ;
+        lv2:symbol "meter_spectrum_31" ;
+        lv2:name "Meter Spectrum 31" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 215 ;
+        lv2:symbol "meter_spectrum_32" ;
+        lv2:name "Meter Spectrum 32" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 216 ;
+        lv2:symbol "meter_spectrum_33" ;
+        lv2:name "Meter Spectrum 33" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 217 ;
+        lv2:symbol "meter_spectrum_34" ;
+        lv2:name "Meter Spectrum 34" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 218 ;
+        lv2:symbol "meter_spectrum_35" ;
+        lv2:name "Meter Spectrum 35" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 219 ;
+        lv2:symbol "meter_spectrum_36" ;
+        lv2:name "Meter Spectrum 36" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 220 ;
+        lv2:symbol "meter_spectrum_37" ;
+        lv2:name "Meter Spectrum 37" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 221 ;
+        lv2:symbol "meter_spectrum_38" ;
+        lv2:name "Meter Spectrum 38" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 222 ;
+        lv2:symbol "meter_spectrum_39" ;
+        lv2:name "Meter Spectrum 39" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 223 ;
+        lv2:symbol "meter_spectrum_40" ;
+        lv2:name "Meter Spectrum 40" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 224 ;
+        lv2:symbol "meter_spectrum_41" ;
+        lv2:name "Meter Spectrum 41" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 225 ;
+        lv2:symbol "meter_spectrum_42" ;
+        lv2:name "Meter Spectrum 42" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 226 ;
+        lv2:symbol "meter_spectrum_43" ;
+        lv2:name "Meter Spectrum 43" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 227 ;
+        lv2:symbol "meter_spectrum_44" ;
+        lv2:name "Meter Spectrum 44" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 228 ;
+        lv2:symbol "meter_spectrum_45" ;
+        lv2:name "Meter Spectrum 45" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 229 ;
+        lv2:symbol "meter_spectrum_46" ;
+        lv2:name "Meter Spectrum 46" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 230 ;
+        lv2:symbol "meter_spectrum_47" ;
+        lv2:name "Meter Spectrum 47" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 231 ;
+        lv2:symbol "meter_spectrum_48" ;
+        lv2:name "Meter Spectrum 48" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 232 ;
+        lv2:symbol "meter_spectrum_49" ;
+        lv2:name "Meter Spectrum 49" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 233 ;
+        lv2:symbol "meter_spectrum_50" ;
+        lv2:name "Meter Spectrum 50" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 234 ;
+        lv2:symbol "meter_spectrum_51" ;
+        lv2:name "Meter Spectrum 51" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 235 ;
+        lv2:symbol "meter_spectrum_52" ;
+        lv2:name "Meter Spectrum 52" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 236 ;
+        lv2:symbol "meter_spectrum_53" ;
+        lv2:name "Meter Spectrum 53" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 237 ;
+        lv2:symbol "meter_spectrum_54" ;
+        lv2:name "Meter Spectrum 54" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 238 ;
+        lv2:symbol "meter_spectrum_55" ;
+        lv2:name "Meter Spectrum 55" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 239 ;
+        lv2:symbol "meter_spectrum_56" ;
+        lv2:name "Meter Spectrum 56" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 240 ;
+        lv2:symbol "meter_spectrum_57" ;
+        lv2:name "Meter Spectrum 57" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 241 ;
+        lv2:symbol "meter_spectrum_58" ;
+        lv2:name "Meter Spectrum 58" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 242 ;
+        lv2:symbol "meter_spectrum_59" ;
+        lv2:name "Meter Spectrum 59" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 243 ;
+        lv2:symbol "meter_spectrum_60" ;
+        lv2:name "Meter Spectrum 60" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 244 ;
+        lv2:symbol "meter_spectrum_61" ;
+        lv2:name "Meter Spectrum 61" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 245 ;
+        lv2:symbol "meter_spectrum_62" ;
+        lv2:name "Meter Spectrum 62" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 246 ;
+        lv2:symbol "meter_spectrum_63" ;
+        lv2:name "Meter Spectrum 63" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 247 ;
+        lv2:symbol "meter_spectrum_64" ;
+        lv2:name "Meter Spectrum 64" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 248 ;
+        lv2:symbol "meter_spectrum_65" ;
+        lv2:name "Meter Spectrum 65" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 249 ;
+        lv2:symbol "meter_spectrum_66" ;
+        lv2:name "Meter Spectrum 66" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 250 ;
+        lv2:symbol "meter_spectrum_67" ;
+        lv2:name "Meter Spectrum 67" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 251 ;
+        lv2:symbol "meter_spectrum_68" ;
+        lv2:name "Meter Spectrum 68" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 252 ;
+        lv2:symbol "meter_spectrum_69" ;
+        lv2:name "Meter Spectrum 69" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 253 ;
+        lv2:symbol "meter_spectrum_70" ;
+        lv2:name "Meter Spectrum 70" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 254 ;
+        lv2:symbol "meter_spectrum_71" ;
+        lv2:name "Meter Spectrum 71" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 255 ;
+        lv2:symbol "meter_spectrum_72" ;
+        lv2:name "Meter Spectrum 72" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 256 ;
+        lv2:symbol "meter_spectrum_73" ;
+        lv2:name "Meter Spectrum 73" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 257 ;
+        lv2:symbol "meter_spectrum_74" ;
+        lv2:name "Meter Spectrum 74" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 258 ;
+        lv2:symbol "meter_spectrum_75" ;
+        lv2:name "Meter Spectrum 75" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 259 ;
+        lv2:symbol "meter_spectrum_76" ;
+        lv2:name "Meter Spectrum 76" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 260 ;
+        lv2:symbol "meter_spectrum_77" ;
+        lv2:name "Meter Spectrum 77" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 261 ;
+        lv2:symbol "meter_spectrum_78" ;
+        lv2:name "Meter Spectrum 78" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 262 ;
+        lv2:symbol "meter_spectrum_79" ;
+        lv2:name "Meter Spectrum 79" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 263 ;
+        lv2:symbol "meter_spectrum_80" ;
+        lv2:name "Meter Spectrum 80" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 264 ;
+        lv2:symbol "meter_spectrum_81" ;
+        lv2:name "Meter Spectrum 81" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 265 ;
+        lv2:symbol "meter_spectrum_82" ;
+        lv2:name "Meter Spectrum 82" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 266 ;
+        lv2:symbol "meter_spectrum_83" ;
+        lv2:name "Meter Spectrum 83" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 267 ;
+        lv2:symbol "meter_spectrum_84" ;
+        lv2:name "Meter Spectrum 84" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 268 ;
+        lv2:symbol "meter_spectrum_85" ;
+        lv2:name "Meter Spectrum 85" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 269 ;
+        lv2:symbol "meter_spectrum_86" ;
+        lv2:name "Meter Spectrum 86" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 270 ;
+        lv2:symbol "meter_spectrum_87" ;
+        lv2:name "Meter Spectrum 87" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 271 ;
+        lv2:symbol "meter_spectrum_88" ;
+        lv2:name "Meter Spectrum 88" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 272 ;
+        lv2:symbol "meter_spectrum_89" ;
+        lv2:name "Meter Spectrum 89" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 273 ;
+        lv2:symbol "meter_spectrum_90" ;
+        lv2:name "Meter Spectrum 90" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 274 ;
+        lv2:symbol "meter_spectrum_91" ;
+        lv2:name "Meter Spectrum 91" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 275 ;
+        lv2:symbol "meter_spectrum_92" ;
+        lv2:name "Meter Spectrum 92" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 276 ;
+        lv2:symbol "meter_spectrum_93" ;
+        lv2:name "Meter Spectrum 93" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 277 ;
+        lv2:symbol "meter_spectrum_94" ;
+        lv2:name "Meter Spectrum 94" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 278 ;
+        lv2:symbol "meter_spectrum_95" ;
+        lv2:name "Meter Spectrum 95" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 279 ;
+        lv2:symbol "meter_spectrum_96" ;
+        lv2:name "Meter Spectrum 96" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 280 ;
+        lv2:symbol "meter_spectrum_97" ;
+        lv2:name "Meter Spectrum 97" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 281 ;
+        lv2:symbol "meter_spectrum_98" ;
+        lv2:name "Meter Spectrum 98" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 282 ;
+        lv2:symbol "meter_spectrum_99" ;
+        lv2:name "Meter Spectrum 99" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 283 ;
+        lv2:symbol "meter_spectrum_100" ;
+        lv2:name "Meter Spectrum 100" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 284 ;
+        lv2:symbol "meter_spectrum_101" ;
+        lv2:name "Meter Spectrum 101" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 285 ;
+        lv2:symbol "meter_spectrum_102" ;
+        lv2:name "Meter Spectrum 102" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 286 ;
+        lv2:symbol "meter_spectrum_103" ;
+        lv2:name "Meter Spectrum 103" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 287 ;
+        lv2:symbol "meter_spectrum_104" ;
+        lv2:name "Meter Spectrum 104" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 288 ;
+        lv2:symbol "meter_spectrum_105" ;
+        lv2:name "Meter Spectrum 105" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 289 ;
+        lv2:symbol "meter_spectrum_106" ;
+        lv2:name "Meter Spectrum 106" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 290 ;
+        lv2:symbol "meter_spectrum_107" ;
+        lv2:name "Meter Spectrum 107" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 291 ;
+        lv2:symbol "meter_spectrum_108" ;
+        lv2:name "Meter Spectrum 108" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 292 ;
+        lv2:symbol "meter_spectrum_109" ;
+        lv2:name "Meter Spectrum 109" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 293 ;
+        lv2:symbol "meter_spectrum_110" ;
+        lv2:name "Meter Spectrum 110" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 294 ;
+        lv2:symbol "meter_spectrum_111" ;
+        lv2:name "Meter Spectrum 111" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 295 ;
+        lv2:symbol "meter_spectrum_112" ;
+        lv2:name "Meter Spectrum 112" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 296 ;
+        lv2:symbol "meter_spectrum_113" ;
+        lv2:name "Meter Spectrum 113" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 297 ;
+        lv2:symbol "meter_spectrum_114" ;
+        lv2:name "Meter Spectrum 114" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 298 ;
+        lv2:symbol "meter_spectrum_115" ;
+        lv2:name "Meter Spectrum 115" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 299 ;
+        lv2:symbol "meter_spectrum_116" ;
+        lv2:name "Meter Spectrum 116" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 300 ;
+        lv2:symbol "meter_spectrum_117" ;
+        lv2:name "Meter Spectrum 117" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 301 ;
+        lv2:symbol "meter_spectrum_118" ;
+        lv2:name "Meter Spectrum 118" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 302 ;
+        lv2:symbol "meter_spectrum_119" ;
+        lv2:name "Meter Spectrum 119" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 303 ;
+        lv2:symbol "meter_spectrum_120" ;
+        lv2:name "Meter Spectrum 120" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 304 ;
+        lv2:symbol "meter_spectrum_121" ;
+        lv2:name "Meter Spectrum 121" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 305 ;
+        lv2:symbol "meter_spectrum_122" ;
+        lv2:name "Meter Spectrum 122" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 306 ;
+        lv2:symbol "meter_spectrum_123" ;
+        lv2:name "Meter Spectrum 123" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 307 ;
+        lv2:symbol "meter_spectrum_124" ;
+        lv2:name "Meter Spectrum 124" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 308 ;
+        lv2:symbol "meter_spectrum_125" ;
+        lv2:name "Meter Spectrum 125" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 309 ;
+        lv2:symbol "meter_spectrum_126" ;
+        lv2:name "Meter Spectrum 126" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 310 ;
+        lv2:symbol "meter_spectrum_127" ;
+        lv2:name "Meter Spectrum 127" ;
+        lv2:default 0 ;
+        lv2:minimum -120 ;
+        lv2:maximum 24 ;
+        units:unit units:db ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
+    ] ,
+    [
+        a lv2:AudioPort , lv2:InputPort ;
+        lv2:index 311 ;
         lv2:symbol "sc_in_l" ;
         lv2:name "Sidechain Left" ;
     ] ,
     [
         a lv2:AudioPort , lv2:InputPort ;
-        lv2:index 118 ;
+        lv2:index 312 ;
         lv2:symbol "sc_in_r" ;
         lv2:name "Sidechain Right" ;
+    ] ,
+    [
+        a lv2:InputPort , lv2:ControlPort ;
+        lv2:index 313 ;
+        lv2:symbol "meter_reset" ;
+        lv2:name "Meter Reset" ;
+        lv2:default 0 ;
+        lv2:minimum 0 ;
+        lv2:maximum 1000000 ;
+        lv2:portProperty pprops:notOnGUI ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#meter> ;
     ] .
 
 

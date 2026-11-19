@@ -310,6 +310,38 @@ int main(int argc, char** argv) {
   s.set(slotParam(2, kSlotOffsetMix), 75.0);
   panel.draw(cr, s, state);
   cairo_surface_write_to_png(surf, (out + "/rack-mbcomp.png").c_str());
+  applyModuleDefaults(s, 2, static_cast<int>(ModuleId::Meter));
+  applyModuleDefaults(s, 3, static_cast<int>(ModuleId::Multiband));
+  state.selectedSlot = 2;
+  s.slotMeter[2].field[kMeterPeakL].store(-12.4f);
+  s.slotMeter[2].field[kMeterPeakR].store(-14.1f);
+  s.slotMeter[2].field[kMeterHoldL].store(-9.2f);
+  s.slotMeter[2].field[kMeterHoldR].store(-11.0f);
+  s.slotMeter[2].field[kMeterRmsL].store(-18.3f);
+  s.slotMeter[2].field[kMeterRmsR].store(-19.0f);
+  s.slotMeter[2].field[kMeterVu].store(1.6f);
+  s.slotMeter[2].field[kMeterCorrelation].store(-0.18f);
+  s.slotMeter[2].field[kMeterGr].store(4.2f);
+  s.slotMeter[2].field[kMeterLufsM].store(-14.2f);
+  s.slotMeter[2].field[kMeterLufsS].store(-13.7f);
+  for (int i = 0; i < kMeterSpectrumBins; ++i) {
+    const float t = static_cast<float>(i) / (kMeterSpectrumBins - 1);
+    const float hump = std::exp(-std::pow((t - 0.25f) / 0.18f, 2.0f));
+    const float top = std::exp(-std::pow((t - 0.72f) / 0.10f, 2.0f));
+    s.meterSpectrum[i].store(-74.0f + 58.0f * hump + 38.0f * top);
+  }
+  for (int i = 0; i < 64; ++i) {
+    state.grHistory[2][i] = 3.0f + 2.5f * std::sin(i * 0.28f);
+  }
+  for (int v = 0; v < 6; ++v) {
+    s.set(slotParam(2, kSlotOffsetC0 + 0), static_cast<double>(v) / 5.0);
+    panel.tick(s, state);
+    panel.draw(cr, s, state);
+    char name[64];
+    std::snprintf(name, sizeof(name), "/rack-meter-%d.png", v);
+    cairo_surface_write_to_png(surf, (out + name).c_str());
+  }
+  s.set(slotParam(2, kSlotOffsetC0 + 0), 0.0);
   state.browserSlot = -1;
   state.browserCategory = 0;
   state.browserPresetFilter = false;

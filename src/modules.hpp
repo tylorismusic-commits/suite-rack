@@ -552,6 +552,18 @@ inline constexpr ControlDesc kMultibandCompControls[] = {
     {11, "HIGH RELEASE", "High Release", ControlFormat::GateReleaseMs},
 };
 
+inline constexpr const char* kMeterViewLabels[] = {
+    "PEAK", "VU", "SPECTRUM", "STEREO", "GR", "LOUDNESS"};
+inline constexpr const char* kMeterScaleLabels[] = {"NARROW", "STANDARD", "WIDE"};
+
+inline constexpr ControlDesc kMeterControls[] = {
+    {0, "VIEW", "Meter View", ControlFormat::Percent, true,
+     labels(kMeterViewLabels)},
+    {1, "SCALE", "Meter Scale", ControlFormat::Percent, true,
+     labels(kMeterScaleLabels)},
+    {2, "HOLD", "Peak Hold", ControlFormat::Percent, false, {}, true},
+};
+
 inline constexpr ControlDesc kSubControls[] = {
     {0, "FREQ", "Frequency", ControlFormat::SubFreqHz},
     {1, "AMOUNT", "Amount", ControlFormat::Percent},
@@ -917,6 +929,10 @@ inline constexpr ModuleDesc kModules[] = {
      static_cast<int>(sizeof(kMultibandCompControls) /
                       sizeof(kMultibandCompControls[0])),
      kMultibandCompControls},
+    {ModuleId::Meter, "Meter", "Meter",
+     "Peak, VU, spectrum, stereo, GR and loudness meter", false, false, 0,
+     static_cast<int>(sizeof(kMeterControls) / sizeof(kMeterControls[0])),
+     kMeterControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -994,6 +1010,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "JClones",
     "JClones",
     "JClones",
+    "Suite Rack exclusive",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
     "Suite Rack exclusive",

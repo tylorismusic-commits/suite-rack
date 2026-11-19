@@ -45,8 +45,12 @@ enum Port : uint32_t {
   PORT_SLOT4_GR,
   PORT_SLOT5_GR,
   PORT_LATENCY,
-  PORT_SC_IN_L,
+  PORT_SLOT_METER,
+  PORT_METER_SPECTRUM =
+      PORT_SLOT_METER + rack::kSlotCount * rack::kSlotMeterFieldCount,
+  PORT_SC_IN_L = PORT_METER_SPECTRUM + rack::kMeterSpectrumBins,
   PORT_SC_IN_R,
+  PORT_METER_RESET,
   PORT_COUNT
 };
 
@@ -72,9 +76,13 @@ struct Plugin {
   float* inPeak = nullptr;
   float* outPeak = nullptr;
   float* slotGr[rack::kSlotCount] = {};
+  float* slotMeter[rack::kSlotCount][rack::kSlotMeterFieldCount] = {};
+  float* meterSpectrum[rack::kMeterSpectrumBins] = {};
   float* latency = nullptr;
   float* scInL = nullptr;
   float* scInR = nullptr;
+  float* meterReset = nullptr;
+  float lastMeterReset = 0.0f;
 
   const LV2_URID_Map* map = nullptr;
   LV2_URID stateKey = 0;
@@ -125,10 +133,19 @@ void connectPort(LV2_Handle handle, uint32_t port, void* data) {
     case PORT_LATENCY: p->latency = static_cast<float*>(data); break;
     case PORT_SC_IN_L: p->scInL = static_cast<float*>(data); break;
     case PORT_SC_IN_R: p->scInR = static_cast<float*>(data); break;
+    case PORT_METER_RESET: p->meterReset = static_cast<float*>(data); break;
     default:
       if (port >= PORT_FIRST_PARAM &&
           port < PORT_FIRST_PARAM + rack::P_COUNT) {
         p->params[port - PORT_FIRST_PARAM] = static_cast<float*>(data);
+      } else if (port >= PORT_SLOT_METER && port < PORT_METER_SPECTRUM) {
+        const uint32_t offset = port - PORT_SLOT_METER;
+        const uint32_t slot = offset / rack::kSlotMeterFieldCount;
+        const uint32_t field = offset % rack::kSlotMeterFieldCount;
+        p->slotMeter[slot][field] = static_cast<float*>(data);
+      } else if (port >= PORT_METER_SPECTRUM && port < PORT_SC_IN_L) {
+        p->meterSpectrum[port - PORT_METER_SPECTRUM] =
+            static_cast<float*>(data);
       }
       break;
   }
@@ -170,6 +187,13 @@ void run(LV2_Handle handle, uint32_t frames) {
     std::memcpy(p->audioOutR, p->audioInR, frames * sizeof(float));
   }
 
+  if (p->shared.takeMeterReset()) {
+    p->engine.resetMeters();
+  }
+  if (p->meterReset && *p->meterReset != p->lastMeterReset) {
+    p->lastMeterReset = *p->meterReset;
+    p->engine.resetMeters();
+  }
   p->engine.process(p->audioOutL, p->audioOutR, static_cast<int>(frames),
                     p->meters, p->scInL, p->scInR);
 
@@ -181,21 +205,23 @@ void run(LV2_Handle handle, uint32_t frames) {
   if (p->outPeak) *p->outPeak = p->meters.outPeakDb;
   for (int i = 0; i < rack::kSlotCount; ++i) {
     if (p->slotGr[i]) *p->slotGr[i] = p->meters.slotGrDb[i];
+    for (int f = 0; f < rack::kSlotMeterFieldCount; ++f) {
+      if (p->slotMeter[i][f]) {
+        *p->slotMeter[i][f] =
+            rack::slotMeterFieldValue(p->meters.slotMeter[i], f);
+      }
+    }
+  }
+  for (int i = 0; i < rack::kMeterSpectrumBins; ++i) {
+    if (p->meterSpectrum[i]) {
+      *p->meterSpectrum[i] = p->meters.meterSpectrum[i];
+    }
   }
   if (p->latency) {
     *p->latency = static_cast<float>(p->engine.latencySamples());
   }
 
-  p->shared.inPeakDb.store(p->meters.inPeakDb, std::memory_order_relaxed);
-  p->shared.outPeakDb.store(p->meters.outPeakDb, std::memory_order_relaxed);
-  p->shared.inPeakLDb.store(p->meters.inPeakLDb, std::memory_order_relaxed);
-  p->shared.inPeakRDb.store(p->meters.inPeakRDb, std::memory_order_relaxed);
-  p->shared.outPeakLDb.store(p->meters.outPeakLDb, std::memory_order_relaxed);
-  p->shared.outPeakRDb.store(p->meters.outPeakRDb, std::memory_order_relaxed);
-  for (int i = 0; i < rack::kSlotCount; ++i) {
-    p->shared.slotGrDb[i].store(p->meters.slotGrDb[i],
-                                std::memory_order_relaxed);
-  }
+  p->shared.storeMeters(p->meters);
 }
 
 LV2_State_Status stateSave(LV2_Handle handle,

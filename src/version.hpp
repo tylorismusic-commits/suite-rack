@@ -4,7 +4,7 @@
 
 namespace rack {
 constexpr int kVersionMajor = 0;
-constexpr int kVersionMinor = 51;
-constexpr int kVersionMicro = 2;
-constexpr const char* kVersion = "0.51.2";
+constexpr int kVersionMinor = 52;
+constexpr int kVersionMicro = 0;
+constexpr const char* kVersion = "0.52.0";
 } // namespace rack

@@ -223,6 +223,37 @@ int main() {
   }
   applyModuleDefaults(s, 5, static_cast<int>(ModuleId::Limiter));
 
+  // Meter module: display plus view/hold/scale/reset controls, no mix/gain.
+  applyModuleDefaults(s, 5, static_cast<int>(ModuleId::Meter));
+  panel.draw(cr, s, state);
+  bool meterDisplay = false;
+  bool meterNoMix = true;
+  for (const auto& r : panel.widgetRects()) {
+    if (std::string(r.label) == "METER") meterDisplay = true;
+    if (r.param == slotParam(5, kSlotOffsetMix) ||
+        r.param == slotParam(5, kSlotOffsetGain)) {
+      meterNoMix = false;
+    }
+  }
+  check(meterDisplay, "meter module exposes its display");
+  check(meterNoMix, "meter module hides slot MIX and GAIN");
+  check(clickLabel(panel, s, state, "VIEW"), "meter view button is clickable");
+  check(s.get(slotParam(5, kSlotOffsetC0 + 0)) > 0.1,
+        "meter view button cycles the view");
+  check(clickLabel(panel, s, state, "SCALE"),
+        "meter scale button is clickable");
+  check(s.get(slotParam(5, kSlotOffsetC0 + 1)) > 0.7,
+        "meter scale button cycles the scale");
+  check(clickLabel(panel, s, state, "PEAK HOLD"),
+        "meter hold button is clickable");
+  check(s.get(slotParam(5, kSlotOffsetC0 + 2)) > 0.5,
+        "meter hold button turns hold on");
+  s.takeMeterReset();
+  check(clickLabel(panel, s, state, "RESET"),
+        "meter reset button is clickable");
+  check(s.takeMeterReset(), "meter reset button requests a hold reset");
+  applyModuleDefaults(s, 5, static_cast<int>(ModuleId::Limiter));
+
   // Bypass pill for slot 2.
   panel.draw(cr, s, state);
   check(clickParam(panel, s, state, P_SLOT1_BYPASS),

@@ -81,6 +81,7 @@ enum class ModuleId : int {
   HybridEq,
   CustomEq,
   MultibandComp,
+  Meter,
   Count
 };
 
@@ -101,6 +102,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Classic Limiter", "Tape Head", "Tube Driver", "DaTube", "Fattener",
     "AC-1",      "LMC-1",    "Modern Limiter", "Hyrax",
     "Bloom",     "RS-124",   "CL-1B",   "DuTape",   "VBL",      "L2",       "O3",       "Hybrid EQ", "Custom EQ", "MB Comp",
+    "Meter",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -726,6 +728,13 @@ constexpr double defaultControlValue(ModuleId id, int control) noexcept {
         case 5: return 0.500;  // High mid 0 dB
         case 6: return 0.500;  // High 12 kHz
         case 7: return 0.500;  // High 0 dB
+        default: return 0.50;
+      }
+    case ModuleId::Meter:
+      switch (control) {
+        case 0: return 0.00;  // View: Peak
+        case 1: return 0.50;  // Scale: Standard
+        case 2: return 0.00;  // Hold off
         default: return 0.50;
       }
     default:

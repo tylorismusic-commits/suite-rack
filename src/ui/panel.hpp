@@ -48,6 +48,10 @@ struct PanelState {
   float inLevelR = -120.0f;
   float outLevelL = -120.0f;
   float outLevelR = -120.0f;
+  SlotMeterValues slotMeter[kSlotCount];
+  float meterSpectrum[kMeterSpectrumBins] = {};
+  float grHistory[kSlotCount][64] = {};
+  int grHistoryPos[kSlotCount] = {};
   float slotGrDb[kSlotCount] = {};
 };
 
@@ -97,7 +101,7 @@ public:
   std::vector<WidgetRect> widgetRects() const;
 
 private:
-  enum class Kind { Knob, Slider, Pill, Button, SlotCard, ModuleButton, ModelButton, ModuleToggle, Power, ModuleName, ModulePresetButton, ModuleDragHandle, BrowserOption, BrowserTab, BrowserScroll, BrowserSearch };
+  enum class Kind { Knob, Slider, Pill, Button, SlotCard, ModuleButton, ModelButton, ModuleToggle, Power, ModuleName, ModulePresetButton, ModuleDragHandle, BrowserOption, BrowserTab, BrowserScroll, BrowserSearch, MeterDisplay, MeterView, MeterScale, MeterHold, MeterReset };
   struct Widget {
     Kind kind = Kind::Knob;
     uint32_t param = 0;
@@ -124,6 +128,8 @@ private:
                 double value) const;
   void drawSlider(cairo_t* cr, const Widget& w, const Shared& shared,
                   double value) const;
+  void drawSlotMeter(cairo_t* cr, const Widget& w, const Shared& shared,
+                     const PanelState& state, int slot) const;
   void drawPill(cairo_t* cr, const Widget& w, bool on, const char* label) const;
   void drawButton(cairo_t* cr, const Widget& w, bool lit) const;
   void drawLevelMeter(cairo_t* cr, double x, double y, double w, double h,

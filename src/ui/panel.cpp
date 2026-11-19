@@ -170,6 +170,9 @@ ModuleStyle styleFor(int type) {
     case ModuleId::MultibandComp:
       return {{0.10, 0.18, 0.12}, {0.20, 0.36, 0.24},
               {0.44, 0.92, 0.56}, {0.86, 0.96, 0.88}};
+    case ModuleId::Meter:
+      return {{0.08, 0.12, 0.14}, {0.18, 0.26, 0.30},
+              {0.58, 0.92, 0.86}, {0.86, 0.95, 0.93}};
     case ModuleId::Rider:
       return {{0.10, 0.18, 0.12}, {0.20, 0.36, 0.24},
               {0.52, 0.92, 0.58}, {0.86, 0.93, 0.87}};
@@ -385,8 +388,35 @@ void Panel::tick(const Shared& shared, PanelState& state) const {
   state.inLevelR = shared.inPeakRDb.load(std::memory_order_relaxed);
   state.outLevelL = shared.outPeakLDb.load(std::memory_order_relaxed);
   state.outLevelR = shared.outPeakRDb.load(std::memory_order_relaxed);
-  for (int i = 0; i < kSlotCount; ++i)
+  for (int i = 0; i < kSlotCount; ++i) {
     state.slotGrDb[i] = shared.slotGrDb[i].load(std::memory_order_relaxed);
+    const auto& a = shared.slotMeter[i];
+    SlotMeterValues& m = state.slotMeter[i];
+    auto peakFall = [](float current, float incoming) {
+      return std::max(incoming, current - 1.2f);
+    };
+    m.peakLDb = peakFall(m.peakLDb, a.field[0].load(std::memory_order_relaxed));
+    m.peakRDb = peakFall(m.peakRDb, a.field[1].load(std::memory_order_relaxed));
+    m.holdLDb = a.field[2].load(std::memory_order_relaxed);
+    m.holdRDb = a.field[3].load(std::memory_order_relaxed);
+    m.rmsLDb = a.field[4].load(std::memory_order_relaxed);
+    m.rmsRDb = a.field[5].load(std::memory_order_relaxed);
+    const float vu = a.field[6].load(std::memory_order_relaxed);
+    m.vu += (vu - m.vu) * 0.45f;
+    m.correlation = a.field[7].load(std::memory_order_relaxed);
+    m.grDb = a.field[8].load(std::memory_order_relaxed);
+    m.lufsM = a.field[9].load(std::memory_order_relaxed);
+    m.lufsS = a.field[10].load(std::memory_order_relaxed);
+
+    auto& history = state.grHistory[i];
+    for (int j = 0; j < 63; ++j) history[j] = history[j + 1];
+    history[63] = m.grDb;
+  }
+  for (int i = 0; i < kMeterSpectrumBins; ++i) {
+    const float target =
+        shared.meterSpectrum[i].load(std::memory_order_relaxed);
+    state.meterSpectrum[i] += (target - state.meterSpectrum[i]) * 0.4f;
+  }
 }
 
 void Panel::layout(const Shared& shared, const PanelState& state) {
@@ -465,6 +495,7 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
     widgets_.push_back(byp);
 
     const ModuleDesc* module = moduleDesc(type);
+    const bool meterModule = type == static_cast<int>(ModuleId::Meter);
     const bool sliders =
         type == static_cast<int>(ModuleId::MultibandComp);
     const double cx1 = x + 38, cx2 = x + 105;
@@ -484,7 +515,44 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
       sw.steps = steps;
       widgets_.push_back(sw);
     };
-    if (module->controlCount > 0 && sliders) {
+    if (meterModule) {
+      Widget display{};
+      display.kind = Kind::MeterDisplay;
+      display.param = slotParam(i, kSlotOffsetC0 + 0);
+      display.value = i;
+      display.x = x + 10;
+      display.y = y + 100;
+      display.w = colW - 20;
+      display.h = 320;
+      display.label = "METER";
+      display.styleSlot = i;
+      display.styleType = type;
+      widgets_.push_back(display);
+
+      auto meterButton = [&](Kind kind, uint32_t param, double by,
+                             const char* label) {
+        Widget b{};
+        b.kind = kind;
+        b.param = param;
+        b.value = i;
+        b.x = x + 10;
+        b.y = by;
+        b.w = colW - 20;
+        b.h = 22;
+        b.label = label;
+        b.styleSlot = i;
+        b.styleType = type;
+        widgets_.push_back(b);
+      };
+      meterButton(Kind::MeterView, slotParam(i, kSlotOffsetC0 + 0),
+                  y + 430, "VIEW");
+      meterButton(Kind::MeterHold, slotParam(i, kSlotOffsetC0 + 2),
+                  y + 458, "PEAK HOLD");
+      meterButton(Kind::MeterScale, slotParam(i, kSlotOffsetC0 + 1),
+                  y + 486, "SCALE");
+      meterButton(Kind::MeterReset, slotParam(i, kSlotOffsetC0 + 0),
+                  y + 514, "RESET");
+    } else if (module->controlCount > 0 && sliders) {
       // MB Comp has twelve controls plus MIX/GAIN.  Horizontal faders keep
       // every label readable in the narrow slot where a 2x6 knob grid does
       // not fit.
@@ -1361,6 +1429,41 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
     case Kind::Slider:
       drawSlider(cr, w, shared, shared.get(w.param));
       break;
+    case Kind::MeterDisplay:
+      drawSlotMeter(cr, w, shared, state, static_cast<int>(w.value));
+      break;
+    case Kind::MeterView:
+    case Kind::MeterScale:
+    case Kind::MeterHold:
+    case Kind::MeterReset: {
+      const bool hold = w.kind == Kind::MeterHold;
+      const bool on = hold && shared.get(w.param) > 0.5;
+      char labelText[64];
+      std::snprintf(labelText, sizeof(labelText), "%s", w.label);
+      if (w.kind == Kind::MeterView) {
+        const int v = std::clamp(
+            static_cast<int>(shared.get(w.param) * 5.0 + 0.5), 0, 5);
+        std::snprintf(labelText, sizeof(labelText), "VIEW  %s",
+                      detail::kMeterViewLabels[v]);
+      } else if (w.kind == Kind::MeterScale) {
+        const int v = std::clamp(
+            static_cast<int>(shared.get(w.param) * 2.0 + 0.5), 0, 2);
+        std::snprintf(labelText, sizeof(labelText), "SCALE  %s",
+                      detail::kMeterScaleLabels[v]);
+      }
+      const char* label = labelText;
+      roundRect(cr, w.x, w.y, w.w, w.h, 4);
+      setRgb(cr, on ? st.accent : st.body);
+      cairo_fill(cr);
+      setRgb(cr, st.edge, 0.9);
+      cairo_set_line_width(cr, 1.0);
+      roundRect(cr, w.x + 0.5, w.y + 0.5, w.w - 1, w.h - 1, 4);
+      cairo_stroke(cr);
+      text(cr, label, w.x + w.w * 0.5, w.y + w.h * 0.5 + 3.5, 8.0, 1,
+           on ? 0.08 : st.accent.r, on ? 0.06 : st.accent.g,
+           on ? 0.04 : st.accent.b);
+      break;
+    }
   }
 }
 
@@ -1440,6 +1543,280 @@ void Panel::drawSlider(cairo_t* cr, const Widget& w, const Shared& shared,
   setRgb(cr, st.accent, 0.9);
   cairo_arc(cr, tx + tw * f, cy, 3.8, 0, 2 * kPi);
   cairo_stroke(cr);
+}
+
+void Panel::drawSlotMeter(cairo_t* cr, const Widget& w, const Shared& shared,
+                          const PanelState& state, int slot) const {
+  const ModuleStyle st = styleFor(w.styleType);
+  const SlotMeterValues& m = state.slotMeter[slot];
+  const int view = std::clamp(
+      static_cast<int>(shared.get(slotParam(slot, kSlotOffsetC0 + 0)) * 5.0 +
+                       0.5),
+      0, 5);
+  const int scale = std::clamp(
+      static_cast<int>(shared.get(slotParam(slot, kSlotOffsetC0 + 1)) * 2.0 +
+                       0.5),
+      0, 2);
+  static const char* const kViews[6] = {
+      "PEAK", "VU", "SPECTRUM", "STEREO", "GAIN REDUCTION", "LOUDNESS"};
+
+  roundRect(cr, w.x, w.y, w.w, w.h, 4);
+  cairo_set_source_rgba(cr, 0.018, 0.022, 0.024, 0.98);
+  cairo_fill(cr);
+  setRgb(cr, st.edge, 0.8);
+  cairo_set_line_width(cr, 1.0);
+  roundRect(cr, w.x + 0.5, w.y + 0.5, w.w - 1, w.h - 1, 4);
+  cairo_stroke(cr);
+  text(cr, kViews[view], w.x + w.w * 0.5, w.y + 14, 7.5, 1, st.accent.r,
+       st.accent.g, st.accent.b);
+
+  const double x = w.x + 8;
+  const double y = w.y + 22;
+  const double ww = w.w - 16;
+  const double hh = w.h - 28;
+
+  if (view == 0) {
+    static const double kScale[3][2] = {{-60.0, 0.0}, {-48.0, 3.0},
+                                        {-30.0, 6.0}};
+    const double minDb = kScale[scale][0];
+    const double maxDb = kScale[scale][1];
+    const double left = x + 22;
+    const double right = x + ww - 3;
+    const double top = y + 18;
+    const double bottom = y + hh - 26;
+    auto yFor = [&](double db) {
+      const double t = std::clamp((db - minDb) / (maxDb - minDb), 0.0, 1.0);
+      return bottom - t * (bottom - top);
+    };
+    const double barW = (right - left - 7.0) * 0.5;
+    for (int ch = 0; ch < 2; ++ch) {
+      const double bx = left + ch * (barW + 7.0);
+      roundRect(cr, bx, top, barW, bottom - top, 2);
+      setRgb(cr, {st.body.r * 0.42, st.body.g * 0.42, st.body.b * 0.42});
+      cairo_fill(cr);
+      const double peak = ch == 0 ? m.peakLDb : m.peakRDb;
+      auto zone = [&](Rgb colour, double from, double to) {
+        if (to <= from) return;
+        setRgb(cr, colour, 0.92);
+        cairo_rectangle(cr, bx, yFor(to), barW, yFor(from) - yFor(to));
+        cairo_fill(cr);
+      };
+      zone({0.30, 0.86, 0.46}, minDb, std::min(peak, -12.0));
+      if (peak > -12.0) {
+        zone({0.96, 0.82, 0.30}, -12.0, std::min(peak, -3.0));
+      }
+      if (peak > -3.0) {
+        zone({0.98, 0.30, 0.22}, -3.0, peak);
+      }
+      const double hold = ch == 0 ? m.holdLDb : m.holdRDb;
+      if (hold > minDb) {
+        setRgb(cr, {0.96, 0.97, 0.94}, 0.92);
+        cairo_rectangle(cr, bx, yFor(hold) - 1.0, barW, 2.0);
+        cairo_fill(cr);
+      }
+      text(cr, ch == 0 ? "L" : "R", bx + barW * 0.5, top - 4, 7, 1,
+           st.accent.r, st.accent.g, st.accent.b);
+    }
+    for (int i = 0; i <= 4; ++i) {
+      const double db = maxDb - (maxDb - minDb) * i / 4.0;
+      char tick[16];
+      std::snprintf(tick, sizeof(tick), "%.0f", db);
+      text(cr, tick, x + 18, yFor(db) + 2.5, 6.3, 2, kDim.r, kDim.g, kDim.b);
+    }
+    char line[64];
+    std::snprintf(line, sizeof(line), "L %.1f   R %.1f", m.peakLDb, m.peakRDb);
+    text(cr, line, x + ww * 0.5, y + hh - 6, 8.0, 1, st.accent.r, st.accent.g,
+         st.accent.b);
+  } else if (view == 1) {
+    const double cx = x + ww * 0.5;
+    const double cy = y + hh * 0.58;
+    const double r = std::min(ww * 0.46, hh * 0.34);
+    const double a0 = -150.0 * kPi / 180.0;
+    const double a1 = -30.0 * kPi / 180.0;
+    cairo_set_line_width(cr, 2.0);
+    setRgb(cr, {st.body.r * 0.45, st.body.g * 0.45, st.body.b * 0.45}, 0.9);
+    cairo_new_path(cr);
+    cairo_arc(cr, cx, cy, r, a0, a1);
+    cairo_stroke(cr);
+    for (int i = 0; i <= 10; ++i) {
+      const double t = i / 10.0;
+      const double a = a0 + (a1 - a0) * t;
+      const double inner = i % 2 == 0 ? r * 0.86 : r * 0.91;
+      setRgb(cr, st.accent, i % 2 == 0 ? 0.85 : 0.45);
+      cairo_set_line_width(cr, i % 2 == 0 ? 1.4 : 0.8);
+      cairo_move_to(cr, cx + std::cos(a) * inner, cy + std::sin(a) * inner);
+      cairo_line_to(cr, cx + std::cos(a) * r * 0.98,
+                    cy + std::sin(a) * r * 0.98);
+      cairo_stroke(cr);
+    }
+    const double vu = std::clamp((m.vu + 20.0) / 23.0, 0.0, 1.0);
+    const double a = a0 + (a1 - a0) * vu;
+    setRgb(cr, vu > 0.87 ? Rgb{0.98, 0.32, 0.24} : st.accent);
+    cairo_set_line_width(cr, 2.4);
+    cairo_move_to(cr, cx, cy);
+    cairo_line_to(cr, cx + std::cos(a) * r * 0.82,
+                  cy + std::sin(a) * r * 0.82);
+    cairo_stroke(cr);
+    cairo_arc(cr, cx, cy, 4.0, 0, 2 * kPi);
+    setRgb(cr, st.knob);
+    cairo_fill(cr);
+    char line[32];
+    std::snprintf(line, sizeof(line), "%+.1f VU", m.vu);
+    text(cr, line, cx, y + hh - 44, 18, 1, st.accent.r, st.accent.g,
+         st.accent.b);
+    text(cr, "-20", cx - r * 0.92, cy + r * 0.53, 6.5, 1, kDim.r, kDim.g,
+         kDim.b);
+    text(cr, "+3", cx + r * 0.92, cy + r * 0.53, 6.5, 1, kDim.r, kDim.g,
+         kDim.b);
+  } else if (view == 2) {
+    constexpr double kMin = -80.0;
+    constexpr double kMax = 0.0;
+    const double left = x + 2;
+    const double right = x + ww - 2;
+    const double top = y + 12;
+    const double bottom = y + hh - 22;
+    bool any = false;
+    cairo_new_path(cr);
+    cairo_move_to(cr, left, bottom);
+    for (int i = 0; i < kMeterSpectrumBins; ++i) {
+      const double t = static_cast<double>(i) / (kMeterSpectrumBins - 1);
+      const double db = std::clamp(static_cast<double>(state.meterSpectrum[i]),
+                                   kMin, kMax);
+      const double px = left + (right - left) * t;
+      const double py = bottom - (db - kMin) / (kMax - kMin) * (bottom - top);
+      cairo_line_to(cr, px, py);
+      if (db > kMin + 2.0) any = true;
+    }
+    cairo_line_to(cr, right, bottom);
+    cairo_close_path(cr);
+    if (any) {
+      setRgb(cr, st.accent, 0.16);
+      cairo_fill_preserve(cr);
+      setRgb(cr, st.accent, 0.9);
+      cairo_set_line_width(cr, 1.1);
+      cairo_stroke(cr);
+    }
+    setRgb(cr, kDim, 0.22);
+    cairo_set_line_width(cr, 1.0);
+    for (int i = 1; i < 4; ++i) {
+      const double gy = top + (bottom - top) * i / 4.0;
+      cairo_move_to(cr, left, gy);
+      cairo_line_to(cr, right, gy);
+      cairo_stroke(cr);
+    }
+    static const char* const kLabels[5] = {"20", "100", "1k", "10k", "20k"};
+    static const double kFreqs[5] = {20.0, 100.0, 1000.0, 10000.0, 20000.0};
+    for (int i = 0; i < 5; ++i) {
+      const double t = std::log(kFreqs[i] / 20.0) / std::log(1000.0);
+      const double px = left + (right - left) * t;
+      setRgb(cr, kDim, 0.18);
+      cairo_move_to(cr, px, top);
+      cairo_line_to(cr, px, bottom);
+      cairo_stroke(cr);
+      const int align = i == 0 ? 0 : (i >= 3 ? 2 : 1);
+      const double labelX = i == 3 ? px - 5.0 : px;
+      text(cr, kLabels[i], labelX, bottom + 11, 6.5, align, kDim.r, kDim.g,
+           kDim.b);
+    }
+  } else if (view == 3) {
+    const double cx = x + ww * 0.5;
+    const double cy = y + hh * 0.42;
+    const double corr = std::clamp(m.correlation, -1.0f, 1.0f);
+    setRgb(cr, kDim, 0.24);
+    cairo_set_line_width(cr, 1.0);
+    cairo_move_to(cr, cx - ww * 0.4, cy);
+    cairo_line_to(cr, cx + ww * 0.4, cy);
+    cairo_move_to(cr, cx, cy - hh * 0.30);
+    cairo_line_to(cr, cx, cy + hh * 0.30);
+    cairo_stroke(cr);
+    const double longAxis = std::min(ww, hh) * 0.34;
+    const double shortAxis =
+        std::max(2.0, longAxis * (1.0 - 0.92 * std::fabs(corr)));
+    cairo_save(cr);
+    cairo_translate(cr, cx, cy);
+    cairo_rotate(cr, (corr >= 0.0 ? -1.0 : 1.0) * kPi / 4.0);
+    cairo_scale(cr, longAxis, shortAxis);
+    cairo_arc(cr, 0, 0, 1.0, 0, 2 * kPi);
+    cairo_restore(cr);
+    setRgb(cr, corr < -0.2 ? Rgb{0.98, 0.34, 0.26} : st.accent, 0.92);
+    cairo_set_line_width(cr, 1.6);
+    cairo_stroke(cr);
+    char line[40];
+    std::snprintf(line, sizeof(line), "%+.2f", corr);
+    text(cr, line, cx, y + hh - 50, 22, 1, st.accent.r, st.accent.g,
+         st.accent.b);
+    const char* status = corr < -0.2
+                             ? "OUT OF PHASE"
+                             : (corr > 0.75 ? "MONO / NARROW" : "STEREO");
+    text(cr, status, cx, y + hh - 30, 7.0, 1, kDim.r, kDim.g, kDim.b);
+  } else if (view == 4) {
+    const double left = x + 20;
+    const double right = x + ww - 4;
+    const double top = y + 16;
+    const double bottom = y + hh - 26;
+    constexpr int kHistory = 64;
+    const double step = (right - left) / kHistory;
+    for (int i = 0; i < kHistory; ++i) {
+      const double gr = std::clamp(
+          static_cast<double>(state.grHistory[slot][i]), 0.0, 12.0);
+      const double bh = (gr / 12.0) * (bottom - top);
+      if (bh <= 0.0) continue;
+      const double bx = left + i * step;
+      const double frac = gr / 12.0;
+      setRgb(cr, frac > 0.75 ? Rgb{0.98, 0.30, 0.22}
+                             : (frac > 0.45 ? Rgb{0.96, 0.72, 0.26}
+                                            : st.accent),
+             0.9);
+      cairo_rectangle(cr, bx, bottom - bh, std::max(1.0, step - 1.0), bh);
+      cairo_fill(cr);
+    }
+    for (int i = 0; i <= 4; ++i) {
+      const double db = 12.0 * i / 4.0;
+      const double py = bottom - (db / 12.0) * (bottom - top);
+      setRgb(cr, kDim, 0.25);
+      cairo_set_line_width(cr, 1.0);
+      cairo_move_to(cr, left, py);
+      cairo_line_to(cr, right, py);
+      cairo_stroke(cr);
+      char tick[8];
+      std::snprintf(tick, sizeof(tick), "%.0f", db);
+      text(cr, tick, x + 16, py + 2.5, 6.3, 2, kDim.r, kDim.g, kDim.b);
+    }
+    char line[40];
+    std::snprintf(line, sizeof(line), "-%.1f dB", m.grDb);
+    text(cr, line, x + ww * 0.5, y + hh - 6, 9.0, 1, st.accent.r, st.accent.g,
+         st.accent.b);
+  } else {
+    struct Row {
+      const char* label;
+      float value;
+    };
+    const Row rows[2] = {{"MOMENTARY", m.lufsM}, {"SHORT-TERM", m.lufsS}};
+    for (int i = 0; i < 2; ++i) {
+      const double ry = y + 24 + i * 104;
+      text(cr, rows[i].label, x + 2, ry, 7.5, 0, kDim.r, kDim.g, kDim.b);
+      char line[32];
+      if (rows[i].value <= -99.0f) {
+        std::snprintf(line, sizeof(line), "—");
+      } else {
+        std::snprintf(line, sizeof(line), "%.1f", rows[i].value);
+      }
+      text(cr, line, x + ww * 0.5, ry + 36, 26, 1, st.accent.r, st.accent.g,
+           st.accent.b);
+      text(cr, "LUFS", x + ww * 0.5, ry + 49, 7.0, 1, kDim.r, kDim.g, kDim.b);
+      const double frac =
+          std::clamp((static_cast<double>(rows[i].value) + 40.0) / 40.0, 0.0,
+                     1.0);
+      roundRect(cr, x + 2, ry + 58, ww - 4, 6, 3);
+      setRgb(cr, {st.body.r * 0.45, st.body.g * 0.45, st.body.b * 0.45});
+      cairo_fill(cr);
+      roundRect(cr, x + 2, ry + 58, (ww - 4) * frac, 6, 3);
+      setRgb(cr, st.accent, 0.9);
+      cairo_fill(cr);
+    }
+    text(cr, "K-WEIGHTED  ·  UNGATED", x + ww * 0.5, y + hh - 6, 6.5, 1,
+         kDim.r, kDim.g, kDim.b);
+  }
 }
 
 void Panel::drawPill(cairo_t* cr, const Widget& w, bool on, const char* label) const {
@@ -1897,6 +2274,28 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
       case Kind::Pill:
         shared.set(w.param, shared.get(w.param) > 0.5 ? 0.0 : 1.0);
         state.presetDirty = true;
+        return true;
+      case Kind::MeterView: {
+        const int v = std::clamp(
+            static_cast<int>(shared.get(w.param) * 5.0 + 0.5), 0, 5);
+        shared.set(w.param, static_cast<double>((v + 1) % 6) / 5.0);
+        state.presetDirty = true;
+        return true;
+      }
+      case Kind::MeterScale: {
+        const int v = std::clamp(
+            static_cast<int>(shared.get(w.param) * 2.0 + 0.5), 0, 2);
+        shared.set(w.param, static_cast<double>((v + 1) % 3) / 2.0);
+        state.presetDirty = true;
+        return true;
+      }
+      case Kind::MeterHold:
+        shared.set(w.param, shared.get(w.param) > 0.5 ? 0.0 : 1.0);
+        state.presetDirty = true;
+        return true;
+      case Kind::MeterReset:
+      case Kind::MeterDisplay:
+        shared.requestMeterReset();
         return true;
       case Kind::Button:
         shared.set(w.param, w.value);
