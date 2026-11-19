@@ -69,6 +69,10 @@ public:
   void pointerUp(Shared& shared, PanelState& state);
   bool handlePresetClick(Shared& shared, PanelState& state, double x, double y);
   void applyPreset(Shared& shared, PanelState& state, int index) const;
+  void exportPreset(const Shared& shared, const PanelState& state) const;
+  bool importPresetFile(Shared& shared, PanelState& state,
+                        const std::string& path);
+  bool importPresetDialog(Shared& shared, PanelState& state);
   int presetCount() const;
   const char* presetName(int index) const;
   bool wheel(Shared& shared, PanelState& state, double x, double y, double dy);

@@ -3,9 +3,11 @@
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <cmath>
 #include <cstdint>
+#include <mutex>
 
 #include "dsp/controls.hpp"
 #include "module_ids.hpp"
@@ -131,6 +133,11 @@ inline constexpr ParamSpec kParamSpecs[P_COUNT] = {
 static_assert(sizeof(kParamSpecs) / sizeof(kParamSpecs[0]) == P_COUNT,
               "kParamSpecs must cover every parameter id");
 
+struct AbSlot {
+  std::array<double, P_COUNT> values{};
+  bool valid = false;
+};
+
 class Shared {
 public:
   Shared() {
@@ -145,6 +152,49 @@ public:
     outPeakLDb.store(-120.0f);
     outPeakRDb.store(-120.0f);
     for (auto& g : slotGrDb) g.store(0.0f);
+  }
+
+  int abActiveSlot() const noexcept {
+    return abActive.load(std::memory_order_relaxed);
+  }
+
+  void abInitFromLive() {
+    std::lock_guard<std::mutex> lock(abMutex);
+    for (int slot = 0; slot < 2; ++slot) {
+      for (uint32_t p = 0; p < P_COUNT; ++p) {
+        abSlots[slot].values[p] = get(p);
+      }
+      abSlots[slot].valid = true;
+    }
+    abActive.store(0, std::memory_order_relaxed);
+  }
+
+  void abCapture(int slot) {
+    std::lock_guard<std::mutex> lock(abMutex);
+    captureLocked(slot);
+  }
+
+  void abSwitch(int target) {
+    if (target < 0 || target > 1) return;
+    std::lock_guard<std::mutex> lock(abMutex);
+    const int active = abActive.load(std::memory_order_relaxed);
+    captureLocked(active);
+    if (!abSlots[target].valid) {
+      captureLocked(target);
+    } else {
+      for (uint32_t p = 0; p < P_COUNT; ++p) {
+        set(p, abSlots[target].values[p]);
+      }
+    }
+    abActive.store(target, std::memory_order_relaxed);
+  }
+
+  void abCopy(int from, int to) {
+    if (from < 0 || from > 1 || to < 0 || to > 1 || from == to) return;
+    std::lock_guard<std::mutex> lock(abMutex);
+    captureLocked(from);
+    abSlots[to] = abSlots[from];
+    abSlots[to].valid = true;
   }
 
   double get(uint32_t p) const noexcept {
@@ -186,7 +236,19 @@ public:
   std::atomic<float> outPeakLDb, outPeakRDb;
   std::atomic<float> slotGrDb[kSlotCount];
 
+  AbSlot abSlots[2];
+  std::atomic<int> abActive{0};
+  std::mutex abMutex;
+
 private:
+  void captureLocked(int slot) {
+    if (slot < 0 || slot > 1) return;
+    for (uint32_t p = 0; p < P_COUNT; ++p) {
+      abSlots[slot].values[p] = get(p);
+    }
+    abSlots[slot].valid = true;
+  }
+
   std::atomic<double> values_[P_COUNT];
   std::atomic<bool> dirty_[P_COUNT];
 };

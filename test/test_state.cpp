@@ -166,6 +166,66 @@ int main() {
           "global input automation maps to the engine");
   }
 
+
+  {
+    Shared s;
+    s.setFromHost(P_INPUT, 3.0);
+    s.abInitFromLive();
+    s.set(P_INPUT, 7.0);
+    s.abSwitch(1);
+    s.set(P_INPUT, 9.0);
+    s.abSwitch(0);
+    check(std::fabs(s.get(P_INPUT) - 7.0) < 1e-9,
+          "A/B switch restores slot A");
+    s.abSwitch(1);
+    check(std::fabs(s.get(P_INPUT) - 9.0) < 1e-9,
+          "A/B switch restores slot B");
+    s.abCopy(1, 0);
+    s.abSwitch(0);
+    check(std::fabs(s.get(P_INPUT) - 9.0) < 1e-9,
+          "A/B copy duplicates the active side");
+
+    const auto blob = serializeState(s, 1.0);
+    Shared restored;
+    check(deserializeState(blob.data(), blob.size(), restored),
+          "A/B state deserializes");
+    check(restored.abActiveSlot() == 0 &&
+              std::fabs(restored.get(P_INPUT) - 9.0) < 1e-9,
+          "A/B active side and values survive state");
+    restored.abSwitch(0);
+    check(std::fabs(restored.get(P_INPUT) - 9.0) < 1e-9,
+          "restored A/B can switch back");
+  }
+  {
+    // Version-2 state without the A/B block still loads and seeds A/B.
+    Shared source;
+    source.setFromHost(P_INPUT, 4.5);
+    const uint32_t count = static_cast<uint32_t>(P_COUNT);
+    std::vector<uint8_t> blob(sizeof(kStateMagic) + sizeof(kStateVersion) +
+                              sizeof(count) + sizeof(double) * count +
+                              sizeof(double));
+    size_t off = 0;
+    auto put = [&](const void* data, size_t n) {
+      std::memcpy(blob.data() + off, data, n);
+      off += n;
+    };
+    put(&kStateMagic, sizeof(kStateMagic));
+    put(&kStateVersion, sizeof(kStateVersion));
+    put(&count, sizeof(count));
+    for (uint32_t i = 0; i < count; ++i) {
+      const double v = source.get(i);
+      put(&v, sizeof(v));
+    }
+    const double scale = 1.0;
+    put(&scale, sizeof(scale));
+    Shared legacy;
+    check(deserializeState(blob.data(), blob.size(), legacy),
+          "legacy v2 state loads");
+    check(legacy.abSlots[0].valid && legacy.abSlots[1].valid &&
+              std::fabs(legacy.get(P_INPUT) - 4.5) < 1e-9,
+          "legacy v2 seeds both A/B sides from live values");
+  }
+
   std::printf("%d failure(s)\n", fails);
   return fails == 0 ? 0 : 1;
 }

@@ -23,9 +23,12 @@ constexpr uint32_t kStateMaxParams = 4096;
 
 inline std::vector<uint8_t> serializeState(const Shared& shared, double scale) {
   const uint32_t count = static_cast<uint32_t>(P_COUNT);
+  Shared& mutableShared = const_cast<Shared&>(shared);
+  mutableShared.abCapture(mutableShared.abActiveSlot());
   std::vector<uint8_t> blob(sizeof(kStateMagic) + sizeof(kStateVersion) +
                             sizeof(count) + sizeof(double) * count +
-                            sizeof(double));
+                            sizeof(double) + sizeof(uint32_t) * 2 +
+                            2 * (sizeof(uint8_t) + sizeof(double) * count));
   size_t off = 0;
   auto put = [&](const void* data, size_t size) {
     std::memcpy(blob.data() + off, data, size);
@@ -39,6 +42,21 @@ inline std::vector<uint8_t> serializeState(const Shared& shared, double scale) {
     put(&value, sizeof(value));
   }
   put(&scale, sizeof(scale));
+
+  const uint32_t abMagic = 0x52414231;  // "RAB1"
+  const int32_t active = mutableShared.abActiveSlot();
+  put(&abMagic, sizeof(abMagic));
+  put(&active, sizeof(active));
+  {
+    std::lock_guard<std::mutex> lock(mutableShared.abMutex);
+    for (int slot = 0; slot < 2; ++slot) {
+      const uint8_t valid = mutableShared.abSlots[slot].valid ? 1 : 0;
+      put(&valid, sizeof(valid));
+      for (uint32_t i = 0; i < count; ++i) {
+        put(&mutableShared.abSlots[slot].values[i], sizeof(double));
+      }
+    }
+  }
   return blob;
 }
 
@@ -85,6 +103,28 @@ inline bool deserializeState(const void* data, size_t size, Shared& shared,
   double scale = 0.0;
   if (get(&scale, sizeof(scale)) && scale > 0.0 && scaleOut) {
     *scaleOut = scale;
+  }
+
+  uint32_t abMagic = 0;
+  if (off + sizeof(abMagic) <= size && get(&abMagic, sizeof(abMagic)) &&
+      abMagic == 0x52414231) {
+    int32_t active = 0;
+    if (!get(&active, sizeof(active))) return false;
+    std::lock_guard<std::mutex> lock(shared.abMutex);
+    for (int slot = 0; slot < 2; ++slot) {
+      uint8_t valid = 0;
+      if (!get(&valid, sizeof(valid))) return false;
+      shared.abSlots[slot].valid = valid != 0;
+      for (uint32_t i = 0; i < count; ++i) {
+        if (!get(&shared.abSlots[slot].values[i], sizeof(double))) {
+          return false;
+        }
+      }
+    }
+    shared.abActive.store(active >= 0 && active <= 1 ? active : 0,
+                          std::memory_order_relaxed);
+  } else {
+    shared.abInitFromLive();
   }
   return true;
 }

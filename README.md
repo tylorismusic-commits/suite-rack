@@ -142,8 +142,9 @@ but a few areas are still intentionally limited:
   their default/Init setting only.
 - User rack presets are stored in `$XDG_CONFIG_HOME/SuiteRack/presets` or
   `~/.config/SuiteRack/presets`. User module presets use the sibling
-  `module-presets` directory. Rack presets can be renamed or deleted from the
-  preset browser; right-click a saved module preset for its actions.
+  `module-presets` directory. Rack presets can be renamed, deleted, exported
+  to `~/Documents/Suite Rack Presets` or imported from the preset browser;
+  right-click a saved module preset for its actions.
 - Automation is per slot: type, bypass, mix, gain and twelve generic module
   controls. The CLAP build shows module-aware control names and hides controls
   that the active module does not use; LV2 port names remain generic by design.
@@ -154,7 +155,8 @@ but a few areas are still intentionally limited:
   Trowel remains the full version.
 - Linux CLAP and LV2 builds are tested in REAPER. macOS and Windows packaging
   are not available yet.
-- There is no undo or A/B compare yet.
+- There is no undo yet. Whole-rack A/B compare is available in the header;
+  both sides are stored in host state, with a COPY button.
 
 **Not in the rack:** Common Sense EQ, Amp Suite, Bass Suite, and the deep Repair
 Suite tools (spectral editor, De-Clip, De-Reverb, De-Noise). Those do not fit
@@ -265,7 +267,7 @@ cp -r build/lv2/suite-rack.lv2 ~/.lv2/
 ## Next
 
 1. More factory module preset content.
-2. Roll the same user-preset format into Comp Suite and Patina.
+2. More factory and user preset packs across the Suite line.
 3. A final Trowel Smoothing decision; Tame is the current Trowel-derived module.
 
 GPL-3.0-or-later.

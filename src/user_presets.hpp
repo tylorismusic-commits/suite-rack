@@ -44,6 +44,68 @@ inline std::filesystem::path modulePresetDir() {
   return userPresetDir().parent_path() / "module-presets";
 }
 
+inline std::filesystem::path userPresetExportDir() {
+  const char* home = std::getenv("HOME");
+  const std::filesystem::path base =
+      home && *home ? std::filesystem::path(home) : std::filesystem::path(".");
+  return base / "Documents" / "Suite Rack Presets";
+}
+
+inline std::string sanitizePresetName(const std::string& raw);
+
+inline std::string uniquePresetName(const std::filesystem::path& dir,
+                                    const std::string& raw) {
+  std::string base = sanitizePresetName(raw);
+  if (base.empty()) base = "Preset";
+  if (base.size() > 50) base.resize(50);
+  std::error_code ec;
+  std::string candidate = base;
+  int suffix = 2;
+  while (std::filesystem::exists(dir / (candidate + ".suite-rack"), ec)) {
+    ec.clear();
+    candidate = base + " (" + std::to_string(suffix++) + ")";
+  }
+  return candidate;
+}
+
+inline bool readUserPresetFile(const std::filesystem::path& path,
+                               UserPreset& preset) {
+  std::ifstream in(path);
+  if (!in) return false;
+  std::string header;
+  std::getline(in, header);
+  if (header.rfind("SuiteRackPreset ", 0) != 0) return false;
+  preset = UserPreset{};
+  preset.values.assign(P_COUNT, 0.0);
+  for (uint32_t i = 0; i < P_COUNT; ++i) preset.values[i] = kParamSpecs[i].def;
+  std::string line;
+  bool haveValue = false;
+  while (std::getline(in, line)) {
+    if (line.empty()) continue;
+    if (line.rfind("name ", 0) == 0) {
+      preset.name = sanitizePresetName(line.substr(5));
+      continue;
+    }
+    const size_t space = line.find(' ');
+    if (space == std::string::npos) continue;
+    const int index = std::atoi(line.substr(0, space).c_str());
+    if (index < 0 || index >= static_cast<int>(P_COUNT)) continue;
+    char* end = nullptr;
+    const double value = std::strtod(line.c_str() + space + 1, &end);
+    if (end == line.c_str() + space + 1) continue;
+    preset.values[static_cast<size_t>(index)] = value;
+    haveValue = true;
+  }
+  if (preset.name.empty()) preset.name = sanitizePresetName(path.stem().string());
+  if (preset.name.empty() || !haveValue) return false;
+  for (uint32_t i = 0; i < P_COUNT; ++i) {
+    if (!std::isfinite(preset.values[i])) preset.values[i] = kParamSpecs[i].def;
+    preset.values[i] = std::min(std::max(preset.values[i], kParamSpecs[i].min),
+                                kParamSpecs[i].max);
+  }
+  return true;
+}
+
 inline std::string sanitizePresetName(const std::string& raw) {
   std::string out;
   for (char c : raw) {

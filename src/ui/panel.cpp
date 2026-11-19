@@ -662,7 +662,19 @@ void Panel::drawHeader(cairo_t* cr, const Shared& shared, const PanelState& stat
   text(cr, presetName(state.presetIndex), 237, 39, 13, 1, kText.r, kText.g,
        kText.b);
 
-  text(cr, "SUITE RACK", 520, 44, 24, 1, kText.r, kText.g, kText.b);
+  // Whole-rack A/B compare: one pill toggles, COPY duplicates the active
+  // side into the other.
+  const int ab = shared.abActiveSlot();
+  roundRect(cr, 408, 20, 46, 28, 4);
+  setRgb(cr, kAccent);
+  cairo_fill(cr);
+  text(cr, ab == 0 ? "A" : "B", 431, 39, 12, 1, 0.10, 0.08, 0.05);
+  roundRect(cr, 460, 20, 50, 28, 4);
+  setRgb(cr, Rgb{0.20, 0.17, 0.14});
+  cairo_fill(cr);
+  text(cr, "COPY", 485, 39, 7.5, 1, kDim.r, kDim.g, kDim.b);
+
+  text(cr, "SUITE RACK", 610, 44, 24, 1, kText.r, kText.g, kText.b);
 
   struct Pill { const char* label; double x; };
   const Pill pills[] = {{"PRESETS", 706}, {"SAVE", 812}, {"ABOUT", 918}};
@@ -874,7 +886,7 @@ void Panel::drawPresetList(cairo_t* cr, const Shared& /*shared*/,
   const int maxScroll = std::max(0, count - rows);
   const int scroll = std::clamp(state.presetScroll, 0, maxScroll);
   const double h = kPresetHeaderH + rows * kPresetRowH +
-                   kPresetBottomGap + kPresetFooterH;
+                   kPresetBottomGap + kPresetFooterH + 30.0;
 
   setRgb(cr, {0.02, 0.02, 0.03}, 0.55);
   roundRect(cr, kPresetListX + 4, kPresetListY + 5, kPresetListW, h, 6);
@@ -958,6 +970,20 @@ void Panel::drawPresetList(cairo_t* cr, const Shared& /*shared*/,
   cairo_fill(cr);
   text(cr, "CLOSE", kPresetListX + kPresetListW - 49, footerY + 16, 8, 1,
        kText.r, kText.g, kText.b);
+
+  const double row2 = footerY + 30;
+  if (state.presetIndex >= 0 && state.presetIndex < count) {
+    roundRect(cr, kPresetListX + 14, row2, 80, 24, 4);
+    setRgb(cr, {0.20, 0.17, 0.14});
+    cairo_fill(cr);
+    text(cr, "EXPORT", kPresetListX + 54, row2 + 16, 7.5, 1, kText.r, kText.g,
+         kText.b);
+  }
+  roundRect(cr, kPresetListX + 104, row2, 80, 24, 4);
+  setRgb(cr, {0.20, 0.17, 0.14});
+  cairo_fill(cr);
+  text(cr, "IMPORT", kPresetListX + 144, row2 + 16, 7.5, 1, kText.r, kText.g,
+       kText.b);
 }
 
 void Panel::drawAbout(cairo_t* cr, const Shared& /*shared*/,
@@ -1505,6 +1531,17 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
     }
     return true;
   }
+  if (x >= 408 && x <= 454 && y >= 20 && y <= 48) {
+    shared.abSwitch(1 - shared.abActiveSlot());
+    state.presetDirty = true;
+    return true;
+  }
+  if (x >= 460 && x <= 510 && y >= 20 && y <= 48) {
+    const int active = shared.abActiveSlot();
+    shared.abCopy(active, 1 - active);
+    state.presetDirty = true;
+    return true;
+  }
   if (x >= 918 && x <= 1014 && y >= 20 && y <= 48) {
     state.aboutOpen = true;
     state.aboutScroll = 0;
@@ -1570,6 +1607,18 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
       return true;
     }
     state.deletePresetConfirm = false;
+    const double row2 = footerY + 30;
+    if (state.presetIndex >= 0 && state.presetIndex < count &&
+        x >= kPresetListX + 14 && x <= kPresetListX + 94 &&
+        y >= row2 && y <= row2 + 24) {
+      exportPreset(shared, state);
+      return true;
+    }
+    if (x >= kPresetListX + 104 && x <= kPresetListX + 184 &&
+        y >= row2 && y <= row2 + 24) {
+      importPresetDialog(shared, state);
+      return true;
+    }
     if (x >= kPresetListX + kPresetListW - 84 &&
         x <= kPresetListX + kPresetListW - 14 && y >= footerY &&
         y <= footerY + 24) {
@@ -1973,6 +2022,55 @@ void Panel::applyPreset(Shared& shared, PanelState& state, int index) const {
   }
   state.presetIndex = index;
   state.presetDirty = false;
+}
+
+void Panel::exportPreset(const Shared& shared, const PanelState& state) const {
+  const int index = state.presetIndex;
+  if (index < 0 || index >= presetCount()) return;
+  std::vector<double> values;
+  values.reserve(P_COUNT);
+  for (uint32_t i = 0; i < P_COUNT; ++i) values.push_back(shared.get(i));
+  writeUserPreset(userPresetExportDir(), presetName(index), values);
+}
+
+bool Panel::importPresetFile(Shared& shared, PanelState& state,
+                             const std::string& path) {
+  UserPreset preset;
+  if (!readUserPresetFile(path, preset)) return false;
+  const std::string name = uniquePresetName(userPresetDir(), preset.name);
+  if (!writeUserPreset(userPresetDir(), name, preset.values)) return false;
+  userPresets_ = loadUserPresets(userPresetDir());
+  int found = -1;
+  for (int i = 0; i < static_cast<int>(userPresets_.size()); ++i) {
+    if (userPresets_[static_cast<size_t>(i)].name == name) {
+      found = kPresetCount + i;
+      break;
+    }
+  }
+  if (found >= 0) applyPreset(shared, state, found);
+  state.presetOpen = 0;
+  return found >= 0;
+}
+
+bool Panel::importPresetDialog(Shared& shared, PanelState& state) {
+  const char* home = std::getenv("HOME");
+  std::string dir = home && *home
+                        ? std::string(home) + "/Documents/Suite Rack Presets/"
+                        : std::string(".");
+  std::string cmd =
+      "zenity --file-selection --title='Import Suite Rack preset' --filename='" +
+      dir + "' 2>/dev/null";
+  FILE* pipe = popen(cmd.c_str(), "r");
+  if (!pipe) return false;
+  char buffer[1024] = {};
+  const char* got = fgets(buffer, sizeof(buffer), pipe);
+  pclose(pipe);
+  if (!got) return false;
+  std::string path(buffer);
+  while (!path.empty() && (path.back() == '\n' || path.back() == '\r')) {
+    path.pop_back();
+  }
+  return !path.empty() && importPresetFile(shared, state, path);
 }
 
 void Panel::beginTextEntry(Shared& shared, PanelState& state, double x,

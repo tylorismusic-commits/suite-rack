@@ -654,6 +654,63 @@ int main() {
     check(ok, "every typed control value round-trips");
   }
 
+
+  {
+    Shared ab;
+    PanelState st;
+    Panel p;
+    p.draw(cr, ab, st);
+    ab.set(P_INPUT, 2.0);
+    p.pointerDown(ab, st, 431, 34, false);
+    p.pointerUp(ab, st);
+    check(ab.abActiveSlot() == 1, "A/B pill switches to B");
+    ab.set(P_INPUT, 6.0);
+    p.pointerDown(ab, st, 431, 34, false);
+    p.pointerUp(ab, st);
+    check(ab.abActiveSlot() == 0 && std::fabs(ab.get(P_INPUT) - 2.0) < 1e-9,
+          "A/B pill returns to A");
+    p.pointerDown(ab, st, 485, 34, false);
+    p.pointerUp(ab, st);
+    p.pointerDown(ab, st, 431, 34, false);
+    p.pointerUp(ab, st);
+    check(ab.abActiveSlot() == 1 && std::fabs(ab.get(P_INPUT) - 2.0) < 1e-9,
+          "COPY copies A into B");
+  }
+
+
+  {
+    namespace fs = std::filesystem;
+    const fs::path root = fs::temp_directory_path() / "rack-preset-export-test";
+    fs::remove_all(root);
+    fs::create_directories(root / "config");
+    fs::create_directories(root / "home");
+    const std::string oldXdg =
+        std::getenv("XDG_CONFIG_HOME") ? std::getenv("XDG_CONFIG_HOME") : "";
+    const std::string oldHome =
+        std::getenv("HOME") ? std::getenv("HOME") : "";
+    setenv("XDG_CONFIG_HOME", (root / "config").string().c_str(), 1);
+    setenv("HOME", (root / "home").string().c_str(), 1);
+
+    Shared s;
+    PanelState st;
+    Panel p;
+    p.applyPreset(s, st, 0);
+    p.exportPreset(s, st);
+    const std::string name = sanitizePresetName(kPresets[0].name);
+    const fs::path exported =
+        userPresetExportDir() / (name + ".suite-rack");
+    check(fs::exists(exported), "EXPORT writes a rack preset");
+    check(p.importPresetFile(s, st, exported.string()),
+          "IMPORT reads a rack preset");
+    check(st.presetIndex >= kPresetCount, "import selects the user preset");
+
+    if (!oldXdg.empty()) setenv("XDG_CONFIG_HOME", oldXdg.c_str(), 1);
+    else unsetenv("XDG_CONFIG_HOME");
+    if (!oldHome.empty()) setenv("HOME", oldHome.c_str(), 1);
+    else unsetenv("HOME");
+    fs::remove_all(root);
+  }
+
   cairo_destroy(cr);
   cairo_surface_destroy(surf);
   std::printf("%d failure(s)\n", fails);
