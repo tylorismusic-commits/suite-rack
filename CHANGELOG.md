@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.50.0 — 2026-11-19
+
+- Preset import/export (button and drag-drop) alongside save, rename and
+  delete.
+- Whole-rack A/B compare in the header, with COPY and both sides stored in
+  host state. Old version-2 states load and seed both sides from the live
+  rack values.
+
 ## 0.49.0-m2 — 2026-11-18
 
 Full interaction and edge-case audit.
