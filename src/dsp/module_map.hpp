@@ -12,6 +12,7 @@
 
 #include "controls.hpp"
 #include "module_ids.hpp"
+#include "multiband_comp.hpp"
 
 namespace rack {
 
@@ -464,6 +465,16 @@ inline hdsp::modules::ReelControls reelControlsFrom(
   out.drive = c.c[1];
   out.wow = c.c[2];
   out.mix = c.c[3];
+  return out;
+}
+
+inline MultibandCompControls multibandCompControlsFrom(
+    const SlotControls& c) noexcept {
+  MultibandCompControls out;
+  out.threshold[0] = c.c[0]; out.threshold[1] = c.c[1]; out.threshold[2] = c.c[2];
+  out.ratio[0] = c.c[3]; out.ratio[1] = c.c[4]; out.ratio[2] = c.c[5];
+  out.attack[0] = c.c[6]; out.attack[1] = c.c[7]; out.attack[2] = c.c[8];
+  out.release[0] = c.c[9]; out.release[1] = c.c[10]; out.release[2] = c.c[11];
   return out;
 }
 

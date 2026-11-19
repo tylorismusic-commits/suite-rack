@@ -33,6 +33,7 @@ enum ParamId : uint32_t {
   SLOT_PARAMS(4)
   SLOT_PARAMS(5)
 #undef SLOT_PARAMS
+  P_SC_SOURCE,
   P_COUNT
 };
 
@@ -124,6 +125,8 @@ inline constexpr ParamSpec kParamSpecs[P_COUNT] = {
     SLOT_SPECS(3, 4),
     SLOT_SPECS(4, 5),
     SLOT_SPECS(5, 6),
+    {"sc_source", "External Sidechain", "Global", 0.0, 1.0, 0.0, true,
+     false, true, nullptr, {}},
 };
 
 #undef SLOT_SPECS
@@ -258,6 +261,7 @@ inline Controls controlsFrom(const Shared& s) noexcept {
   c.power = s.get(P_POWER) > 0.5;
   c.inputDb = static_cast<float>(s.get(P_INPUT));
   c.outputDb = static_cast<float>(s.get(P_OUTPUT));
+  c.externalSidechain = s.get(P_SC_SOURCE) > 0.5;
   for (int i = 0; i < kSlotCount; ++i) {
     SlotControls& d = c.slot[i];
     d.type = static_cast<int>(s.get(slotParam(i, kSlotOffsetType)) + 0.5);

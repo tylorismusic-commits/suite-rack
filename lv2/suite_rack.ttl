@@ -22,7 +22,7 @@
         foaf:homepage <https://github.com/tylorismusic-commits/suite-rack> ;
     ] ;
     doap:homepage <https://github.com/tylorismusic-commits/suite-rack> ;
-    lv2:minorVersion 49 ;
+    lv2:minorVersion 51 ;
     lv2:microVersion 0 ;
     lv2:binary <suite_rack.so> ;
     rdfs:seeAlso <manifest.ttl> ;
@@ -95,7 +95,7 @@
         lv2:name "Module" ;
         lv2:default 1 ;
         lv2:minimum 0 ;
-        lv2:maximum 72 ;
+        lv2:maximum 73 ;
         lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -169,7 +169,8 @@
             [ rdf:value 69 ; rdfs:label "L2" ] ,
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
-            [ rdf:value 72 ; rdfs:label "Custom EQ" ] ;
+            [ rdf:value 72 ; rdfs:label "Custom EQ" ] ,
+            [ rdf:value 73 ; rdfs:label "MB Comp" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot1> ;
     ] ,
     [
@@ -333,7 +334,7 @@
         lv2:name "Module" ;
         lv2:default 5 ;
         lv2:minimum 0 ;
-        lv2:maximum 72 ;
+        lv2:maximum 73 ;
         lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -407,7 +408,8 @@
             [ rdf:value 69 ; rdfs:label "L2" ] ,
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
-            [ rdf:value 72 ; rdfs:label "Custom EQ" ] ;
+            [ rdf:value 72 ; rdfs:label "Custom EQ" ] ,
+            [ rdf:value 73 ; rdfs:label "MB Comp" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot2> ;
     ] ,
     [
@@ -571,7 +573,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 72 ;
+        lv2:maximum 73 ;
         lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -645,7 +647,8 @@
             [ rdf:value 69 ; rdfs:label "L2" ] ,
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
-            [ rdf:value 72 ; rdfs:label "Custom EQ" ] ;
+            [ rdf:value 72 ; rdfs:label "Custom EQ" ] ,
+            [ rdf:value 73 ; rdfs:label "MB Comp" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot3> ;
     ] ,
     [
@@ -809,7 +812,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 72 ;
+        lv2:maximum 73 ;
         lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -883,7 +886,8 @@
             [ rdf:value 69 ; rdfs:label "L2" ] ,
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
-            [ rdf:value 72 ; rdfs:label "Custom EQ" ] ;
+            [ rdf:value 72 ; rdfs:label "Custom EQ" ] ,
+            [ rdf:value 73 ; rdfs:label "MB Comp" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot4> ;
     ] ,
     [
@@ -1047,7 +1051,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 72 ;
+        lv2:maximum 73 ;
         lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -1121,7 +1125,8 @@
             [ rdf:value 69 ; rdfs:label "L2" ] ,
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
-            [ rdf:value 72 ; rdfs:label "Custom EQ" ] ;
+            [ rdf:value 72 ; rdfs:label "Custom EQ" ] ,
+            [ rdf:value 73 ; rdfs:label "MB Comp" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot5> ;
     ] ,
     [
@@ -1285,7 +1290,7 @@
         lv2:name "Module" ;
         lv2:default 0 ;
         lv2:minimum 0 ;
-        lv2:maximum 72 ;
+        lv2:maximum 73 ;
         lv2:portProperty lv2:integer ;
         lv2:scalePoint [ rdf:value 0 ; rdfs:label "Off" ] ,
             [ rdf:value 1 ; rdfs:label "4K EQ" ] ,
@@ -1359,7 +1364,8 @@
             [ rdf:value 69 ; rdfs:label "L2" ] ,
             [ rdf:value 70 ; rdfs:label "O3" ] ,
             [ rdf:value 71 ; rdfs:label "Hybrid EQ" ] ,
-            [ rdf:value 72 ; rdfs:label "Custom EQ" ] ;
+            [ rdf:value 72 ; rdfs:label "Custom EQ" ] ,
+            [ rdf:value 73 ; rdfs:label "MB Comp" ] ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
@@ -1517,8 +1523,20 @@
         pg:group <https://github.com/tylorismusic-commits/suite-rack#slot6> ;
     ] ,
     [
-        a lv2:OutputPort , lv2:ControlPort ;
+        a lv2:InputPort , lv2:ControlPort ;
         lv2:index 103 ;
+        lv2:symbol "sc_source" ;
+        lv2:name "External Sidechain" ;
+        lv2:default 0 ;
+        lv2:minimum 0 ;
+        lv2:maximum 1 ;
+        lv2:portProperty lv2:integer ;
+        lv2:portProperty lv2:toggled ;
+        pg:group <https://github.com/tylorismusic-commits/suite-rack#global> ;
+    ] ,
+    [
+        a lv2:OutputPort , lv2:ControlPort ;
+        lv2:index 104 ;
         lv2:symbol "in_peak_l" ;
         lv2:name "Input Peak Left" ;
         lv2:default 0 ;
@@ -1530,7 +1548,7 @@
     ] ,
     [
         a lv2:OutputPort , lv2:ControlPort ;
-        lv2:index 104 ;
+        lv2:index 105 ;
         lv2:symbol "in_peak_r" ;
         lv2:name "Input Peak Right" ;
         lv2:default 0 ;
@@ -1542,7 +1560,7 @@
     ] ,
     [
         a lv2:OutputPort , lv2:ControlPort ;
-        lv2:index 105 ;
+        lv2:index 106 ;
         lv2:symbol "out_peak_l" ;
         lv2:name "Output Peak Left" ;
         lv2:default 0 ;
@@ -1554,7 +1572,7 @@
     ] ,
     [
         a lv2:OutputPort , lv2:ControlPort ;
-        lv2:index 106 ;
+        lv2:index 107 ;
         lv2:symbol "out_peak_r" ;
         lv2:name "Output Peak Right" ;
         lv2:default 0 ;
@@ -1566,7 +1584,7 @@
     ] ,
     [
         a lv2:OutputPort , lv2:ControlPort ;
-        lv2:index 107 ;
+        lv2:index 108 ;
         lv2:symbol "in_peak" ;
         lv2:name "Input Peak" ;
         lv2:default 0 ;
@@ -1578,7 +1596,7 @@
     ] ,
     [
         a lv2:OutputPort , lv2:ControlPort ;
-        lv2:index 108 ;
+        lv2:index 109 ;
         lv2:symbol "out_peak" ;
         lv2:name "Output Peak" ;
         lv2:default 0 ;
@@ -1590,7 +1608,7 @@
     ] ,
     [
         a lv2:OutputPort , lv2:ControlPort ;
-        lv2:index 109 ;
+        lv2:index 110 ;
         lv2:symbol "slot1_gr" ;
         lv2:name "Slot 1 Gain Reduction" ;
         lv2:default 0 ;
@@ -1601,7 +1619,7 @@
     ] ,
     [
         a lv2:OutputPort , lv2:ControlPort ;
-        lv2:index 110 ;
+        lv2:index 111 ;
         lv2:symbol "slot2_gr" ;
         lv2:name "Slot 2 Gain Reduction" ;
         lv2:default 0 ;
@@ -1612,7 +1630,7 @@
     ] ,
     [
         a lv2:OutputPort , lv2:ControlPort ;
-        lv2:index 111 ;
+        lv2:index 112 ;
         lv2:symbol "slot3_gr" ;
         lv2:name "Slot 3 Gain Reduction" ;
         lv2:default 0 ;
@@ -1623,7 +1641,7 @@
     ] ,
     [
         a lv2:OutputPort , lv2:ControlPort ;
-        lv2:index 112 ;
+        lv2:index 113 ;
         lv2:symbol "slot4_gr" ;
         lv2:name "Slot 4 Gain Reduction" ;
         lv2:default 0 ;
@@ -1634,7 +1652,7 @@
     ] ,
     [
         a lv2:OutputPort , lv2:ControlPort ;
-        lv2:index 113 ;
+        lv2:index 114 ;
         lv2:symbol "slot5_gr" ;
         lv2:name "Slot 5 Gain Reduction" ;
         lv2:default 0 ;
@@ -1645,7 +1663,7 @@
     ] ,
     [
         a lv2:OutputPort , lv2:ControlPort ;
-        lv2:index 114 ;
+        lv2:index 115 ;
         lv2:symbol "slot6_gr" ;
         lv2:name "Slot 6 Gain Reduction" ;
         lv2:default 0 ;
@@ -1656,7 +1674,7 @@
     ] ,
     [
         a lv2:OutputPort , lv2:ControlPort ;
-        lv2:index 115 ;
+        lv2:index 116 ;
         lv2:symbol "latency" ;
         lv2:name "Latency" ;
         lv2:default 0 ;
@@ -1665,6 +1683,18 @@
         lv2:designation lv2:latency ;
         lv2:portProperty pprops:notOnGUI ;
         pg:group <https://github.com/tylorismusic-commits/suite-rack#latency> ;
+    ] ,
+    [
+        a lv2:AudioPort , lv2:InputPort ;
+        lv2:index 117 ;
+        lv2:symbol "sc_in_l" ;
+        lv2:name "Sidechain Left" ;
+    ] ,
+    [
+        a lv2:AudioPort , lv2:InputPort ;
+        lv2:index 118 ;
+        lv2:symbol "sc_in_r" ;
+        lv2:name "Sidechain Right" ;
     ] .
 
 

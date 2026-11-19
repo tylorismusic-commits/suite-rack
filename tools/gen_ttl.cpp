@@ -252,6 +252,23 @@ std::string buildPluginTtl() {
     }
   }
 
+  {
+    const char* const scAudio[2][2] = {
+        {"sc_in_l", "Sidechain Left"},
+        {"sc_in_r", "Sidechain Right"},
+    };
+    for (const auto& a : scAudio) {
+      std::ostringstream p;
+      p << "    [\n";
+      p << "        a lv2:AudioPort , lv2:InputPort ;\n";
+      p << "        lv2:index " << index++ << " ;\n";
+      p << "        lv2:symbol \"" << a[0] << "\" ;\n";
+      p << "        lv2:name \"" << a[1] << "\" ;\n";
+      p << "    ]";
+      ports.push_back(p.str());
+    }
+  }
+
   for (size_t i = 0; i < ports.size(); ++i) {
     out << ports[i];
     out << (i + 1 == ports.size() ? " .\n" : " ,\n");

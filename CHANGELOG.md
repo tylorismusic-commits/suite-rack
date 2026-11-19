@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.51.0 — 2026-11-19
+
+- External side-chain input: a second stereo input in CLAP and
+  `sc_in_l`/`sc_in_r` in LV2, enabled from the **EXT SC** header switch.
+  Compressor slots use it for detection.
+- New **MB Comp** module: three-band compressor with per-band threshold,
+  ratio, attack and release. Crossovers are fixed at 200 Hz and 2 kHz; use the
+  slot gain for makeup.
+- The module catalog now has 73 entries.
+
 ## 0.50.0 — 2026-11-19
 
 - Preset import/export (button and drag-drop) alongside save, rename and

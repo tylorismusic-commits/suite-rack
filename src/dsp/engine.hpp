@@ -12,6 +12,7 @@
 #include "controls.hpp"
 #include "module_ids.hpp"
 #include "module_map.hpp"
+#include "multiband_comp.hpp"
 
 namespace rack {
 
@@ -21,6 +22,7 @@ public:
     sr_ = sampleRate > 0.0f ? sampleRate : 48000.0f;
     for (auto& eq : eq_) eq.prepare(sr_);
     for (auto& comp : comp_) comp.prepare(sr_);
+    for (auto& mb : multibandComp_) mb.prepare(sr_);
     for (auto& colour : colour_) colour.prepare(sr_);
     for (auto& gate : gate_) gate.prepare(sr_);
     for (auto& transient : transient_) transient.prepare(sr_);
@@ -80,7 +82,9 @@ public:
     controls_ = c;
     for (int i = 0; i < kSlotCount; ++i) {
       eq_[i].setControls(eqControlsFrom(c.slot[i]));
-      comp_[i].setControls(compControlsFrom(c.slot[i]));
+      auto compControls = compControlsFrom(c.slot[i]);
+      compControls.externalSidechain = c.externalSidechain;
+      comp_[i].setControls(compControls);
       colour_[i].setControls(colourControlsFrom(c.slot[i]));
       gate_[i].setControls(gateControlsFrom(c.slot[i]));
       transient_[i].setControls(transientControlsFrom(c.slot[i]));
@@ -97,6 +101,7 @@ public:
       double_[i].setControls(doubleControlsFrom(c.slot[i]));
       dynamicEq_[i].setControls(dynamicEqControlsFrom(c.slot[i]));
       multiband_[i].setControls(multibandControlsFrom(c.slot[i]));
+      multibandComp_[i].setControls(multibandCompControlsFrom(c.slot[i]));
       rider_[i].setControls(riderControlsFrom(c.slot[i]));
       reel_[i].setControls(reelControlsFrom(c.slot[i]));
       ember_[i].setControls(emberControlsFrom(c.slot[i]));
@@ -135,12 +140,20 @@ public:
     power_.setTarget(c.power ? 1.0f : 0.0f);
   }
 
-  void process(float* left, float* right, int frames, Meters& meters) noexcept {
+  void process(float* left, float* right, int frames, Meters& meters,
+               const float* scLeft = nullptr,
+               const float* scRight = nullptr) noexcept {
     float inL = 0.0f, inR = 0.0f, outL = 0.0f, outR = 0.0f;
     float slotGr[kSlotCount] = {};
     for (int i = 0; i < frames; ++i) {
       const float rawL = std::isfinite(left[i]) ? left[i] : 0.0f;
       const float rawR = std::isfinite(right[i]) ? right[i] : 0.0f;
+      hdsp::SidechainFrame sc;
+      if (controls_.externalSidechain && scLeft && scRight) {
+        sc.left = std::isfinite(scLeft[i]) ? scLeft[i] : 0.0f;
+        sc.right = std::isfinite(scRight[i]) ? scRight[i] : 0.0f;
+        sc.active = true;
+      }
       const float gainIn = input_.next();
       const float dryL = rawL * gainIn;
       const float dryR = rawR * gainIn;
@@ -173,7 +186,7 @@ public:
           case ModuleId::CompDigital:
           case ModuleId::CompMolot:
           case ModuleId::CompRed:
-            gr = comp_[s].process(l, r);
+            gr = comp_[s].process(l, r, sc);
             break;
           case ModuleId::Reel:
             reel_[s].process(l, r);
@@ -313,6 +326,10 @@ public:
             multiband_[s].process(l, r);
             gr = multiband_[s].lastGrDb();
             break;
+          case ModuleId::MultibandComp:
+            multibandComp_[s].process(l, r, sc);
+            gr = multibandComp_[s].lastGrDb();
+            break;
           case ModuleId::Rider:
             rider_[s].process(l, r);
             gr = rider_[s].lastGrDb();
@@ -390,6 +407,7 @@ public:
     for (auto& doubler : double_) doubler.reset();
     for (auto& dynEq : dynamicEq_) dynEq.reset();
     for (auto& multiband : multiband_) multiband.reset();
+    for (auto& mb : multibandComp_) mb.reset();
     for (auto& rider : rider_) rider.reset();
     for (auto& reel : reel_) reel.reset();
     for (auto& ember : ember_) ember.reset();
@@ -471,6 +489,7 @@ private:
   hdsp::modules::Double double_[kSlotCount];
   hdsp::modules::DynamicEq dynamicEq_[kSlotCount];
   hdsp::modules::Multiband multiband_[kSlotCount];
+  MultibandComp multibandComp_[kSlotCount];
   hdsp::modules::Rider rider_[kSlotCount];
   hdsp::modules::Reel reel_[kSlotCount];
   hdsp::modules::Ember ember_[kSlotCount];

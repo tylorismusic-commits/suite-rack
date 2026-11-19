@@ -80,6 +80,7 @@ enum class ModuleId : int {
   JcO3,
   HybridEq,
   CustomEq,
+  MultibandComp,
   Count
 };
 
@@ -99,7 +100,7 @@ inline constexpr const char* kModuleLabels[] = {
     "Reel",      "Ember",    "Tame",     "510 EQ",   "Pultec",
     "Classic Limiter", "Tape Head", "Tube Driver", "DaTube", "Fattener",
     "AC-1",      "LMC-1",    "Modern Limiter", "Hyrax",
-    "Bloom",     "RS-124",   "CL-1B",   "DuTape",   "VBL",      "L2",       "O3",       "Hybrid EQ", "Custom EQ",
+    "Bloom",     "RS-124",   "CL-1B",   "DuTape",   "VBL",      "L2",       "O3",       "Hybrid EQ", "Custom EQ", "MB Comp",
 };
 
 static_assert(sizeof(kModuleLabels) / sizeof(kModuleLabels[0]) == kModuleCount,
@@ -146,7 +147,8 @@ inline constexpr bool moduleIsComp(int id) noexcept {
          id == static_cast<int>(ModuleId::CompXpress) ||
          id == static_cast<int>(ModuleId::CompDigital) ||
          id == static_cast<int>(ModuleId::CompMolot) ||
-         id == static_cast<int>(ModuleId::CompRed);
+         id == static_cast<int>(ModuleId::CompRed) ||
+         id == static_cast<int>(ModuleId::MultibandComp);
 }
 
 inline constexpr bool moduleIsColour(int id) noexcept {

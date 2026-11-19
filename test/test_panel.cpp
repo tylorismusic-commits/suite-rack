@@ -523,7 +523,7 @@ int main() {
     if (!d->name || !*d->name || !d->description || !*d->description) {
       descriptorsOk = false;
     }
-    if (d->controlCount < 3 || d->controlCount > 8) descriptorsOk = false;
+    if (d->controlCount < 3 || d->controlCount > 12) descriptorsOk = false;
     bool seen[12] = {};
     for (int k = 0; k < d->controlCount; ++k) {
       const ControlDesc& c = d->controls[k];
@@ -535,7 +535,7 @@ int main() {
     }
   }
   check(descriptorsOk,
-        "every module has 3-8 valid controls, labels and defaults");
+        "every module has 3-12 valid controls, labels and defaults");
 
   bool factoryPresetsOk = true;
   for (const auto& f : kFactoryModulePresets) {
@@ -599,7 +599,7 @@ int main() {
 
   // About button opens and closes the module/source/control reference.
   panel.draw(cr, s, state);
-  panel.pointerDown(s, state, 930, 34, false);
+  panel.pointerDown(s, state, 994, 34, false);
   panel.pointerUp(s, state);
   check(state.aboutOpen, "ABOUT button opens the reference");
   check(state.aboutScroll == 0, "ABOUT starts at the first page");

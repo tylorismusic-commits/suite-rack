@@ -45,6 +45,8 @@ enum Port : uint32_t {
   PORT_SLOT4_GR,
   PORT_SLOT5_GR,
   PORT_LATENCY,
+  PORT_SC_IN_L,
+  PORT_SC_IN_R,
   PORT_COUNT
 };
 
@@ -71,6 +73,8 @@ struct Plugin {
   float* outPeak = nullptr;
   float* slotGr[rack::kSlotCount] = {};
   float* latency = nullptr;
+  float* scInL = nullptr;
+  float* scInR = nullptr;
 
   const LV2_URID_Map* map = nullptr;
   LV2_URID stateKey = 0;
@@ -119,6 +123,8 @@ void connectPort(LV2_Handle handle, uint32_t port, void* data) {
     case PORT_SLOT4_GR: p->slotGr[4] = static_cast<float*>(data); break;
     case PORT_SLOT5_GR: p->slotGr[5] = static_cast<float*>(data); break;
     case PORT_LATENCY: p->latency = static_cast<float*>(data); break;
+    case PORT_SC_IN_L: p->scInL = static_cast<float*>(data); break;
+    case PORT_SC_IN_R: p->scInR = static_cast<float*>(data); break;
     default:
       if (port >= PORT_FIRST_PARAM &&
           port < PORT_FIRST_PARAM + rack::P_COUNT) {
@@ -165,7 +171,7 @@ void run(LV2_Handle handle, uint32_t frames) {
   }
 
   p->engine.process(p->audioOutL, p->audioOutR, static_cast<int>(frames),
-                    p->meters);
+                    p->meters, p->scInL, p->scInR);
 
   if (p->inPeakL) *p->inPeakL = p->meters.inPeakLDb;
   if (p->inPeakR) *p->inPeakR = p->meters.inPeakRDb;

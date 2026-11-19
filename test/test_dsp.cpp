@@ -476,6 +476,49 @@ int main() {
     check(m.slotGrDb[0] > 0.5f, "compressor reports gain reduction");
   }
 
+
+  // External side-chain replaces the compressor detector.
+  {
+    auto run = [&](bool external, float inAmp, float scAmp) {
+      Engine engine;
+      engine.prepare(48000.0f);
+      Controls c;
+      c.power = true;
+      c.slot[0].type = static_cast<int>(ModuleId::Comp76Blue);
+      c.slot[0].bypass = false;
+      c.externalSidechain = external;
+      c.slot[0].mix = 1.0f;
+      for (int i = 0; i < 12; ++i) c.slot[0].c[i] = 0.5f;
+      c.slot[0].c[0] = 0.10f;  // threshold
+      c.slot[0].c[1] = 0.70f;  // ratio
+      c.slot[0].c[2] = 0.85f;  // fast attack
+      c.slot[0].c[3] = 0.60f;
+      engine.setControls(c);
+      std::vector<float> l(4800), r(4800), sl(4800), sr(4800);
+      for (int i = 0; i < 4800; ++i) {
+        l[i] = r[i] = inAmp * std::sin(2.0f * 3.14159265f * 1000.0f * i / 48000.0f);
+        sl[i] = sr[i] = scAmp * std::sin(2.0f * 3.14159265f * 1000.0f * i / 48000.0f);
+      }
+      Meters meters;
+      float maxGr = 0.0f;
+      for (int start = 0; start < 4800; start += 128) {
+        const int n = std::min(128, 4800 - start);
+        engine.process(l.data() + start, r.data() + start, n, meters,
+                       sl.data() + start, sr.data() + start);
+        maxGr = std::max(maxGr, meters.slotGrDb[0]);
+      }
+      return maxGr;
+    };
+    const float internal = run(false, 2.00f, 0.001f);
+    const float quietSc = run(true, 2.00f, 0.001f);
+    const float loudSc = run(true, 0.01f, 0.50f);
+    check(internal > 3.0f, "compressor reduces a loud internal signal");
+    check(quietSc < 0.5f,
+          "quiet external side-chain leaves a loud signal uncompressed");
+    check(loudSc > 3.0f,
+          "loud external side-chain compresses a quiet signal");
+  }
+
   std::printf("%d failure(s)\n", fails);
   return fails == 0 ? 0 : 1;
 }

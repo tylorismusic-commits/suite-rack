@@ -32,6 +32,7 @@ struct Controls {
   bool power = true;
   float inputDb = 0.0f;
   float outputDb = 0.0f;
+  bool externalSidechain = false;
   SlotControls slot[kSlotCount];
 };
 

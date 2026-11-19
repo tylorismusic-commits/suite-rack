@@ -666,7 +666,7 @@ const clap_plugin_note_ports_t kNotePortsExt = {notePortsCount, notePortsInfo};
 // --- Audio ports ------------------------------------------------------------
 
 uint32_t audioPortsCount(const clap_plugin_t*, bool isInput) {
-  return isInput ? 1 : 1;
+  return isInput ? 2 : 1;
 }
 
 bool audioPortsInfo(const clap_plugin_t*, uint32_t index, bool isInput,
@@ -677,13 +677,19 @@ bool audioPortsInfo(const clap_plugin_t*, uint32_t index, bool isInput,
   info->in_place_pair = CLAP_INVALID_ID;
 
   if (isInput) {
-    if (index != 0) {
-      return false;
+    if (index == 0) {
+      info->id = 0;
+      writeName(info->name, sizeof(info->name), "Input");
+      info->flags = CLAP_AUDIO_PORT_IS_MAIN;
+      return true;
     }
-    info->id = 0;
-    writeName(info->name, sizeof(info->name), "Input");
-    info->flags = CLAP_AUDIO_PORT_IS_MAIN;
-    return true;
+    if (index == 1) {
+      info->id = 2;
+      writeName(info->name, sizeof(info->name), "Sidechain");
+      info->flags = 0;
+      return true;
+    }
+    return false;
   }
   if (index != 0) {
     return false;
@@ -837,6 +843,16 @@ clap_process_status pluginProcess(const clap_plugin_t* p, const clap_process_t* 
   if (!outBuf.data32 || !inBuf.data32 || !outBuf.data32[0] || !inBuf.data32[0]) {
     return CLAP_PROCESS_CONTINUE;
   }
+  const float* scL = nullptr;
+  const float* scR = nullptr;
+  if (proc->audio_inputs_count > 1) {
+    const clap_audio_buffer_t& scBuf = proc->audio_inputs[1];
+    if (scBuf.data32 && scBuf.data32[0]) {
+      scL = scBuf.data32[0];
+      scR = scBuf.channel_count > 1 && scBuf.data32[1] ? scBuf.data32[1]
+                                                       : scL;
+    }
+  }
   float* left = outBuf.data32[0];
   float* right = outBuf.channel_count > 1 && outBuf.data32[1] ? outBuf.data32[1] : left;
   const float* inL = inBuf.data32[0];
@@ -871,7 +887,8 @@ clap_process_status pluginProcess(const clap_plugin_t* p, const clap_process_t* 
     s->host->request_callback(s->host);
   }
 
-  s->engine.process(left, right, static_cast<int>(frames), s->meters);
+  s->engine.process(left, right, static_cast<int>(frames), s->meters, scL,
+                    scR);
   emitGr(s, proc->out_events);
 
   s->shared.inPeakDb.store(s->meters.inPeakDb, std::memory_order_relaxed);

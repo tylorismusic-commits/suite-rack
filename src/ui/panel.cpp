@@ -167,6 +167,9 @@ ModuleStyle styleFor(int type) {
     case ModuleId::Multiband:
       return {{0.08, 0.12, 0.23}, {0.18, 0.26, 0.48},
               {0.48, 0.66, 0.98}, {0.86, 0.90, 0.96}};
+    case ModuleId::MultibandComp:
+      return {{0.10, 0.18, 0.12}, {0.20, 0.36, 0.24},
+              {0.44, 0.92, 0.56}, {0.86, 0.96, 0.88}};
     case ModuleId::Rider:
       return {{0.10, 0.18, 0.12}, {0.20, 0.36, 0.24},
               {0.52, 0.92, 0.58}, {0.86, 0.93, 0.87}};
@@ -677,15 +680,21 @@ void Panel::drawHeader(cairo_t* cr, const Shared& shared, const PanelState& stat
   text(cr, "COPY", 668, 39, 7.5, 1, kDim.r, kDim.g, kDim.b);
 
   struct Pill { const char* label; double x; };
-  const Pill pills[] = {{"PRESETS", 706}, {"SAVE", 812}, {"ABOUT", 918}};
+  const Pill pills[] = {{"PRESETS", 768}, {"SAVE", 860}, {"ABOUT", 952}};
+  const bool extSc = shared.get(P_SC_SOURCE) > 0.5;
+  roundRect(cr, 702, 20, 58, 28, 4);
+  setRgb(cr, extSc ? kAccent : Rgb{0.20, 0.17, 0.14});
+  cairo_fill(cr);
+  text(cr, "EXT SC", 731, 39, 7.0, 1, extSc ? 0.10 : kDim.r,
+       extSc ? 0.08 : kDim.g, extSc ? 0.05 : kDim.b);
   for (const Pill& pill : pills) {
     const bool active = (std::string(pill.label) == "ABOUT" && state.aboutOpen) ||
                         (std::string(pill.label) == "SAVE" && state.savePreset) ||
                         (std::string(pill.label) == "PRESETS" && state.presetOpen);
-    roundRect(cr, pill.x, 20, 96, 28, 4);
+    roundRect(cr, pill.x, 20, 84, 28, 4);
     setRgb(cr, active ? kAccent : Rgb{0.20, 0.17, 0.14});
     cairo_fill(cr);
-    text(cr, pill.label, pill.x + 48, 39, 9, 1,
+    text(cr, pill.label, pill.x + 42, 39, 9, 1,
          active ? 0.10 : kDim.r, active ? 0.08 : kDim.g,
          active ? 0.05 : kDim.b);
   }
@@ -1542,13 +1551,18 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
     state.presetDirty = true;
     return true;
   }
-  if (x >= 918 && x <= 1014 && y >= 20 && y <= 48) {
+  if (x >= 702 && x <= 760 && y >= 20 && y <= 48) {
+    shared.set(P_SC_SOURCE, shared.get(P_SC_SOURCE) > 0.5 ? 0.0 : 1.0);
+    state.presetDirty = true;
+    return true;
+  }
+  if (x >= 952 && x <= 1036 && y >= 20 && y <= 48) {
     state.aboutOpen = true;
     state.aboutScroll = 0;
     state.presetOpen = 0;
     return true;
   }
-  if (x >= 706 && x <= 802 && y >= 20 && y <= 48) {
+  if (x >= 768 && x <= 852 && y >= 20 && y <= 48) {
     state.presetOpen = state.presetOpen ? 0 : 1;
     state.browserSlot = -1;
     state.deletePresetConfirm = false;
@@ -1643,7 +1657,7 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
       return true;
     }
   }
-  if (x >= 812 && x <= 908 && y >= 20 && y <= 48) {
+  if (x >= 860 && x <= 944 && y >= 20 && y <= 48) {
     state.savePreset = true;
     state.textFresh = true;
     state.textParam = -1;

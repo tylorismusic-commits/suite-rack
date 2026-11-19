@@ -537,6 +537,21 @@ inline constexpr ControlDesc kMultibandControls[] = {
     {6, "MAKE", "Makeup", ControlFormat::MakeupDb},
 };
 
+inline constexpr ControlDesc kMultibandCompControls[] = {
+    {0, "LOWT", "Low Threshold", ControlFormat::GateThresholdDb},
+    {1, "MIDT", "Mid Threshold", ControlFormat::GateThresholdDb},
+    {2, "HIGHT", "High Threshold", ControlFormat::GateThresholdDb},
+    {3, "LOWR", "Low Ratio", ControlFormat::DynRatio},
+    {4, "MIDR", "Mid Ratio", ControlFormat::DynRatio},
+    {5, "HIGHR", "High Ratio", ControlFormat::DynRatio},
+    {6, "LOWA", "Low Attack", ControlFormat::GateAttackMs},
+    {7, "MIDA", "Mid Attack", ControlFormat::GateAttackMs},
+    {8, "HIGHA", "High Attack", ControlFormat::GateAttackMs},
+    {9, "LOWREL", "Low Release", ControlFormat::GateReleaseMs},
+    {10, "MIDREL", "Mid Release", ControlFormat::GateReleaseMs},
+    {11, "HIGHREL", "High Release", ControlFormat::GateReleaseMs},
+};
+
 inline constexpr ControlDesc kSubControls[] = {
     {0, "FREQ", "Frequency", ControlFormat::SubFreqHz},
     {1, "AMOUNT", "Amount", ControlFormat::Percent},
@@ -897,6 +912,11 @@ inline constexpr ModuleDesc kModules[] = {
      static_cast<int>(sizeof(kCustomEqControls) /
                       sizeof(kCustomEqControls[0])),
      kCustomEqControls},
+    {ModuleId::MultibandComp, "MB Comp", "Dyn",
+     "Three-band compressor with per-band dynamics", false, false, 0,
+     static_cast<int>(sizeof(kMultibandCompControls) /
+                      sizeof(kMultibandCompControls[0])),
+     kMultibandCompControls},
 };
 
 static_assert(sizeof(kModules) / sizeof(kModules[0]) == kModuleCount,
@@ -974,6 +994,7 @@ inline constexpr const char* kModuleSources[kModuleCount] = {
     "JClones",
     "JClones",
     "JClones",
+    "Suite Rack exclusive",
     "Suite Rack exclusive",
     "Suite Rack exclusive",
 };

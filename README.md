@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.50.0 — interaction-audited: 72 modules, CLAP + LV2, presets, typed values.**
+**Status: 0.51.0 — 73 modules, CLAP + LV2, external side-chain, presets, typed values.**
 More factory module presets are next.
 
 A virtual 500 series mix rack in the Suite visual language: six serial slots, each
@@ -126,6 +126,8 @@ standalone plugins remain the full versions.
 - **Image** — stereo width, mono-maker, balance, M/S
 - **Dynamic EQ** — frequency-selective dynamics
 - **Multiband** — 3-band compressor
+- **MB Comp** — 3-band compressor with per-band threshold, ratio, attack and
+  release
 - **Sub** — subharmonic synthesizer
 - **Double** — doubler / microshift
 - **Filter** — auto-filter / envelope filter
@@ -174,6 +176,9 @@ the 500-series format; Cleanup is the lightweight repair representative.
   knob to type an exact value; Enter applies and Escape cancels.
 - Stepped controls, used by the Bleed Out profile selector.
 - Bleed Out has a separate automated **GHOST ON** button.
+- Global **EXT SC** switch feeds the external side-chain input to every
+  compressor slot; it is the second stereo input in CLAP and
+  `sc_in_l`/`sc_in_r` in LV2.
 - Filled slots hide the **CHOOSE** hint so longer module names have room.
 - **ABOUT** opens a reference table with each module's source, controls and attributions.
 - Module browser with **ALL / EQ / COMP / COLOUR / DYN / SPACE** categories,
