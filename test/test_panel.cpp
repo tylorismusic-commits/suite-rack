@@ -168,6 +168,61 @@ int main() {
   }
   check(limiterControls, "Peak Limiter exposes all four controls");
 
+  // MB Comp uses horizontal faders so all twelve controls plus MIX/GAIN fit.
+  applyModuleDefaults(s, 5, static_cast<int>(ModuleId::MultibandComp));
+  panel.draw(cr, s, state);
+  std::vector<Panel::WidgetRect> faders;
+  for (int k = 0; k < 12; ++k) {
+    const uint32_t p = slotParam(5, kSlotOffsetC0 + k);
+    for (const auto& r : panel.widgetRects()) {
+      if (r.param == p) faders.push_back(r);
+    }
+  }
+  for (uint32_t p : {slotParam(5, kSlotOffsetMix),
+                     slotParam(5, kSlotOffsetGain)}) {
+    for (const auto& r : panel.widgetRects()) {
+      if (r.param == p) faders.push_back(r);
+    }
+  }
+  check(faders.size() == 14, "MB Comp exposes twelve faders plus MIX/GAIN");
+  bool stacked = true;
+  for (size_t i = 1; i < faders.size(); ++i) {
+    if (faders[i].y < faders[i - 1].y + faders[i - 1].h - 1.0) stacked = false;
+  }
+  check(stacked, "MB Comp faders do not overlap each other");
+  check(!faders.empty() && faders.back().y + faders.back().h <= 640.0,
+        "MB Comp faders stay inside the slot card");
+
+  const uint32_t mbThresh = slotParam(5, kSlotOffsetC0 + 0);
+  const double beforeThresh = s.get(mbThresh);
+  const Panel::WidgetRect* threshRect = nullptr;
+  for (const auto& r : faders) {
+    if (r.param == mbThresh) threshRect = &r;
+  }
+  check(threshRect != nullptr, "MB Comp threshold fader is discoverable");
+  if (threshRect) {
+    const double cy = threshRect->y + threshRect->h * 0.5;
+    panel.pointerDown(s, state, threshRect->x + threshRect->w * 0.5, cy,
+                      false);
+    panel.pointerMove(s, state, threshRect->x + threshRect->w * 0.5 + 40.0,
+                      cy, false);
+    panel.pointerUp(s, state);
+    check(s.get(mbThresh) > beforeThresh + 0.05,
+          "dragging an MB Comp fader moves it horizontally");
+    panel.draw(cr, s, state);
+    bool enteredFader = false;
+    for (const auto& r : panel.widgetRects()) {
+      if (r.param != mbThresh) continue;
+      panel.beginTextEntry(s, state, r.x + r.w * 0.5, r.y + r.h * 0.5);
+      enteredFader = true;
+      break;
+    }
+    check(enteredFader && state.textParam == static_cast<int>(mbThresh),
+          "right-click starts text entry on an MB Comp fader");
+    panel.textKey(s, state, Panel::kTextEscape, 0);
+  }
+  applyModuleDefaults(s, 5, static_cast<int>(ModuleId::Limiter));
+
   // Bypass pill for slot 2.
   panel.draw(cr, s, state);
   check(clickParam(panel, s, state, P_SLOT1_BYPASS),

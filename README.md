@@ -1,6 +1,6 @@
 # Suite Rack
 
-**Status: 0.51.0 — 73 modules, CLAP + LV2, external side-chain, presets, typed values.**
+**Status: 0.51.1 — 73 modules, CLAP + LV2, external side-chain, presets, typed values.**
 More factory module presets are next.
 
 A virtual 500 series mix rack in the Suite visual language: six serial slots, each
@@ -35,6 +35,8 @@ standalone plugins remain the full versions.
 ![Suite Rack — Sub and Double](docs/rack-sub.png)
 
 ![Suite Rack — Dynamic EQ and Multiband](docs/rack-dyn.png)
+
+![Suite Rack — MB Comp faders](docs/rack-mbcomp.png)
 
 ![Suite Rack — Rider and Cleanup](docs/rack-rider.png)
 
@@ -127,7 +129,8 @@ standalone plugins remain the full versions.
 - **Dynamic EQ** — frequency-selective dynamics
 - **Multiband** — 3-band compressor
 - **MB Comp** — 3-band compressor with per-band threshold, ratio, attack and
-  release
+  release. It uses twelve horizontal faders plus MIX and GAIN so every label
+  stays readable in the slot.
 - **Sub** — subharmonic synthesizer
 - **Double** — doubler / microshift
 - **Filter** — auto-filter / envelope filter

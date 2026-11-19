@@ -97,7 +97,7 @@ public:
   std::vector<WidgetRect> widgetRects() const;
 
 private:
-  enum class Kind { Knob, Pill, Button, SlotCard, ModuleButton, ModelButton, ModuleToggle, Power, ModuleName, ModulePresetButton, ModuleDragHandle, BrowserOption, BrowserTab, BrowserScroll, BrowserSearch };
+  enum class Kind { Knob, Slider, Pill, Button, SlotCard, ModuleButton, ModelButton, ModuleToggle, Power, ModuleName, ModulePresetButton, ModuleDragHandle, BrowserOption, BrowserTab, BrowserScroll, BrowserSearch };
   struct Widget {
     Kind kind = Kind::Knob;
     uint32_t param = 0;
@@ -122,6 +122,8 @@ private:
                   const PanelState& state) const;
   void drawKnob(cairo_t* cr, const Widget& w, const Shared& shared,
                 double value) const;
+  void drawSlider(cairo_t* cr, const Widget& w, const Shared& shared,
+                  double value) const;
   void drawPill(cairo_t* cr, const Widget& w, bool on, const char* label) const;
   void drawButton(cairo_t* cr, const Widget& w, bool lit) const;
   void drawLevelMeter(cairo_t* cr, double x, double y, double w, double h,
@@ -164,6 +166,7 @@ private:
   std::chrono::steady_clock::time_point lastClickTime_{};
   double dragStartValue_ = 0.0;
   int dragSteps_ = 0;
+  bool dragHorizontal_ = false;
   cairo_surface_t* grain_ = nullptr;
   void* ft_ = nullptr;
   void* ftFace_ = nullptr;

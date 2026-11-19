@@ -465,8 +465,41 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
     widgets_.push_back(byp);
 
     const ModuleDesc* module = moduleDesc(type);
+    const bool sliders =
+        type == static_cast<int>(ModuleId::MultibandComp);
     const double cx1 = x + 38, cx2 = x + 105;
-    if (module->controlCount > 0) {
+    auto slider = [&](uint32_t param, double sy, const char* label,
+                      int moduleControl, int steps) {
+      Widget sw{};
+      sw.kind = Kind::Slider;
+      sw.param = param;
+      sw.x = x + 8;
+      sw.y = sy;
+      sw.w = colW - 16;
+      sw.h = 26;
+      sw.label = label;
+      sw.styleSlot = i;
+      sw.styleType = type;
+      sw.moduleControl = moduleControl;
+      sw.steps = steps;
+      widgets_.push_back(sw);
+    };
+    if (module->controlCount > 0 && sliders) {
+      // MB Comp has twelve controls plus MIX/GAIN.  Horizontal faders keep
+      // every label readable in the narrow slot where a 2x6 knob grid does
+      // not fit.
+      const double start = y + 128.0;
+      const double pitch = 29.0;
+      for (int k = 0; k < module->controlCount; ++k) {
+        const ControlDesc& control = module->controls[k];
+        slider(slotParam(i, kSlotOffsetC0 + control.param),
+               start + k * pitch, control.label, control.param,
+               control.stepped ? control.labels.count : 0);
+      }
+      const double mixY = start + module->controlCount * pitch;
+      slider(slotParam(i, kSlotOffsetMix), mixY, "MIX", -1, 0);
+      slider(slotParam(i, kSlotOffsetGain), mixY + pitch, "GAIN", -1, 0);
+    } else if (module->controlCount > 0) {
       const int rows = (module->controlCount + 1) / 2;
       const double rowH = rows >= 5 ? 68.0 : (rows >= 4 ? 82.0 : 96.0);
       int toggleSlot = 0;
@@ -495,11 +528,12 @@ void Panel::layout(const Shared& shared, const PanelState& state) {
              control.label, i, true, control.param,
              control.stepped ? control.labels.count : 0);
       }
-    }
 
-    knob(slotParam(i, kSlotOffsetMix), x + colW * 0.30, y + 512, 13, "MIX", i);
-    knob(slotParam(i, kSlotOffsetGain), x + colW * 0.70, y + 512, 13,
-         "GAIN", i);
+      knob(slotParam(i, kSlotOffsetMix), x + colW * 0.30, y + 512, 13, "MIX",
+           i);
+      knob(slotParam(i, kSlotOffsetGain), x + colW * 0.70, y + 512, 13,
+           "GAIN", i);
+    }
 
     // Full-card fallback drag handle. Controls are added first, so knobs and
     // buttons still win the hit test; clicking any empty part of the module
@@ -1324,6 +1358,9 @@ void Panel::drawWidget(cairo_t* cr, const Widget& w, const Shared& shared,
     case Kind::Knob:
       drawKnob(cr, w, shared, shared.get(w.param));
       break;
+    case Kind::Slider:
+      drawSlider(cr, w, shared, shared.get(w.param));
+      break;
   }
 }
 
@@ -1366,6 +1403,43 @@ void Panel::drawKnob(cairo_t* cr, const Widget& w, const Shared& shared,
   const std::string val = formatParamValue(shared, w.param, value);
   text(cr, val.c_str(), w.x, w.y + w.r + (w.compact ? 11.0 : 15.0),
        w.compact ? 8.5 : 8.5, 1, st.accent.r, st.accent.g, st.accent.b);
+}
+
+void Panel::drawSlider(cairo_t* cr, const Widget& w, const Shared& shared,
+                       double value) const {
+  const ParamSpec& s = kParamSpecs[w.param];
+  const bool stepped01 = w.steps > 1 && w.moduleControl >= 0;
+  const double vmin = stepped01 ? 0.0 : s.min;
+  const double vmax =
+      (w.steps > 1 && !stepped01) ? w.steps - 1 : s.max;
+  const double span = vmax - vmin;
+  const double f = clamp01(span > 0.0 ? (value - vmin) / span : 0.0);
+  const int sliderType = w.styleSlot >= 0 ? w.styleType : -1;
+  const ModuleStyle st = styleFor(sliderType);
+
+  text(cr, w.label, w.x + 1, w.y + 9.5, 7.6, 0, kText.r, kText.g, kText.b);
+  const std::string val = formatParamValue(shared, w.param, value);
+  text(cr, val.c_str(), w.x + w.w - 1, w.y + 9.5, 7.2, 2, st.accent.r,
+       st.accent.g, st.accent.b);
+
+  const double tx = w.x + 1;
+  const double tw = w.w - 2;
+  const double cy = w.y + 18.0;
+  roundRect(cr, tx, cy - 2.5, tw, 5, 2.5);
+  setRgb(cr, {st.body.r * 0.55, st.body.g * 0.55, st.body.b * 0.55});
+  cairo_fill(cr);
+  if (f > 0.002) {
+    roundRect(cr, tx, cy - 2.5, std::max(1.0, tw * f), 5, 2.5);
+    setRgb(cr, st.accent, 0.88);
+    cairo_fill(cr);
+  }
+  cairo_arc(cr, tx + tw * f, cy, 3.8, 0, 2 * kPi);
+  setRgb(cr, st.knob);
+  cairo_fill(cr);
+  cairo_set_line_width(cr, 1.1);
+  setRgb(cr, st.accent, 0.9);
+  cairo_arc(cr, tx + tw * f, cy, 3.8, 0, 2 * kPi);
+  cairo_stroke(cr);
 }
 
 void Panel::drawPill(cairo_t* cr, const Widget& w, bool on, const char* label) const {
@@ -1856,7 +1930,42 @@ bool Panel::pointerDown(Shared& shared, PanelState& state, double x, double y,
         dragParam_ = static_cast<int>(w.param);
         dragSteps_ = w.steps;
         dragStartY_ = y;
+        dragStartX_ = x;
         dragStartValue_ = shared.get(w.param);
+        dragHorizontal_ = false;
+        return false;
+      }
+      case Kind::Slider: {
+        const auto now = std::chrono::steady_clock::now();
+        if (lastClickParam_ == static_cast<int>(w.param) &&
+            now - lastClickTime_ <= std::chrono::milliseconds(350)) {
+          double reset = kParamSpecs[w.param].def;
+          if (w.param >= P_SLOT0_TYPE) {
+            const int slot =
+                static_cast<int>((w.param - P_SLOT0_TYPE) / kSlotStride);
+            const int offset =
+                static_cast<int>((w.param - P_SLOT0_TYPE) % kSlotStride);
+            if (slot >= 0 && slot < kSlotCount && offset >= kSlotOffsetC0) {
+              const int control = offset - kSlotOffsetC0;
+              const int type = static_cast<int>(
+                  shared.get(slotParam(slot, kSlotOffsetType)) + 0.5);
+              reset = defaultControlValue(moduleDesc(type)->id, control);
+            }
+          }
+          shared.set(w.param, reset);
+          state.presetDirty = true;
+          lastClickParam_ = -1;
+          dragParam_ = -1;
+          return true;
+        }
+        lastClickParam_ = static_cast<int>(w.param);
+        lastClickTime_ = now;
+        dragParam_ = static_cast<int>(w.param);
+        dragSteps_ = w.steps;
+        dragStartY_ = y;
+        dragStartX_ = x;
+        dragStartValue_ = shared.get(w.param);
+        dragHorizontal_ = true;
         return false;
       }
     }
@@ -1895,7 +2004,9 @@ bool Panel::pointerMove(Shared& shared, PanelState& state, double x, double y,
   const ParamSpec& spec = kParamSpecs[param];
   const double perPixel = spec.stepped ? 1.0 / 18.0
                                        : (spec.max - spec.min) / (fine ? 800.0 : 200.0);
-  double v = dragStartValue_ + (dragStartY_ - y) * perPixel;
+  const double delta = dragHorizontal_ ? (x - dragStartX_)
+                                       : (dragStartY_ - y);
+  double v = dragStartValue_ + delta * perPixel;
   if (dragSteps_ > 1) {
     v = std::round(v * (dragSteps_ - 1)) / (dragSteps_ - 1);
   }
@@ -1921,6 +2032,7 @@ void Panel::pointerUp(Shared& shared, PanelState& state) {
     slotDragging_ = false;
   }
   dragParam_ = -1;
+  dragHorizontal_ = false;
 }
 
 bool Panel::wheel(Shared& shared, PanelState& state, double x, double y, double dy) {
@@ -1947,7 +2059,9 @@ bool Panel::wheel(Shared& shared, PanelState& state, double x, double y, double 
     return true;
   }
   for (const Widget& w : widgets_) {
-    if (w.kind != Kind::Knob || !hitWidget(w, x, y)) continue;
+    if ((w.kind != Kind::Knob && w.kind != Kind::Slider) ||
+        !hitWidget(w, x, y))
+      continue;
     const ParamSpec& spec = kParamSpecs[w.param];
     if (w.steps > 1) {
       const double step = 1.0 / (w.steps - 1);
@@ -2103,7 +2217,9 @@ void Panel::beginTextEntry(Shared& shared, PanelState& state, double x,
     }
   }
   for (const Widget& w : widgets_) {
-    if (w.kind != Kind::Knob || !hitWidget(w, x, y)) continue;
+    if ((w.kind != Kind::Knob && w.kind != Kind::Slider) ||
+        !hitWidget(w, x, y))
+      continue;
     state.textParam = static_cast<int>(w.param);
     state.textBuffer = formatParamValue(shared, w.param, shared.get(w.param));
     state.textFresh = true;
@@ -2382,7 +2498,7 @@ void Panel::drawTextEntry(cairo_t* cr, const PanelState& state) const {
   const Widget* target = nullptr;
   if (state.textParam >= 0) {
     for (const Widget& w : widgets_) {
-      if (w.kind == Kind::Knob &&
+      if ((w.kind == Kind::Knob || w.kind == Kind::Slider) &&
           static_cast<int>(w.param) == state.textParam) {
         target = &w;
         break;

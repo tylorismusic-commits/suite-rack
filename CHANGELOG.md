@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.51.1 — 2026-11-19
+
+- **MB Comp** now draws its twelve controls plus MIX and GAIN as horizontal
+  faders instead of a 2×6 knob grid. This removes the label collisions and
+  the MIX/GAIN overlap in the slot card; dragging, wheel, right-click typed
+  values and double-click reset all work on the faders.
+
 ## 0.51.0 — 2026-11-19
 
 - External side-chain input: a second stereo input in CLAP and
