@@ -1,3 +1,6 @@
 [submodule "third_party/hearth-dsp"]
 	path = third_party/hearth-dsp
 	url = https://github.com/tylorismusic-commits/hearth-dsp.git
+[submodule "third_party/clap-wrapper"]
+	path = third_party/clap-wrapper
+	url = https://github.com/free-audio/clap-wrapper
