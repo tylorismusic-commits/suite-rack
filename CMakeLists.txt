@@ -173,15 +173,18 @@ set_target_properties(suite_rack_auv2 PROPERTIES
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/au")
 
 # The wrapper generates Contents/Info.plist with its AudioComponents entry at
-# build time and copies it PRE_BUILD.  With the Makefile generator CMake then
-# writes its own default bundle plist, which has no AudioComponents, so the
-# component never registers (auval: "didn't find the component").  Copy the
-# generated plist again POST_BUILD; the signing targets run afterwards.
-add_custom_command(TARGET suite_rack_auv2 POST_BUILD
+# build time and copies it PRE_BUILD, but CMake writes its own default bundle
+# plist when the wrapper links -- and only then.  A build where the CLAP
+# changed but the wrapper did not relink kept whatever plist happened to be
+# there, which is how a component ends up registered nowhere.  An always-run
+# target installs the generated plist after every build; the signing targets
+# depend on it, so the signature covers it.
+add_custom_target(suite_rack_auv2_plist ALL
   COMMAND ${CMAKE_COMMAND} -E copy
           "${CMAKE_BINARY_DIR}/suite_rack_auv2-build-helper-output/auv2_Info.plist"
           "$<TARGET_BUNDLE_DIR:suite_rack_auv2>/Contents/Info.plist"
-  COMMENT "Installing the generated AUv2 Info.plist")
+  COMMENT "Installing the generated AUv2 Info.plist"
+  DEPENDS suite_rack_auv2)
 
 # Embedding the CLAP happens PRE_BUILD, which invalidates any signature the
 # wrapper had, so re-sign the finished bundles.
@@ -197,6 +200,7 @@ if(CODESIGN)
     COMMENT "Ad-hoc signing ${RACK_AUV2_BUNDLE}"
     DEPENDS suite_rack_auv2
     VERBATIM)
+  add_dependencies(suite_rack_auv2_sign suite_rack_auv2_plist)
 endif()
 
 install(DIRECTORY "${RACK_CLAP_BUNDLE}" DESTINATION "${CLAP_DIR}")

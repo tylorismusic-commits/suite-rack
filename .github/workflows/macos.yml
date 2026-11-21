@@ -68,6 +68,9 @@ jobs:
             test -f "$bundle/Contents/PlugIns/SuiteRack.clap/Contents/MacOS/SuiteRack"
             codesign --verify --deep --verbose=2 "$bundle"
           done
+          # Without this entry macOS never registers the component.
+          plutil -p build-macos/au/SuiteRack.component/Contents/Info.plist \
+            | grep -q AudioComponents
 
       - name: Validate AUv2 with auval
         run: |
