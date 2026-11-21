@@ -1,0 +1,62 @@
+name: macOS
+
+# Compile and test the plug-in on Apple Silicon.
+#
+# The CLAP editor is a Cocoa NSView on macOS (see src/ui/cocoa_view.mm), so the
+# CLAP target and its self-contained .clap bundle are built here.  The LV2 UI
+# is still an X11 host and is skipped on macOS (see CMakeLists.txt).
+# Pass -DSUITE_NO_X11=ON to reproduce the portable subset on Linux.
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  macos:
+    name: macOS arm64
+    runs-on: macos-15
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: 4
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Toolchain
+        run: |
+          brew install cmake pkg-config cairo freetype lv2 lilv dylibbundler
+          pkg-config --modversion cairo lv2
+          cmake --version | head -1
+
+      - name: Configure
+        run: >
+          cmake -S . -B build-macos
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_OSX_ARCHITECTURES=arm64
+          -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
+
+      - name: Build
+        run: cmake --build build-macos
+
+      - name: Test
+        run: ctest --test-dir build-macos --output-on-failure
+
+      - name: Check the CLAP bundle
+        run: |
+          file build-macos/clap/SuiteRack.clap/Contents/MacOS/SuiteRack
+          otool -L build-macos/clap/SuiteRack.clap/Contents/MacOS/SuiteRack | head -12
+          if otool -L build-macos/clap/SuiteRack.clap/Contents/MacOS/SuiteRack | grep -q '@executable_path'; then
+            echo "bundle still references @executable_path"; exit 1
+          fi
+          codesign --verify --verbose build-macos/clap/SuiteRack.clap
+
+      - name: Upload CLAP
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: SuiteRack-macos-clap
+          path: build-macos/clap
+          if-no-files-found: warn

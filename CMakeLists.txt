@@ -20,11 +20,24 @@ enable_testing()
 
 find_package(PkgConfig REQUIRED)
 find_package(Threads REQUIRED)
+pkg_check_modules(LV2 REQUIRED IMPORTED_TARGET lv2)
 pkg_check_modules(CAIRO REQUIRED IMPORTED_TARGET cairo)
 pkg_check_modules(FREETYPE REQUIRED IMPORTED_TARGET freetype2)
-pkg_check_modules(X11 REQUIRED IMPORTED_TARGET x11)
+# The editor hosts are X11 today.  macOS builds the portable subset (DSP,
+# panel, tests, tools) until a Cocoa view lands, so X11 stays optional.
+option(SUITE_NO_X11 "Skip X11 editor targets (portable subset)" OFF)
+if(APPLE OR SUITE_NO_X11)
+  set(SUITE_X11 OFF)
+else()
+  pkg_check_modules(X11 REQUIRED IMPORTED_TARGET x11)
+  set(SUITE_X11 ON)
+endif()
 
 set(RACK_UI_SOURCES src/ui/panel.cpp)
+
+set(RACK_RESOURCE_FILES
+  "${CMAKE_SOURCE_DIR}/assets/fonts/Jost-ExtraBold.ttf"
+  "${CMAKE_SOURCE_DIR}/assets/fonts/OFL.txt")
 
 add_executable(rack_dsp_test test/test_dsp.cpp)
 target_include_directories(rack_dsp_test PRIVATE "${CMAKE_SOURCE_DIR}/src")
@@ -68,8 +81,58 @@ set(CLAP_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/clap"
 set(LV2_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}/lv2"
     CACHE PATH "Directory where LV2 bundles are installed")
 
-pkg_check_modules(LV2 REQUIRED IMPORTED_TARGET lv2)
+if(APPLE)
+enable_language(OBJCXX)
+add_library(suite_rack MODULE
+  src/clap/rack_clap.cpp
+  ${RACK_UI_SOURCES}
+  src/ui/cocoa_view.mm)
+target_include_directories(suite_rack PRIVATE
+  "${CMAKE_SOURCE_DIR}/src"
+  "${CMAKE_SOURCE_DIR}/third_party/clap/include"
+  ${CAIRO_INCLUDE_DIRS})
+target_compile_definitions(suite_rack PRIVATE SUITE_MACOS_COCOA=1)
+target_compile_options(suite_rack PRIVATE -fobjc-arc)
+target_link_libraries(suite_rack PRIVATE
+  PkgConfig::CAIRO PkgConfig::FREETYPE
+  "-framework Cocoa" "-framework CoreGraphics" "-framework QuartzCore"
+  Threads::Threads ${CMAKE_DL_LIBS})
+target_compile_features(suite_rack PRIVATE cxx_std_17)
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(suite_rack PRIVATE -Wall -Wextra -fvisibility=hidden)
+endif()
+set_target_properties(suite_rack PROPERTIES
+  PREFIX ""
+  OUTPUT_NAME "SuiteRack"
+  SUFFIX ".dylib"
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/macos")
 
+set(RACK_CLAP_BUNDLE "${CMAKE_BINARY_DIR}/clap/SuiteRack.clap")
+find_program(DYLIBBUNDLER dylibbundler)
+add_custom_target(suite_rack_bundle ALL
+  COMMAND ${CMAKE_COMMAND} -E remove_directory "${RACK_CLAP_BUNDLE}"
+  COMMAND ${CMAKE_COMMAND} -E make_directory
+          "${RACK_CLAP_BUNDLE}/Contents/MacOS"
+  COMMAND ${CMAKE_COMMAND} -E copy
+          "$<TARGET_FILE:suite_rack>"
+          "${RACK_CLAP_BUNDLE}/Contents/MacOS/SuiteRack"
+  COMMAND ${CMAKE_COMMAND} -E copy
+          "${CMAKE_SOURCE_DIR}/packaging/macos/Info.plist"
+          "${RACK_CLAP_BUNDLE}/Contents/Info.plist"
+  COMMAND ${CMAKE_COMMAND} -E make_directory
+          "${RACK_CLAP_BUNDLE}/Contents/Resources/SuiteRack.resources"
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RACK_RESOURCE_FILES}
+          "${RACK_CLAP_BUNDLE}/Contents/Resources/SuiteRack.resources/"
+  DEPENDS suite_rack ${RACK_RESOURCE_FILES})
+if(DYLIBBUNDLER)
+  add_custom_command(TARGET suite_rack_bundle POST_BUILD
+    COMMAND "${DYLIBBUNDLER}" -od -b
+            -x "${RACK_CLAP_BUNDLE}/Contents/MacOS/SuiteRack"
+            -d "${RACK_CLAP_BUNDLE}/Contents/Frameworks"
+            -p "@loader_path/../Frameworks")
+endif()
+install(DIRECTORY "${RACK_CLAP_BUNDLE}" DESTINATION "${CLAP_DIR}")
+elseif(SUITE_X11)
 add_library(suite_rack MODULE src/clap/rack_clap.cpp ${RACK_UI_SOURCES})
 target_include_directories(suite_rack PRIVATE
   "${CMAKE_SOURCE_DIR}/src" "${CMAKE_SOURCE_DIR}/third_party/clap/include")
@@ -85,10 +148,6 @@ set_target_properties(suite_rack PROPERTIES
   PREFIX "" OUTPUT_NAME "SuiteRack" SUFFIX ".clap"
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/clap")
 
-set(RACK_RESOURCE_FILES
-  "${CMAKE_SOURCE_DIR}/assets/fonts/Jost-ExtraBold.ttf"
-  "${CMAKE_SOURCE_DIR}/assets/fonts/OFL.txt")
-
 add_custom_target(suite_rack_bundle ALL
   COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/clap/SuiteRack.resources"
   COMMAND ${CMAKE_COMMAND} -E copy_if_different ${RACK_RESOURCE_FILES}
@@ -98,6 +157,7 @@ add_custom_target(suite_rack_bundle ALL
 install(TARGETS suite_rack LIBRARY DESTINATION "${CLAP_DIR}")
 install(FILES ${RACK_RESOURCE_FILES}
         DESTINATION "${CLAP_DIR}/SuiteRack.resources")
+endif()  # APPLE / SUITE_X11
 
 
 # ---------------------------------------------------------------------------
@@ -117,6 +177,7 @@ set_target_properties(suite_rack_lv2 PROPERTIES
   OUTPUT_NAME "suite_rack"
   LIBRARY_OUTPUT_DIRECTORY "${LV2_BUNDLE_DIR}")
 
+if(SUITE_X11)
 add_library(suite_rack_lv2_ui MODULE src/ui/lv2_ui.cpp ${RACK_UI_SOURCES})
 target_include_directories(suite_rack_lv2_ui PRIVATE
   "${CMAKE_SOURCE_DIR}/src")
@@ -139,7 +200,9 @@ add_custom_target(suite_rack_lv2_bundle ALL
           "${CMAKE_SOURCE_DIR}/assets/fonts/OFL.txt"
           "${LV2_BUNDLE_DIR}/"
   DEPENDS suite_rack_lv2 suite_rack_lv2_ui)
+endif()  # SUITE_X11
 
+if(SUITE_X11)
 add_custom_target(dist
   COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/dist"
   COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -154,9 +217,13 @@ add_custom_target(dist
   WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
   DEPENDS suite_rack_lv2_bundle suite_rack_bundle
   COMMENT "Packing suite-rack-${PROJECT_VERSION}")
+endif()  # SUITE_X11
 
-install(TARGETS suite_rack_lv2 suite_rack_lv2_ui
-        LIBRARY DESTINATION "${LV2_DIR}/suite-rack.lv2")
+install(TARGETS suite_rack_lv2 LIBRARY DESTINATION "${LV2_DIR}/suite-rack.lv2")
+if(SUITE_X11)
+  install(TARGETS suite_rack_lv2_ui
+          LIBRARY DESTINATION "${LV2_DIR}/suite-rack.lv2")
+endif()
 install(FILES
   lv2/manifest.ttl
   lv2/suite_rack.ttl
